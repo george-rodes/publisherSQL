@@ -63,6 +63,11 @@ import br.com.anagnostou.publisher.grupos.SalaoDoReino;
 import br.com.anagnostou.publisher.grupos.Servos;
 import br.com.anagnostou.publisher.grupos.VaroesBatizados;
 import br.com.anagnostou.publisher.grupos.VilaNova;
+import br.com.anagnostou.publisher.objetos.Publicador;
+import br.com.anagnostou.publisher.objetos.Relatorio;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private String DATABASE_NAME ;
@@ -151,9 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /******************/
 
-        broadcastReceiver = new PowerConnectionReceiver();
-
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+               mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         secondSectionsPagerAdapter = new SecondSectionsPagerAdapter(getSupportFragmentManager());
         specialPagerAdapter = new SpecialPagerAdapter(getSupportFragmentManager());
 
@@ -216,41 +219,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //L.t(this, sharedPreferences.getString("server", ""));
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        /** Testes para BROADCASTRECEIVER
-        IntentFilter i = new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED");
-        registerReceiver(broadcastReceiver, i);
-        IntentFilter i2 = new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED");
-        registerReceiver(broadcastReceiver, i2);
-         IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-         registerReceiver(broadcastReceiver,iFilter);*/
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        /** Testes para BROADCASTRECEIVER
-        try {
-            unregisterReceiver(broadcastReceiver);
-        } catch (Exception e) {
-            L.t(this, "Nothing Registered");
-        }
-        */
 
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        /** try {
-            unregisterReceiver(broadcastReceiver);
-            unbindService();
-        } catch (Exception e) {
-            L.t(this, "Nothing Registered");
-        }*/
-    }
 
 
     @Override
@@ -272,8 +243,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.action_updateDatabase) {
             atualizarBancoDeDados(getCurrentFocus());
             return true;
-        }
-        if (id == R.id.action_settings) {
+        } else if (id == R.id.action_settings) {
 
             startActivity(new Intent(this, Settings.class));
             //startActivity(new Intent(this, AppPreferences.class));
@@ -282,11 +252,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }*/
             return true;
+        } else  if (id == R.id.action_clear) {
+            copyDataBaseSdCard();
+        } else if (id == R.id.Json){
+            /**
+             * object to Json
+             * */
+           Gson gson = new GsonBuilder().create();
+
         }
 
-        if (id == R.id.action_clear) {
-            copyDataBaseSdCard();
-        }
+
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -468,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
+    @Override /***DrawerLayout **/
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 

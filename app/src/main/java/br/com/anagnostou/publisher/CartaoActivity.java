@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import br.com.anagnostou.publisher.objetos.Relatorio;
+
 public class CartaoActivity extends AppCompatActivity {
     private DBAdapter dbAdapter;
     private SQLiteDatabase sqLiteDatabase;

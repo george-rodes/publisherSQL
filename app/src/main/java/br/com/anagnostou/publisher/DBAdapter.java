@@ -19,6 +19,9 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
+import br.com.anagnostou.publisher.objetos.Publicador;
+import br.com.anagnostou.publisher.objetos.Relatorio;
+
 public class DBAdapter {
     public DBHelper mydbHelper;
     private HashMap<String, String> mAliasMap;
@@ -210,7 +213,7 @@ public class DBAdapter {
                 "GROUP BY relatorio.nome HAVING count(publicador._id) < 6 ", selectionArgs);
     }
 
-    public  Cursor irregularesCruzaAno(String anoini, String mesini, String mesfim, String anofim, String mesini1, String mesfim1) {
+    public Cursor irregularesCruzaAno(String anoini, String mesini, String mesfim, String anofim, String mesini1, String mesfim1) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {anoini, mesini, mesfim, anofim, mesini1, mesfim1};
         return db.rawQuery("SELECT DISTINCT publicador._id,  relatorio.nome, publicador.familia FROM relatorio,publicador " +
@@ -223,9 +226,9 @@ public class DBAdapter {
 
     public Cursor menosDeUmAnoDeBatismo(String anoini, String mesini, String anofim) {
         SQLiteDatabase db = mydbHelper.getReadableDatabase();
-        String[] selectionArgs = {anoini,mesini,anofim};
+        String[] selectionArgs = {anoini, mesini, anofim};
         return db.rawQuery("select  _id, nome, familia from publicador where data_batismo <> '' AND  " +
-                "((substr(data_batismo,7,4) = ? AND substr(data_batismo,4,2) >= ? )  OR substr(data_batismo,7,4) = ? ) order by nome",selectionArgs);
+                "((substr(data_batismo,7,4) = ? AND substr(data_batismo,4,2) >= ? )  OR substr(data_batismo,7,4) = ? ) order by nome", selectionArgs);
 
     }
 
@@ -252,30 +255,36 @@ public class DBAdapter {
         return db.query(DBHelper.TABLE_NAME_PUBLICADOR, columns, DBHelper.PIPU + " = ?", selectionArgs, null, null, DBHelper.NOME);
     }
 
-    public Publicador[] retrievePublisherData(String name) {
+
+
+    /********
+     * 14/12/2016
+     *******/
+    public Publicador retrievePublisherData(String name) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.FAMILIA, DBHelper.GRUPO, DBHelper.BATISMO, DBHelper.CELULAR,
                 DBHelper.RUA, DBHelper.NASCIMENTO, DBHelper.FONE, DBHelper.BAIRRO, DBHelper.ANSEPU, DBHelper.PIPU, DBHelper.SEXO};
         String[] selectionArgs = {name};
         Cursor cursor = db.query(DBHelper.TABLE_NAME_PUBLICADOR, columns, DBHelper.NOME + " = ?", selectionArgs, null, null, null);
-        Publicador pub[] = new Publicador[cursor.getCount()];
+        Publicador pub = new Publicador();
         while (cursor.moveToNext()) {
-            pub[cursor.getPosition()] = new Publicador();
-            pub[cursor.getPosition()].nome = name;
-            pub[cursor.getPosition()].familia = cursor.getString(cursor.getColumnIndex(DBHelper.FAMILIA));
-            pub[cursor.getPosition()].grupo = cursor.getString(cursor.getColumnIndex(DBHelper.GRUPO));
-            pub[cursor.getPosition()].batismo = cursor.getString(cursor.getColumnIndex(DBHelper.BATISMO));
-            pub[cursor.getPosition()].celular = cursor.getString(cursor.getColumnIndex(DBHelper.CELULAR));
-            pub[cursor.getPosition()].rua = cursor.getString(cursor.getColumnIndex(DBHelper.RUA));
-            pub[cursor.getPosition()].nascimento = cursor.getString(cursor.getColumnIndex(DBHelper.NASCIMENTO));
-            pub[cursor.getPosition()].fone = cursor.getString(cursor.getColumnIndex(DBHelper.FONE));
-            pub[cursor.getPosition()].bairro = cursor.getString(cursor.getColumnIndex(DBHelper.BAIRRO));
-            pub[cursor.getPosition()].ansepu = cursor.getString(cursor.getColumnIndex(DBHelper.ANSEPU));
-            pub[cursor.getPosition()].pipu = cursor.getString(cursor.getColumnIndex(DBHelper.PIPU));
-            pub[cursor.getPosition()].sexo = cursor.getString(cursor.getColumnIndex(DBHelper.SEXO));
+
+            pub.setNome(name);
+            pub.setFamilia(cursor.getString(cursor.getColumnIndex(DBHelper.FAMILIA)));
+            pub.setGrupo(cursor.getString(cursor.getColumnIndex(DBHelper.GRUPO)));
+            pub.setBatismo(cursor.getString(cursor.getColumnIndex(DBHelper.BATISMO)));
+            pub.setCelular(cursor.getString(cursor.getColumnIndex(DBHelper.CELULAR)));
+            pub.setRua(cursor.getString(cursor.getColumnIndex(DBHelper.RUA)));
+            pub.setNascimento(cursor.getString(cursor.getColumnIndex(DBHelper.NASCIMENTO)));
+            pub.setFamilia(cursor.getString(cursor.getColumnIndex(DBHelper.FONE)));
+            pub.setBairro(cursor.getString(cursor.getColumnIndex(DBHelper.BAIRRO)));
+            pub.setAnsepu(cursor.getString(cursor.getColumnIndex(DBHelper.ANSEPU)));
+            pub.setPipu(cursor.getString(cursor.getColumnIndex(DBHelper.PIPU)));
+            pub.setSexo(cursor.getString(cursor.getColumnIndex(DBHelper.SEXO)));
         }
         cursor.close();
         return pub;
+
     }
 
     /*****************************************
@@ -449,6 +458,7 @@ public class DBAdapter {
 
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        /**
         cv.put(DBHelper.NOME, p.nome);
         cv.put(DBHelper.FAMILIA, p.familia);
         cv.put(DBHelper.GRUPO, p.grupo);
@@ -461,6 +471,20 @@ public class DBAdapter {
         cv.put(DBHelper.ANSEPU, p.ansepu);
         cv.put(DBHelper.PIPU, p.pipu);
         cv.put(DBHelper.SEXO, p.sexo);
+        */
+
+        cv.put(DBHelper.NOME, p.getNome());
+        cv.put(DBHelper.FAMILIA, p.getFamilia());
+        cv.put(DBHelper.GRUPO, p.getGrupo());
+        cv.put(DBHelper.BATISMO, p.getBatismo());
+        cv.put(DBHelper.NASCIMENTO, p.getNascimento());
+        cv.put(DBHelper.FONE, p.getFone());
+        cv.put(DBHelper.CELULAR, p.getCelular());
+        cv.put(DBHelper.RUA, p.getRua());
+        cv.put(DBHelper.BAIRRO, p.getBairro());
+        cv.put(DBHelper.ANSEPU, p.getAnsepu());
+        cv.put(DBHelper.PIPU, p.getPipu());
+        cv.put(DBHelper.SEXO, p.getSexo());
 
         //id of the column or -1 when insert failed
         long id = db.insert(DBHelper.TABLE_NAME_PUBLICADOR, null, cv);
@@ -481,6 +505,7 @@ public class DBAdapter {
     public long insertDataRelatorio(Relatorio r) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        /**
         cv.put(DBHelper.ANO, r.ano);
         cv.put(DBHelper.MES, r.mes);
         cv.put(DBHelper.NOME, r.nome);
@@ -490,6 +515,16 @@ public class DBAdapter {
         cv.put(DBHelper.PUBLICACOES, r.publicacoes);
         cv.put(DBHelper.REVISITAS, r.revisitas);
         cv.put(DBHelper.ESTUDOS, r.estudos);
+         */
+        cv.put(DBHelper.ANO, r.getAno());
+        cv.put(DBHelper.MES, r.getMes());
+        cv.put(DBHelper.NOME, r.getNome());
+        cv.put(DBHelper.MODALIDADE, r.getModalidade());
+        cv.put(DBHelper.VIDEOS, r.getVideos());
+        cv.put(DBHelper.HORAS, r.getHoras());
+        cv.put(DBHelper.PUBLICACOES, r.getPublicacoes());
+        cv.put(DBHelper.REVISITAS, r.getRevisitas());
+        cv.put(DBHelper.ESTUDOS, r.getEstudos());
 
         //id of the column or -1 when insert failed
         long id = db.insert(DBHelper.TABLE_NAME_RELATORIO, null, cv);

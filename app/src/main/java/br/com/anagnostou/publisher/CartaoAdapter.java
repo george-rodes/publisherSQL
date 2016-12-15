@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import br.com.anagnostou.publisher.objetos.Relatorio;
+
 /**
  * Created by George on 04/09/2016.
  */
