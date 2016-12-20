@@ -1,21 +1,16 @@
 package br.com.anagnostou.publisher;
 
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
-
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -27,30 +22,16 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.anagnostou.publisher.grupos.Adriano;
 import br.com.anagnostou.publisher.grupos.Anciaos;
 import br.com.anagnostou.publisher.grupos.AnoBatismo;
@@ -63,54 +44,47 @@ import br.com.anagnostou.publisher.grupos.SalaoDoReino;
 import br.com.anagnostou.publisher.grupos.Servos;
 import br.com.anagnostou.publisher.grupos.VaroesBatizados;
 import br.com.anagnostou.publisher.grupos.VilaNova;
-import br.com.anagnostou.publisher.objetos.Publicador;
-import br.com.anagnostou.publisher.objetos.Relatorio;
-
+import br.com.anagnostou.publisher.asynctasks.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private String DATABASE_NAME ;
-    private String DB_FULL_PATH;
-    private String spUpdate;
-    private String spCadastro;
-    private String spRelatorio;
-    private String spHomepage;
+
+    public boolean bancoTemDados = false;
+    public boolean bBackgroundJobs = false;
+    boolean isServiceBound;
+    boolean mStopLoop;
+    BroadcastReceiver broadcastReceiver;
+
+    CheckSQLService checkSQLService;
+    ConnectivityManager connMgr;
+    DBAdapter dbAdapter;
+    SQLiteDatabase sqLiteDatabase;
+    Intent checkSQLServerIntent;
+    public static final String NA = "N/A";
+
+    SecondSectionsPagerAdapter secondSectionsPagerAdapter;
+    public SectionsPagerAdapter mSectionsPagerAdapter;
+    ServiceConnection serviceConnection;
+
     SharedPreferences sp;
-    private static final String NA = "N/A";
     SharedPreferences.Editor editor;
+    SpecialPagerAdapter specialPagerAdapter;
+
+    String DATABASE_NAME;
+    String DB_FULL_PATH;
     String fosPublicador;
     String fosRelatorio;
     String fosUpdate;
-    String sdcard;
-    DBAdapter dbAdapter;
-    SQLiteDatabase sqLiteDatabase;
-    String sDataServidor;
-    Boolean bancoTemDados = false;
-    ConnectivityManager connMgr;
-    Boolean bBackgroundJobs = false;
-    Adriano adrianoFragment;
-    Centro centroFragment;
-    SalaoDoReino salaoFragment;
-    VilaNova vilaFragment;
-    Vazio vazioFragment;
-    Anciaos anciaosFragment;
-    Pioneiros pioneirosFragment;
-    Servos servosFragment;
-    Pregadores pregadoresFragment;
-    VaroesBatizados varoesBatizadosFragment;
     String nameSearch;
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    private SecondSectionsPagerAdapter secondSectionsPagerAdapter;
-    private SpecialPagerAdapter specialPagerAdapter;
-    private ViewPager mViewPager;
-    BroadcastReceiver broadcastReceiver;
-    private Intent checkSQLServerIntent;
-    private CheckSQLService checkSQLService;
-    private boolean isServiceBound;
-    private ServiceConnection serviceConnection;
-    private boolean mStopLoop;
 
+    String sdcard;
+    String spCadastro;
+    String spHomepage;
+    String spRelatorio;
+    String spUpdate;
+
+    public ViewPager mViewPager;
 
     private void bindService(){
         if (serviceConnection == null){
@@ -129,14 +103,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         bindService(checkSQLServerIntent,serviceConnection,Context.BIND_AUTO_CREATE);
     }
-
     private void unbindService(){
         if(isServiceBound){
             unbindService(serviceConnection);
             isServiceBound=false;
         }
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /******************/
 
-               mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         secondSectionsPagerAdapter = new SecondSectionsPagerAdapter(getSupportFragmentManager());
         specialPagerAdapter = new SpecialPagerAdapter(getSupportFragmentManager());
 
@@ -195,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     && Utilidades.existeTabela("publicador", MainActivity.this)
                     && Utilidades.existeTabela("versao", MainActivity.this)) {
                 if (Utilidades.temDadosNoBanco(MainActivity.this)) {
-                    final CheckUpdateAvailable checkUpdateAvailable = new CheckUpdateAvailable(getApplicationContext());
+                    final CheckUpdateAvailable checkUpdateAvailable = new CheckUpdateAvailable(MainActivity.this,this);
                     checkUpdateAvailable.execute(spHomepage + spUpdate, fosUpdate);
                     bancoTemDados = true;
                 }
@@ -219,11 +191,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //L.t(this, sharedPreferences.getString("server", ""));
     }
 
-
-
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -245,8 +212,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
         } else if (id == R.id.action_settings) {
 
-            startActivity(new Intent(this, Settings.class));
-            //startActivity(new Intent(this, AppPreferences.class));
+            //startActivity(new Intent(this, Settings.class));
+            startActivity(new Intent(this, AppPreferences.class));
             /* if(isServiceBound){
                 L.t(this,"Get Randomnumber: " + checkSQLService.getmRandomNumber());
 
@@ -275,43 +242,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public Fragment getItem(int position) {
             if (position == 0 && bancoTemDados) {
-                adrianoFragment = new Adriano();
-                return adrianoFragment;
+                return new Adriano();
             }
             if (position == 1 && bancoTemDados) {
-                salaoFragment = new SalaoDoReino();
-                return salaoFragment;
+                return new SalaoDoReino();
             }
             if (position == 2 && bancoTemDados) {
-                vilaFragment = new VilaNova();
-                return vilaFragment;
+                return new VilaNova();
             }
             if (position == 3 && bancoTemDados) {
-                centroFragment = new Centro();
-                return centroFragment;
+                return new Centro();
             }
 
             if (position == 4 && bancoTemDados) {
-                anciaosFragment = new Anciaos();
-                return anciaosFragment;
+                return new Anciaos();
             }
             if (position == 5 && bancoTemDados) {
-                servosFragment = new Servos();
-                return servosFragment;
+                return new Servos();
             }
 
             if (position == 6 && bancoTemDados) {
-                pregadoresFragment = new Pregadores();
-                return pregadoresFragment;
+                return new Pregadores();
             }
 
             if (position == 7 && bancoTemDados) {
-                pioneirosFragment = new Pioneiros();
-                return pioneirosFragment;
+                return new Pioneiros();
             }
 
-            vazioFragment = new Vazio();
-            return vazioFragment;
+            return new Vazio();
         }
 
         @Override // Show x total pages.
@@ -354,25 +312,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public Fragment getItem(int position) {
             if (position == 0 && bancoTemDados) {
-                anciaosFragment = new Anciaos();
-                return anciaosFragment;
+                return new Anciaos();
             }
             if (position == 1 && bancoTemDados) {
-                servosFragment = new Servos();
-                return servosFragment;
+                return new Servos();
             }
 
             if (position == 3 && bancoTemDados) {
-                pregadoresFragment = new Pregadores();
-                return pregadoresFragment;
+                return new Pregadores();
             }
 
             if (position == 2 && bancoTemDados) {
-                pioneirosFragment = new Pioneiros();
-                return pioneirosFragment;
+                return new Pioneiros();
             }
-            vazioFragment = new Vazio();
-            return vazioFragment;
+            return new Vazio();
         }
 
         @Override // Show x total pages.
@@ -419,8 +372,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return new NaoBatizados();
             }
 
-            vazioFragment = new Vazio();
-            return vazioFragment;
+            return new Vazio();
         }
 
         @Override // Show x total pages.
@@ -469,512 +421,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
             /** em vez de chamar a activity, chamar várias Asynctask que uma chama a outra através do onPostExecute */
             if (!bBackgroundJobs) {
-                final DownloadTaskUpdate downloadTaskUpdate = new DownloadTaskUpdate(getApplicationContext());
+                final DownloadTaskUpdate downloadTaskUpdate = new DownloadTaskUpdate(MainActivity.this,this,mSectionsPagerAdapter);
                 downloadTaskUpdate.execute(spHomepage + spUpdate);
             } else L.t(getApplicationContext(), "Background Jobs in Progress");
             return true;
         } else {
             L.t(getApplicationContext(), "Sem Conexão com a Internet");
             return false;
-        }
-    }
-
-    class DownloadTaskUpdate extends AsyncTask<String, Integer, String> {
-        private Context context;
-        AlertDialog.Builder builder1;
-        AlertDialog alert11;
-
-        public DownloadTaskUpdate(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            bBackgroundJobs = true;
-
-            builder1 = new AlertDialog.Builder(MainActivity.this);
-            builder1.setMessage("Aguarde! Baixando update.txt..");
-            alert11 = builder1.create();
-            alert11.show();
-        }
-
-        @Override
-        protected String doInBackground(String... sUrl) {
-            InputStream input = null;
-            OutputStream output = null;
-            HttpURLConnection connection = null;
-            try {
-                URL url = new URL(sUrl[0]);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) return "No HTTP ";
-                input = connection.getInputStream();
-                output = new FileOutputStream(fosUpdate);
-                byte data[] = new byte[4096];
-                long total = 0;
-                int count;
-                while ((count = input.read(data)) != -1) {
-                    // allow canceling with back button
-                    if (isCancelled()) {
-                        input.close();
-                        return null;
-                    }
-                    total += count;
-                    output.write(data, 0, count);
-                }
-            } catch (Exception e) {
-                return e.toString();
-            } finally {
-                try {
-                    if (output != null)
-                        output.close();
-                    if (input != null)
-                        input.close();
-                } catch (IOException ignored) {
-                }
-                if (connection != null)
-                    connection.disconnect();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (result != null) {
-                alert11.dismiss();
-            } else {
-                alert11.dismiss();
-                final DownloadTaskRelatorio downloadRelatorioTask = new DownloadTaskRelatorio(getApplicationContext());
-                downloadRelatorioTask.execute(spHomepage + spRelatorio);
-            }
-        }
-    }
-
-    class DownloadTaskRelatorio extends AsyncTask<String, Integer, String> {
-        private Context context;
-        AlertDialog.Builder builder1;
-        AlertDialog alert11;
-
-        public DownloadTaskRelatorio(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            bBackgroundJobs = true;
-            builder1 = new AlertDialog.Builder(MainActivity.this);
-            builder1.setMessage("Aguarde! Baixando Relatorios..");
-            alert11 = builder1.create();
-            alert11.show();
-        }
-
-        @Override
-        protected String doInBackground(String... sUrl) {
-            InputStream input = null;
-            OutputStream output = null;
-            HttpURLConnection connection = null;
-            try {
-                URL url = new URL(sUrl[0]);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) return "No HTTP ";
-                input = connection.getInputStream();
-                output = new FileOutputStream(fosRelatorio);
-                byte data[] = new byte[4096];
-                long total = 0;
-                int count;
-                while ((count = input.read(data)) != -1) {
-                    // allow canceling with back button
-                    if (isCancelled()) {
-                        input.close();
-                        return null;
-                    }
-                    total += count;
-                    output.write(data, 0, count);
-                }
-            } catch (Exception e) {
-                return e.toString();
-            } finally {
-                try {
-                    if (output != null)
-                        output.close();
-                    if (input != null)
-                        input.close();
-                } catch (IOException ignored) {
-                }
-                if (connection != null)
-                    connection.disconnect();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (result != null) {
-                alert11.dismiss();
-            } else {
-                alert11.dismiss();
-                if (Utilidades.findLocalFiles(spRelatorio)) {
-                    final TaskRelatorio taskRelatorio = new TaskRelatorio(MainActivity.this);
-                    taskRelatorio.execute("Atualizando Relatórios");
-                }
-            }
-        }
-    }
-
-    class TaskRelatorio extends AsyncTask<String, Integer, String> {
-        private Context context;
-        private final ProgressDialog progressDialog;
-
-        public TaskRelatorio(Context context) {
-            this.context = context;
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setMax(100);
-            progressDialog.setMessage("Atualizando Registros");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setProgress(0);
-            progressDialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... sUrl) {
-            if (!sqLiteDatabase.isOpen())
-                sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-            dbAdapter.mydbHelper.dropTableRelatorio(sqLiteDatabase);
-            if (!sqLiteDatabase.isOpen())
-                sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-            dbAdapter.mydbHelper.dropTableVersao(sqLiteDatabase);
-            File sdcard = Environment.getExternalStorageDirectory();
-            File file = new File(sdcard, spRelatorio);
-            BufferedReader in = null;
-            try {
-                in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            List<String> myStringList = new ArrayList<String>();
-            String str;
-            try {
-                while ((str = in.readLine()) != null) {
-                    myStringList.add(str);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            //2. Creates an Object array of Publicadores
-            Relatorio rel[] = new Relatorio[myStringList.size()];
-            int counter = 0;
-            for (String what : myStringList) {
-                rel[counter] = new Relatorio(what);
-                counter++;
-            }
-            //4 . Populate Database
-            for (Relatorio r : rel) {
-                long i = dbAdapter.insertDataRelatorio(r);
-                publishProgress((int) (i * 100 / counter));
-            }
-            /** inserir a data da ultima atualizacao insertDataVersao(String versao)
-             * ler a data do arquivo e comparar
-             */
-            File fileU = new File(sdcard, spUpdate);
-            BufferedReader inU = null;
-            try {
-                inU = new BufferedReader(new InputStreamReader(new FileInputStream(fileU), "UTF8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            String strU;
-            String sDataServidor = dbAdapter.selectVersao();
-            try {
-                while ((strU = inU.readLine()) != null) {
-                    sDataServidor = strU;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (inU != null) {
-                try {
-                    inU.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            dbAdapter.insertDataVersao(sDataServidor);
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-            progressDialog.setProgress(progress[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (result != null) {
-                progressDialog.dismiss();
-            } else {
-                progressDialog.dismiss();
-                final DownloadTaskPublicador downloadPublicadorTask = new DownloadTaskPublicador(MainActivity.this);
-                downloadPublicadorTask.execute(spHomepage + spCadastro);
-            }
-        }
-    }
-
-    class DownloadTaskPublicador extends AsyncTask<String, Integer, String> {
-        private Context context;
-        AlertDialog.Builder builder1;
-        AlertDialog alert11;
-
-        public DownloadTaskPublicador(Context context) {
-            this.context = context;
-            builder1 = new AlertDialog.Builder(MainActivity.this);
-            builder1.setMessage("Aguarde! Baixando Cadastro de Publicadores..");
-            alert11 = builder1.create();
-            alert11.show();
-        }
-
-        @Override
-        protected String doInBackground(String... sUrl) {
-            InputStream input = null;
-            OutputStream output = null;
-            HttpURLConnection connection = null;
-            try {
-                URL url = new URL(sUrl[0]);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    return "Server returned HTTP " + connection.getResponseCode()
-                            + " " + connection.getResponseMessage();
-                }
-                input = connection.getInputStream();
-                output = new FileOutputStream(fosPublicador);
-                byte data[] = new byte[4096];
-                long total = 0;
-                int count;
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    output.write(data, 0, count);
-                }
-            } catch (Exception e) {
-                return e.toString();
-            } finally {
-                try {
-                    if (output != null)
-                        output.close();
-                    if (input != null)
-                        input.close();
-                } catch (IOException ignored) {
-                }
-                if (connection != null)
-                    connection.disconnect();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (result != null) {
-                alert11.dismiss();
-            } else {
-                alert11.dismiss();
-                if (Utilidades.findLocalFiles(spCadastro)) {
-                    final TaskPublicador taskPublicador = new TaskPublicador(MainActivity.this);
-                    taskPublicador.execute("Atualizando Tabela Publicadores");
-                }
-            }
-        }
-    }
-
-    class TaskPublicador extends AsyncTask<String, Integer, String> {
-        private Context context;
-        private final ProgressDialog progressDialog;
-
-        public TaskPublicador(Context context) {
-            this.context = context;
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setMax(100);
-            progressDialog.setMessage("Atualizando Registros");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setProgress(0);
-            progressDialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... sUrl) {
-            if (!sqLiteDatabase.isOpen())
-                sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-            dbAdapter.mydbHelper.dropTablePublicador(sqLiteDatabase);
-            //1. Loads file from external storage /sdcard, accessible via explorer
-            File sdcard = Environment.getExternalStorageDirectory();
-            File file = new File(sdcard, spCadastro);
-            BufferedReader in = null;
-            try {
-                in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            List<String> myStringList = new ArrayList<String>();
-            String str;
-            try {
-                while ((str = in.readLine()) != null) {
-                    myStringList.add(str);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            //2. Creates an Object array of Publicadores
-            Publicador pub[] = new Publicador[myStringList.size()];
-            int counter = 0;
-            for (String what : myStringList) {
-                pub[counter] = new Publicador(what);
-                counter++;
-            }
-            //4 . Populate Database
-            for (Publicador p : pub) {
-                long i = dbAdapter.insertDataPublicador(p);
-                publishProgress((int) (i * 100 / counter));
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-            progressDialog.setProgress(progress[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            bBackgroundJobs = false;
-            if (result != null) {
-                progressDialog.dismiss();
-            } else {
-                bancoTemDados = true;
-                progressDialog.dismiss();
-                mViewPager.setAdapter(mSectionsPagerAdapter);
-
-            }
-        }
-    }
-
-    class CheckUpdateAvailable extends AsyncTask<String, Integer, String> {
-        private Context context;
-
-        public CheckUpdateAvailable(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected String doInBackground(String... sUrl) {
-            InputStream input = null;
-            OutputStream output = null;
-            HttpURLConnection connection = null;
-            try {
-                URL url = new URL(sUrl[0]);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    return "Server returned HTTP " + connection.getResponseCode()
-                            + " " + connection.getResponseMessage();
-                }
-                input = connection.getInputStream();
-                output = new FileOutputStream(sUrl[1]);
-                byte data[] = new byte[4096];
-                long total = 0;
-                int count;
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    output.write(data, 0, count);
-                }
-            } catch (Exception e) {
-                return e.toString();
-            } finally {
-                try {
-                    if (output != null) output.close();
-                    if (input != null) input.close();
-                } catch (IOException ignored) {
-                }
-                if (connection != null) connection.disconnect();
-            }
-            //ler a data do arquivo e comparar
-            File sdcard = Environment.getExternalStorageDirectory();
-            File file = new File(sdcard, spUpdate);
-            BufferedReader in = null;
-            try {
-                in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            String str;
-            try {
-                while ((str = in.readLine()) != null) {
-                    sDataServidor = str;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (result != null) {
-            } else {
-                if (!Utilidades.comparaData(dbAdapter.selectVersao(), sDataServidor).contentEquals("mesma data")) {
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-                    builder1.setMessage("Atualização Disponivel!\nAtualizar Banco de Dados?");
-                    builder1.setCancelable(true);
-                    builder1.setPositiveButton("SIM", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                            atualizarBancoDeDados(getCurrentFocus());
-                        }
-                    });
-                    builder1.setNegativeButton("NÂO", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-                    AlertDialog alert11 = builder1.create();
-                    alert11.show();
-                }
-            }
         }
     }
 
@@ -1006,7 +459,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             L.m(e.toString());
         }
     }
-
-
 
 }

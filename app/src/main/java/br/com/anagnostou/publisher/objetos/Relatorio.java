@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher;
+package br.com.anagnostou.publisher.objetos;
 
 import android.text.TextUtils;
 

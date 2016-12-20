@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "br.com.anagnostou.publisher"
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 7
         versionName "7.16.12.10.13.11"
     }

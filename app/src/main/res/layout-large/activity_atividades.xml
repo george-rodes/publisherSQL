@@ -133,7 +133,6 @@
             android:id="@+id/tvPubFone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/button"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
             android:gravity="center_vertical|center_horizontal"
@@ -150,6 +149,6 @@
             android:onClick="ligarFone"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_call_white_24dp"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
     </LinearLayout>
 </RelativeLayout>

@@ -3,16 +3,25 @@
 
     <PreferenceCategory android:title="@string/geral">
 
-        <EditTextPreference
-            android:defaultValue="http://www.anagnostou.com.br/overseer/"
-            android:key="server"
-            android:summary="Servidor do Banco de Dados"
-            android:title="Servidor" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="usarDadosCelurares"
             android:summary="Para fins de Teste"
             android:title="Usar Dados Celulares" />
-
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/importacao_de_dados">
+        <EditTextPreference
+            android:defaultValue="http://www.anagnostou.com.br/overseer/"
+            android:key="server"
+            android:summary="Servidor do Banco de Dados"
+            android:title="Servidor" />
+        <ListPreference
+            android:defaultValue="2"
+            android:entries="@array/sourceDataImport"
+            android:entryValues="@array/sourceDataImportValues"
+            android:key="sourceDataImport"
+            android:summary="Escolhe de onde os registros serão obtidos"
+            android:title="Origem dos Dados" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

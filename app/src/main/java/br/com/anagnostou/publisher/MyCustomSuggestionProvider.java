@@ -54,6 +54,7 @@ public class MyCustomSuggestionProvider extends ContentProvider {
 
         Cursor c = null;
         switch(mUriMatcher.match(uri)){
+
             case SUGGESTIONS_PUBLICADOR :
                 c = dbAdapter.getPublicadores(selectionArgs);
                 break;
@@ -64,7 +65,7 @@ public class MyCustomSuggestionProvider extends ContentProvider {
                 String id = uri.getLastPathSegment();
                 c = dbAdapter.getPublicador(id);
         }
-
+        //L.m("mUriMatcher.match(uri)" + mUriMatcher.match(uri));
         return c;
     }
 

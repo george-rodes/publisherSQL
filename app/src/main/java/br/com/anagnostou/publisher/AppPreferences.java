@@ -21,7 +21,7 @@ public class AppPreferences extends AppCompatActivity {
         android.app.FragmentManager fragmentManager = getFragmentManager();
         android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         SettingsFragment settingsFragment = new SettingsFragment();
-        fragmentTransaction.add(R.id.preferences_container, settingsFragment, "some Tag");
+        fragmentTransaction.add(R.id.preferences_container, settingsFragment, "SETTINGS_FRAGMENT");
         fragmentTransaction.commit();
     }
 

@@ -4,8 +4,27 @@ Pioneiros
    Pode ser feito na tela de AtividadesActivity talvez como dialog? ou usar visibility
 
 MySQL
-   Cadastar diretament no servidor o relatorio atraves de um formulario
-   o SQLlite busca a atualização diretamente do MySQL
+   1. Montar um formulário HTML para incluir relatorios no servidor MySQL.   Did it
+   2. Modificar o app para importar dados do servidor e não do EXcel ou ambos?
+
+
+   Tres Maneiras de Alimentar o Banco base: Export/Import do Excel, Tela no Android
+
+   OFFLINE, cadastar no SQLITE local e depois pedir para syncronizar com MySQL remoto,
+   criar uma tabela extra so para
+   atualziar e depois de enviar para o My SQLi apagar os registros?
+   1. Cadastar diretamente no servidor o relatorio atraves de um formulario php
+   2. O SQLlite busca a atualização diretamente do MySQL
+
+   Set up preferences pages
+   Preference:
+   1. Importar Dados do Servidor SQL ou Arquivo Texto? //temporário até conseguir a transição completa para o SQL
+   2. ao importar SQL, importar tabela completa ou últimas atualizações?, Default autualizações
+      o últmo a importar as atualizações envia commando para deletar o registro por id
+   3. dominio, url 'http://www.anagnostou.com.br/phptut/', example REGISTER_REQUEST_URL = "http://www.anagnostou.com.br/phptut/json_report.php";
+
+
+
 
 
 _Date today = Calendar.getInstance().getTime();

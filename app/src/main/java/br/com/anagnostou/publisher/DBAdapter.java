@@ -98,55 +98,6 @@ public class DBAdapter {
     /*************************
      * PUBLICADOR
      ***************************/
-    public void exportPublicador() throws IOException {
-        int rowcount = 0;
-        int colcount = 0;
-
-        File sdcard = Environment.getExternalStorageDirectory();
-        File file = new File(sdcard, "publicador.csv");
-        BufferedWriter bw = null;
-        try {
-            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        SQLiteDatabase db = mydbHelper.getWritableDatabase();
-        String sql = "SELECT * FROM publicador";
-        Cursor c = db.rawQuery(sql, null);
-        rowcount = c.getCount();
-        colcount = c.getColumnCount();
-
-        if (rowcount > 0) {
-            c.moveToFirst();
-            for (int i = 0; i < colcount; i++) {
-                if (i != colcount - 1) {
-                    bw.write(c.getColumnName(i) + ";");
-                } else {
-                    bw.write(c.getColumnName(i));
-                }
-            }
-            bw.newLine();
-            for (int i = 0; i < rowcount; i++) {
-                c.moveToPosition(i);
-                for (int j = 0; j < colcount; j++) {
-                    if (j != colcount - 1)
-                        bw.write(c.getString(j) + ";");
-                    else
-                        bw.write(c.getString(j));
-                }
-                bw.newLine();
-            }
-            bw.flush();
-            //L.m("Exported Successfully.");
-        }
-        if (db.isOpen()) {
-            db.close();
-        }
-        c.close();
-    }
 
     public Cursor retrieveRelatorios(String nome) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
@@ -260,7 +211,7 @@ public class DBAdapter {
     /********
      * 14/12/2016
      *******/
-    public Publicador retrievePublisherData(String name) {
+     Publicador retrievePublisherData(String name) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.FAMILIA, DBHelper.GRUPO, DBHelper.BATISMO, DBHelper.CELULAR,
                 DBHelper.RUA, DBHelper.NASCIMENTO, DBHelper.FONE, DBHelper.BAIRRO, DBHelper.ANSEPU, DBHelper.PIPU, DBHelper.SEXO};
@@ -276,7 +227,7 @@ public class DBAdapter {
             pub.setCelular(cursor.getString(cursor.getColumnIndex(DBHelper.CELULAR)));
             pub.setRua(cursor.getString(cursor.getColumnIndex(DBHelper.RUA)));
             pub.setNascimento(cursor.getString(cursor.getColumnIndex(DBHelper.NASCIMENTO)));
-            pub.setFamilia(cursor.getString(cursor.getColumnIndex(DBHelper.FONE)));
+            pub.setFone(cursor.getString(cursor.getColumnIndex(DBHelper.FONE)));
             pub.setBairro(cursor.getString(cursor.getColumnIndex(DBHelper.BAIRRO)));
             pub.setAnsepu(cursor.getString(cursor.getColumnIndex(DBHelper.ANSEPU)));
             pub.setPipu(cursor.getString(cursor.getColumnIndex(DBHelper.PIPU)));
@@ -290,57 +241,8 @@ public class DBAdapter {
     /*****************************************
      * RELATORIO
      **************************************/
-    public void exportRelatorio() throws IOException {
-        int rowcount = 0;
-        int colcount = 0;
 
-        File sdcard = Environment.getExternalStorageDirectory();
-        File file = new File(sdcard, "relatorio.csv");
-        BufferedWriter bw = null;
-        try {
-            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        SQLiteDatabase db = mydbHelper.getWritableDatabase();
-        String sql = "SELECT * FROM relatorio";
-        Cursor c = db.rawQuery(sql, null);
-        rowcount = c.getCount();
-        colcount = c.getColumnCount();
-
-        if (rowcount > 0) {
-            c.moveToFirst();
-            for (int i = 0; i < colcount; i++) {
-                if (i != colcount - 1) {
-                    bw.write(c.getColumnName(i) + ";");
-                } else {
-                    bw.write(c.getColumnName(i));
-                }
-            }
-            bw.newLine();
-            for (int i = 0; i < rowcount; i++) {
-                c.moveToPosition(i);
-                for (int j = 0; j < colcount; j++) {
-                    if (j != colcount - 1)
-                        bw.write(c.getString(j) + ";");
-                    else
-                        bw.write(c.getString(j));
-                }
-                bw.newLine();
-            }
-            bw.flush();
-            //L.m("Relatorio Exported Successfully.");
-        }
-        if (db.isOpen()) {
-            db.close();
-        }
-        c.close();
-    }
-
-    public String findFirstRelatorio() {
+     String findFirstRelatorio() {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.UID, DBHelper.ANO, DBHelper.MES, DBHelper.NOME, DBHelper.HORAS};
         StringBuilder sb = new StringBuilder();
@@ -365,7 +267,7 @@ public class DBAdapter {
         }
     }
 
-    public String[] somaHorasMeses(String nome) {
+     String[] somaHorasMeses(String nome) {
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome};
@@ -392,7 +294,7 @@ public class DBAdapter {
 
     }
 
-    public String[] retrieveTotais(String nome) {
+     String[] retrieveTotais(String nome) {
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome};
@@ -419,7 +321,7 @@ public class DBAdapter {
 
     }
 
-    public String contaPioneiroAuxiliar(String nome) {
+     String contaPioneiroAuxiliar(String nome) {
         String resultado;
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome, "Pioneiro Auxiliar"};
@@ -435,7 +337,7 @@ public class DBAdapter {
         }
     }
 
-    public String deixouDeRelatar(String nome) {
+     String deixouDeRelatar(String nome) {
         String resultado;
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome, "0"};
@@ -454,24 +356,10 @@ public class DBAdapter {
     /*****************************************
      * INSERT
      ****************************************/
-    public long insertDataPublicador(Publicador p) {
+     public long insertDataPublicador(Publicador p) {
 
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        /**
-        cv.put(DBHelper.NOME, p.nome);
-        cv.put(DBHelper.FAMILIA, p.familia);
-        cv.put(DBHelper.GRUPO, p.grupo);
-        cv.put(DBHelper.BATISMO, p.batismo);
-        cv.put(DBHelper.NASCIMENTO, p.nascimento);
-        cv.put(DBHelper.FONE, p.fone);
-        cv.put(DBHelper.CELULAR, p.celular);
-        cv.put(DBHelper.RUA, p.rua);
-        cv.put(DBHelper.BAIRRO, p.bairro);
-        cv.put(DBHelper.ANSEPU, p.ansepu);
-        cv.put(DBHelper.PIPU, p.pipu);
-        cv.put(DBHelper.SEXO, p.sexo);
-        */
 
         cv.put(DBHelper.NOME, p.getNome());
         cv.put(DBHelper.FAMILIA, p.getFamilia());
@@ -492,7 +380,7 @@ public class DBAdapter {
         return id;
     }
 
-    public long insertDataVersao(String versao) {
+     public long insertDataVersao(String versao) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(DBHelper.ULTIMA_ATUALIZACAO, versao);
@@ -502,20 +390,10 @@ public class DBAdapter {
         return id;
     }
 
-    public long insertDataRelatorio(Relatorio r) {
+     public long insertDataRelatorio(Relatorio r) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        /**
-        cv.put(DBHelper.ANO, r.ano);
-        cv.put(DBHelper.MES, r.mes);
-        cv.put(DBHelper.NOME, r.nome);
-        cv.put(DBHelper.MODALIDADE, r.modalidade);
-        cv.put(DBHelper.VIDEOS, r.videos);
-        cv.put(DBHelper.HORAS, r.horas);
-        cv.put(DBHelper.PUBLICACOES, r.publicacoes);
-        cv.put(DBHelper.REVISITAS, r.revisitas);
-        cv.put(DBHelper.ESTUDOS, r.estudos);
-         */
+
         cv.put(DBHelper.ANO, r.getAno());
         cv.put(DBHelper.MES, r.getMes());
         cv.put(DBHelper.NOME, r.getNome());
@@ -535,7 +413,7 @@ public class DBAdapter {
     /*************************************
      * SQLiteOpenHelper
      ************************************/
-    public static class DBHelper extends SQLiteOpenHelper {
+     public static class DBHelper extends SQLiteOpenHelper {
         private static DBHelper sInstance;
 
         public static synchronized DBHelper getInstance(Context context) {

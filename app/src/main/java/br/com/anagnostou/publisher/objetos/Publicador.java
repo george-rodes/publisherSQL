@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher;
+package br.com.anagnostou.publisher.objetos;
 
 /**
  * Created by George on 26/07/2016.
@@ -123,6 +123,110 @@ public class Publicador  {
             }
         }
         return sb.toString();
+    }
+
+    public static int getAtivos() {
+        return ativos;
+    }
+
+    public static void setAtivos(int ativos) {
+        Publicador.ativos = ativos;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getFamilia() {
+        return familia;
+    }
+
+    public void setFamilia(String familia) {
+        this.familia = familia;
+    }
+
+    public String getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(String grupo) {
+        this.grupo = grupo;
+    }
+
+    public String getBatismo() {
+        return batismo;
+    }
+
+    public void setBatismo(String batismo) {
+        this.batismo = batismo;
+    }
+
+    public String getNascimento() {
+        return nascimento;
+    }
+
+    public void setNascimento(String nascimento) {
+        this.nascimento = nascimento;
+    }
+
+    public String getFone() {
+        return fone;
+    }
+
+    public void setFone(String fone) {
+        this.fone = fone;
+    }
+
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
+    }
+
+    public String getRua() {
+        return rua;
+    }
+
+    public void setRua(String rua) {
+        this.rua = rua;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getAnsepu() {
+        return ansepu;
+    }
+
+    public void setAnsepu(String ansepu) {
+        this.ansepu = ansepu;
+    }
+
+    public String getPipu() {
+        return pipu;
+    }
+
+    public void setPipu(String pipu) {
+        this.pipu = pipu;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
 }
 
