@@ -70,14 +70,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
+    int PERM_EXT_STORAGE = 99;
     public boolean bancoTemDados = false;
     public boolean bBackgroundJobs = false;
     boolean isServiceBound;
     boolean mStopLoop;
-    BroadcastReceiver broadcastReceiver;
     CheckSQLService checkSQLService;
     ConnectivityManager connMgr;
     DBAdapter dbAdapter;
@@ -101,9 +99,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String spRelatorio;
     String spUpdate;
     public ViewPager mViewPager;
-    /**
-     * Volley and JSON
-     *********/
     private ProgressDialog progressDialog;
 
 
@@ -160,8 +155,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 && Utilidades.existeTabela("versao", MainActivity.this)) {
             if (Utilidades.temDadosNoBanco(MainActivity.this)) {
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) {
-                    //implementar Asynctasks SQL
-                    L.t(getApplicationContext(), getString(R.string.import_SQL_not_implemented));
+                    if (sp.getBoolean("fullMySQLImport", false)){
+                        //
+                    } else {
+                        //verficar se existem registros nas tabelas ttcadastro e ttrelatori
+
+                    }
+
+
                 } else {
                     final CheckUpdateAvailable checkUpdateAvailable = new CheckUpdateAvailable(MainActivity.this, this);
                     checkUpdateAvailable.execute(spHomepage + spUpdate, fosUpdate);
@@ -171,11 +172,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             atualizarBancoDeDados();
         }
-        /*
+
          checkSQLServerIntent = new Intent(this,CheckSQLService.class);
          startService(checkSQLServerIntent);
          bindService();
-         */
+
     }
 
     /**
@@ -298,11 +299,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // Show an explanation to the user *asynchronously* -- don't block
             } else {
                 // No explanation needed, we can request the permission.
-                int PERM_EXT_STORAGE = 99;
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERM_EXT_STORAGE);
             }
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERM_EXT_STORAGE) {
+            // Request for camera permission.
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission has been granted. Start something
+            } else {
+                // Permission request was denied.
+            }
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -324,11 +337,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             atualizarBancoDeDados();
             return true;
         } else if (id == R.id.action_settings) {
-            //startActivity(new Intent(this, Settings.class));
             startActivity(new Intent(this, AppPreferences.class));
-            /* if(isServiceBound){
-                L.t(this,"Get Randomnumber: " + checkSQLService.getmRandomNumber());
-            }*/
+
             return true;
         } else if (id == R.id.action_clear) {
             copyDataBaseSdCard();
@@ -337,6 +347,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
              * object to Json
              * */
             Gson gson = new GsonBuilder().create();
+            if(isServiceBound){
+              //
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -559,7 +572,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             serviceConnection = new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                    CheckSQLService.MyServiceBinder myServiceBinder = (CheckSQLService.MyServiceBinder) iBinder;
+                    CheckSQLService.CheckSQLServiceBinder myServiceBinder = (CheckSQLService.CheckSQLServiceBinder) iBinder;
                     checkSQLService = myServiceBinder.getService();
                     isServiceBound = true;
                 }
