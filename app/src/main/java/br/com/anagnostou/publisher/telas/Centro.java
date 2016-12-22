@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher.grupos;
+package br.com.anagnostou.publisher.telas;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import br.com.anagnostou.publisher.AtividadesActivity;
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
 

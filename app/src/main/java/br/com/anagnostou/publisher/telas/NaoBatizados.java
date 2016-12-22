@@ -1,5 +1,4 @@
-package br.com.anagnostou.publisher.grupos;
-
+package br.com.anagnostou.publisher.telas;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,43 +13,35 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import br.com.anagnostou.publisher.AtividadesActivity;
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
 
-public class Pregadores extends Fragment {
+public class NaoBatizados extends Fragment {
     View rootView;
-    ListView pregadoresListView;
+    ListView listView;
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     Cursor cursor;
 
-    public Pregadores() {
-        // Required empty public constructor
-    }
-
+    public NaoBatizados() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_pregadores, container, false);
-
-        pregadoresListView = (ListView) rootView.findViewById(R.id.pregadoresListView);
+        rootView = inflater.inflate(R.layout.fragment_nao_batizados, container, false);
+        listView = (ListView) rootView.findViewById(R.id.naoBatizadosListView);
         dbAdapter = new DBAdapter(rootView.getContext());
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-        cursor = dbAdapter.cursorPublicadorPorAnsepu("Publicador");
+
+        cursor = dbAdapter.cursorNaoBatizados();
 
         if (cursor.getCount() > 0) {
             CursorAdapter listAdapter = new SimpleCursorAdapter(rootView.getContext(), R.layout.row,
                     cursor, new String[]{"nome", "familia"}, new int[]{R.id.nameTextView, R.id.familyTextView}, 0);
-            pregadoresListView.setAdapter(listAdapter);
+            listView.setAdapter(listAdapter);
         }
-
-
-
-        pregadoresListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //L.m("view.setSelected(true); " + view.toString());
                 view.setSelected(true);
                 cursor.moveToPosition(position);
                 Intent intent = new Intent(view.getContext(), AtividadesActivity.class);
@@ -60,5 +51,4 @@ public class Pregadores extends Fragment {
         });
         return rootView;
     }
-
 }

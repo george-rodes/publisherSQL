@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher;
+package br.com.anagnostou.publisher.telas;
 
 import android.app.SearchManager;
 import android.content.Intent;
@@ -13,6 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import br.com.anagnostou.publisher.DBAdapter;
+import br.com.anagnostou.publisher.R;
 
 public class SearchResults extends AppCompatActivity {
     ListView resultadosListView;

@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher.grupos;
+package br.com.anagnostou.publisher.telas;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,27 +13,26 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import br.com.anagnostou.publisher.AtividadesActivity;
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
 
-public class NaoBatizados extends Fragment {
+public class VaroesBatizados extends Fragment {
     View rootView;
     ListView listView;
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     Cursor cursor;
 
-    public NaoBatizados() { }
+    public VaroesBatizados() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_nao_batizados, container, false);
-        listView = (ListView) rootView.findViewById(R.id.naoBatizadosListView);
+        rootView = inflater.inflate(R.layout.fragment_varoes_batizados, container, false);
+        listView = (ListView) rootView.findViewById(R.id.varoesBatizadosListView);
         dbAdapter = new DBAdapter(rootView.getContext());
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
 
-        cursor = dbAdapter.cursorNaoBatizados();
+        cursor = dbAdapter.cursorVaroesBatizados();
 
         if (cursor.getCount() > 0) {
             CursorAdapter listAdapter = new SimpleCursorAdapter(rootView.getContext(), R.layout.row,

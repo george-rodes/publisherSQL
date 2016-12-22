@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.com.anagnostou.publisher.grupos.Anciaos"
+    tools:context="br.com.anagnostou.publisher.telas.Anciaos"
     android:background="@color/colorPrimary">
 
         <ListView

@@ -39,6 +39,24 @@ public class Publicador  {
         this.sexo = sexo;
     }
 
+    /**
+     "nome": "Arisvaldo",
+     "familia": "Arisvaldo Souza",
+     "grupo": "Adriano",
+     "databatismo": "1995-09-16",
+     "datanascimento": "1974-04-12",
+     "fone": "014-981.48.24.26",
+     "celular": "014-981.48.24.26",
+     "rua": "Rua Roque Pinson, 40",
+     "bairro": "Chacara Represa",
+     "ASP": "Servo",
+     "PP": "Pioneiro",
+     "sexo": "M"
+
+
+
+     */
+
     public Publicador(String what){
         String snome;
         String sfamilia;

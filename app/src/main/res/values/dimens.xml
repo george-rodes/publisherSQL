@@ -11,5 +11,6 @@
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="relatorio_cabecalho_norma">12sp</dimen>
     <dimen name="relatorio_cabecalho_grande">14sp</dimen>
+    <dimen name="settings_text">14sp</dimen>
 
 </resources>

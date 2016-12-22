@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,7 +21,7 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class DownloadTaskUpdate extends AsyncTask<String, Integer, String> {
-    private static final String NA = "N/A";
+    private static final String NA = "";
     private Context context;
     private String fosUpdate;
     private String spRelatorio;
@@ -34,7 +35,7 @@ public class DownloadTaskUpdate extends AsyncTask<String, Integer, String> {
         this.context = context;
         this.mainActivity = mainActivity;
         this.mSectionsPagerAdapter = mSectionsPagerAdapter;
-        SharedPreferences sp = context.getSharedPreferences("myPreferences", MODE_PRIVATE);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
         String spUpdate = sp.getString("update", NA);
         spRelatorio = sp.getString("relatorio", NA);
         spHomepage = sp.getString("homepage", NA);

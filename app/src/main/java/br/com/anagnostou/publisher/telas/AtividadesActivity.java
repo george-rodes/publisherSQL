@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher;
+package br.com.anagnostou.publisher.telas;
 
 import android.app.SearchManager;
 import android.content.Intent;
@@ -13,6 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import br.com.anagnostou.publisher.DBAdapter;
+import br.com.anagnostou.publisher.utils.L;
+import br.com.anagnostou.publisher.R;
+import br.com.anagnostou.publisher.utils.Utilidades;
 import br.com.anagnostou.publisher.objetos.Publicador;
 
 public class AtividadesActivity extends AppCompatActivity {

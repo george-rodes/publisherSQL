@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher.grupos;
+package br.com.anagnostou.publisher.telas;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,27 +13,41 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import br.com.anagnostou.publisher.AtividadesActivity;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
 
-public class VaroesBatizados extends Fragment {
+public class AnoBatismo extends Fragment {
     View rootView;
     ListView listView;
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     Cursor cursor;
 
-    public VaroesBatizados() { }
+    public AnoBatismo() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_varoes_batizados, container, false);
-        listView = (ListView) rootView.findViewById(R.id.varoesBatizadosListView);
+        rootView = inflater.inflate(R.layout.fragment_ano_batismo, container, false);
+        listView = (ListView) rootView.findViewById(R.id.anoBatismoListView);
         dbAdapter = new DBAdapter(rootView.getContext());
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
+       /***********/
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(Calendar.getInstance().getTime());
 
-        cursor = dbAdapter.cursorVaroesBatizados();
+        String anoini, anofim, mesini;
+        int  imesatual;
+
+        imesatual = calendar.get(Calendar.MONTH) + 1;
+        mesini = String.format("%1$02d", imesatual); //pre
+        //L.m(mesini);
+        anofim = Integer.toString(calendar.get(Calendar.YEAR));
+        anoini = Integer.toString(calendar.get(Calendar.YEAR)-1);
+
+        cursor = dbAdapter.menosDeUmAnoDeBatismo(anoini,mesini,anofim);
 
         if (cursor.getCount() > 0) {
             CursorAdapter listAdapter = new SimpleCursorAdapter(rootView.getContext(), R.layout.row,

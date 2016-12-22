@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher.grupos;
+package br.com.anagnostou.publisher.telas;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,50 +13,33 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-import br.com.anagnostou.publisher.AtividadesActivity;
 import br.com.anagnostou.publisher.DBAdapter;
-import br.com.anagnostou.publisher.L;
 import br.com.anagnostou.publisher.R;
 
-public class AnoBatismo extends Fragment {
+public class Servos extends Fragment {
     View rootView;
-    ListView listView;
+    ListView servosListView;
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     Cursor cursor;
 
-    public AnoBatismo() { }
+    public Servos() { }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_ano_batismo, container, false);
-        listView = (ListView) rootView.findViewById(R.id.anoBatismoListView);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        rootView =  inflater.inflate(R.layout.fragment_servos, container, false);
+        servosListView = (ListView) rootView.findViewById(R.id.servosListView);
         dbAdapter = new DBAdapter(rootView.getContext());
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-       /***********/
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(Calendar.getInstance().getTime());
-
-        String anoini, anofim, mesini;
-        int  imesatual;
-
-        imesatual = calendar.get(Calendar.MONTH) + 1;
-        mesini = String.format("%1$02d", imesatual); //pre
-        L.m(mesini);
-        anofim = Integer.toString(calendar.get(Calendar.YEAR));
-        anoini = Integer.toString(calendar.get(Calendar.YEAR)-1);
-
-        cursor = dbAdapter.menosDeUmAnoDeBatismo(anoini,mesini,anofim);
+        cursor = dbAdapter.cursorPublicadorPorAnsepu("Servo");
 
         if (cursor.getCount() > 0) {
             CursorAdapter listAdapter = new SimpleCursorAdapter(rootView.getContext(), R.layout.row,
                     cursor, new String[]{"nome", "familia"}, new int[]{R.id.nameTextView, R.id.familyTextView}, 0);
-            listView.setAdapter(listAdapter);
+            servosListView.setAdapter(listAdapter);
         }
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        servosListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 view.setSelected(true);
@@ -66,6 +49,8 @@ public class AnoBatismo extends Fragment {
                 startActivity(intent);
             }
         });
+
         return rootView;
     }
+
 }

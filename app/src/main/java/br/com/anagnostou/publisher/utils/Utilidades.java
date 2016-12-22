@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher;
+package br.com.anagnostou.publisher.utils;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -12,10 +12,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.Random;
 
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+
+import br.com.anagnostou.publisher.DBAdapter;
 
 public class Utilidades extends AppCompatActivity {
 
@@ -44,6 +47,25 @@ public class Utilidades extends AppCompatActivity {
         } catch (ParseException ex) {
             return "Nao foi possivel calcular";
         }
+    }
+
+    public static String trocaFormatoData(String s) {
+        Date date;
+        SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            date = ymd.parse(s);
+            if (s.contentEquals("0000-00-00")) {
+                return "";
+            } else {
+                return new SimpleDateFormat("dd/MM/yyyy").format(date);
+            }
+
+        } catch (ParseException e) {
+            return "";
+        }
+
+
+
     }
 
     public static String calculaTempoAnos(String t) {
@@ -111,16 +133,12 @@ public class Utilidades extends AppCompatActivity {
 
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
             dataLocal = sdf.parse(local);
             dataBaixada = sdf.parse(baixada);
-
             Calendar localCalendar = new GregorianCalendar();
             localCalendar.setTime(dataLocal);
-
             Calendar baixadaCalendar = new GregorianCalendar();
             baixadaCalendar.setTime(dataBaixada);
-
             if (baixadaCalendar.get(Calendar.YEAR) - localCalendar.get(Calendar.YEAR) == 0) {
                 if (baixadaCalendar.get(Calendar.MONTH) - localCalendar.get(Calendar.MONTH) == 0) {
                     if (baixadaCalendar.get(Calendar.DAY_OF_MONTH) - localCalendar.get(Calendar.DAY_OF_MONTH) == 0) {
@@ -134,7 +152,6 @@ public class Utilidades extends AppCompatActivity {
             } else {
                 return "Anos Diferentes: " + (baixadaCalendar.get(Calendar.YEAR) - localCalendar.get(Calendar.YEAR));
             }
-
         } catch (ParseException ex) {
             return "Nao foi possivel calcular";
         }

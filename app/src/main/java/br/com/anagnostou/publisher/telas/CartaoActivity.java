@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher;
+package br.com.anagnostou.publisher.telas;
 
 import android.app.SearchManager;
 import android.content.Intent;
@@ -17,6 +17,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import br.com.anagnostou.publisher.adapters.CartaoAdapter;
+import br.com.anagnostou.publisher.DBAdapter;
+import br.com.anagnostou.publisher.utils.L;
+import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.objetos.Relatorio;
 
 public class CartaoActivity extends AppCompatActivity {

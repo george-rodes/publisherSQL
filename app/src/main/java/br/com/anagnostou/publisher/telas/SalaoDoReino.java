@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher.grupos;
+package br.com.anagnostou.publisher.telas;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,34 +13,31 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import br.com.anagnostou.publisher.AtividadesActivity;
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
 
-public class Servos extends Fragment {
+public class SalaoDoReino extends Fragment {
     View rootView;
-    ListView servosListView;
+    ListView salaoListView;
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     Cursor cursor;
 
-    public Servos() { }
+    public SalaoDoReino() { }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        rootView =  inflater.inflate(R.layout.fragment_servos, container, false);
-        servosListView = (ListView) rootView.findViewById(R.id.servosListView);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_salao_do_reino, container, false);
+        salaoListView = (ListView) rootView.findViewById(R.id.salaoListView);
         dbAdapter = new DBAdapter(rootView.getContext());
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-        cursor = dbAdapter.cursorPublicadorPorAnsepu("Servo");
-
+        cursor = dbAdapter.cursorPublicadorPorGrupo("Salão do Reino");
         if (cursor.getCount() > 0) {
             CursorAdapter listAdapter = new SimpleCursorAdapter(rootView.getContext(), R.layout.row,
                     cursor, new String[]{"nome", "familia"}, new int[]{R.id.nameTextView, R.id.familyTextView}, 0);
-            servosListView.setAdapter(listAdapter);
+            salaoListView.setAdapter(listAdapter);
         }
-        servosListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        salaoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 view.setSelected(true);
@@ -50,8 +47,6 @@ public class Servos extends Fragment {
                 startActivity(intent);
             }
         });
-
         return rootView;
     }
-
 }

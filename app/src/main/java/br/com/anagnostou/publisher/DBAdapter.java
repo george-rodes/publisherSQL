@@ -211,7 +211,7 @@ public class DBAdapter {
     /********
      * 14/12/2016
      *******/
-     Publicador retrievePublisherData(String name) {
+     public Publicador retrievePublisherData(String name) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.FAMILIA, DBHelper.GRUPO, DBHelper.BATISMO, DBHelper.CELULAR,
                 DBHelper.RUA, DBHelper.NASCIMENTO, DBHelper.FONE, DBHelper.BAIRRO, DBHelper.ANSEPU, DBHelper.PIPU, DBHelper.SEXO};
@@ -242,7 +242,7 @@ public class DBAdapter {
      * RELATORIO
      **************************************/
 
-     String findFirstRelatorio() {
+     public String findFirstRelatorio() {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.UID, DBHelper.ANO, DBHelper.MES, DBHelper.NOME, DBHelper.HORAS};
         StringBuilder sb = new StringBuilder();
@@ -267,7 +267,7 @@ public class DBAdapter {
         }
     }
 
-     String[] somaHorasMeses(String nome) {
+     public String[] somaHorasMeses(String nome) {
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome};
@@ -294,7 +294,7 @@ public class DBAdapter {
 
     }
 
-     String[] retrieveTotais(String nome) {
+     public String[] retrieveTotais(String nome) {
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome};
@@ -321,7 +321,7 @@ public class DBAdapter {
 
     }
 
-     String contaPioneiroAuxiliar(String nome) {
+     public String contaPioneiroAuxiliar(String nome) {
         String resultado;
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome, "Pioneiro Auxiliar"};
@@ -337,7 +337,7 @@ public class DBAdapter {
         }
     }
 
-     String deixouDeRelatar(String nome) {
+     public String deixouDeRelatar(String nome) {
         String resultado;
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome, "0"};

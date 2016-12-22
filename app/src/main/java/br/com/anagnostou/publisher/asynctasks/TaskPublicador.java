@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.preference.PreferenceManager;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,8 +42,8 @@ public class TaskPublicador extends AsyncTask<String, Integer, String> {
         this.mSectionsPagerAdapter = mSectionsPagerAdapter;
         dbAdapter = new DBAdapter(context);
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-        SharedPreferences sp = context.getSharedPreferences("myPreferences", MODE_PRIVATE);
-        spCadastro = sp.getString("cadastro", "N/A");
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        spCadastro = sp.getString("cadastro", "");
         progressDialog = new ProgressDialog(context);
         progressDialog.setMax(100);
         progressDialog.setMessage("Atualizando Registros");
@@ -61,9 +63,7 @@ public class TaskPublicador extends AsyncTask<String, Integer, String> {
         BufferedReader in = null;
         try {
             in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
+        } catch (UnsupportedEncodingException | FileNotFoundException e) {
             e.printStackTrace();
         }
         List<String> myStringList = new ArrayList<String>();

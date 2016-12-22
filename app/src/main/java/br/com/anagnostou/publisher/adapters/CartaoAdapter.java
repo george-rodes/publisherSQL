@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher;
+package br.com.anagnostou.publisher.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.objetos.Relatorio;
 
 /**
@@ -19,7 +20,7 @@ public class CartaoAdapter extends RecyclerView.Adapter<CartaoAdapter.ItemViewHo
     List<Relatorio> relatorios;
     Context context;
 
-    CartaoAdapter(List<Relatorio> relatorios, Context context) {
+    public CartaoAdapter(List<Relatorio> relatorios, Context context) {
         this.relatorios = relatorios;
         this.context = context;
     }

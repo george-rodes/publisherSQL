@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,8 +21,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.MainActivity;
-import br.com.anagnostou.publisher.Utilidades;
-import static android.content.Context.MODE_PRIVATE;
+import br.com.anagnostou.publisher.R;
+import br.com.anagnostou.publisher.utils.Utilidades;
 
 /**
  * Created by George on 20/12/2016.
@@ -39,8 +40,8 @@ public class CheckUpdateAvailable extends AsyncTask<String, Integer, String> {
         this.mainActivity = mainActivity;
         dbAdapter = new DBAdapter(context);
         //SQLiteDatabase sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-        SharedPreferences sp = context.getSharedPreferences("myPreferences", MODE_PRIVATE);
-        spUpdate = sp.getString("update", "N/A");
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        spUpdate = sp.getString("update", "");
 
     }
 
@@ -111,12 +112,13 @@ public class CheckUpdateAvailable extends AsyncTask<String, Integer, String> {
         } else {
             if (!Utilidades.comparaData(dbAdapter.selectVersao(), sDataServidor).contentEquals("mesma data")) {
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                builder1.setMessage("Atualização Disponivel!\nAtualizar Banco de Dados?");
+                builder1.setMessage(R.string.atualizar_banco_pergunta);
                 builder1.setCancelable(true);
                 builder1.setPositiveButton("SIM", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
-                       mainActivity.atualizarBancoDeDados(mainActivity.getCurrentFocus());
+
+                        mainActivity.atualizarBancoDeDados();
                     }
                 });
                 builder1.setNegativeButton("NÂO", new DialogInterface.OnClickListener() {

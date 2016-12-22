@@ -12,11 +12,11 @@ import android.net.Uri;
  * Created by George on 21/08/2016.
  * JUST TOO COMPLICATED
  */
-public class MyCustomSuggestionProvider extends ContentProvider {
+public class CustomSuggestions extends ContentProvider {
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
 
-    private static final String AUTHORITY = "br.com.anagnostou.publisher.MyCustomSuggestionProvider";
+    private static final String AUTHORITY = "br.com.anagnostou.publisher.CustomSuggestions";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/publicador");
     private static final int SUGGESTIONS_PUBLICADOR = 1;
     private static final int SEARCH_PUBLICADOR = 2;
@@ -44,7 +44,6 @@ public class MyCustomSuggestionProvider extends ContentProvider {
     public boolean onCreate() {
         dbAdapter = new DBAdapter(getContext());
         sqLiteDatabase = dbAdapter.mydbHelper.getReadableDatabase();
-
         return true;
     }
 

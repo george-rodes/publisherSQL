@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher;
+package br.com.anagnostou.publisher.utils;
 
 import android.content.Context;
 import android.util.Log;

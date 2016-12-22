@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher.grupos;
+package br.com.anagnostou.publisher.telas;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,33 +13,31 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import br.com.anagnostou.publisher.AtividadesActivity;
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
 
-public class Anciaos extends Fragment {
+public class VilaNova extends Fragment {
     View rootView;
-    ListView anciaosListView;
+    ListView vilaListView;
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     Cursor cursor;
 
-    public Anciaos() { }
+    public VilaNova() { }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        rootView =  inflater.inflate(R.layout.fragment_anciaos, container, false);
-        anciaosListView = (ListView) rootView.findViewById(R.id.anciaosListView);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_vila_nova, container, false);
+        vilaListView = (ListView) rootView.findViewById(R.id.vilaListView);
         dbAdapter = new DBAdapter(rootView.getContext());
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-        cursor = dbAdapter.cursorPublicadorPorAnsepu("Ancião");
+        cursor = dbAdapter.cursorPublicadorPorGrupo("Vila Nova");
         if (cursor.getCount() > 0) {
             CursorAdapter listAdapter = new SimpleCursorAdapter(rootView.getContext(), R.layout.row,
                     cursor, new String[]{"nome", "familia"}, new int[]{R.id.nameTextView, R.id.familyTextView}, 0);
-            anciaosListView.setAdapter(listAdapter);
+            vilaListView.setAdapter(listAdapter);
         }
-        anciaosListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        vilaListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 view.setSelected(true);

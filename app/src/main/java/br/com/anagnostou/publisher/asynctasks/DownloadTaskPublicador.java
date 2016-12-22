@@ -3,6 +3,7 @@ package br.com.anagnostou.publisher.asynctasks;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 
 import java.io.FileOutputStream;
@@ -14,9 +15,7 @@ import java.net.URL;
 
 import br.com.anagnostou.publisher.MainActivity;
 import br.com.anagnostou.publisher.R;
-import br.com.anagnostou.publisher.Utilidades;
-
-import static android.content.Context.MODE_PRIVATE;
+import br.com.anagnostou.publisher.utils.Utilidades;
 
 /**
  * Created by George on 20/12/2016.
@@ -34,8 +33,8 @@ public class DownloadTaskPublicador extends AsyncTask<String, Integer, String> {
         this.context = context;
         this.mainActivity = mainActivity;
         this.mSectionsPagerAdapter = mSectionsPagerAdapter;
-        SharedPreferences sp = context.getSharedPreferences("myPreferences", MODE_PRIVATE);
-        spCadastro = sp.getString("cadastro", "N/A");
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        spCadastro = sp.getString("cadastro", "");
         fosPublicador =  context.getString(R.string.sdcard) + spCadastro;
 
         AlertDialog.Builder builder1 = new AlertDialog.Builder(context);

@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher.grupos;
+package br.com.anagnostou.publisher.telas;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,32 +13,32 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import br.com.anagnostou.publisher.AtividadesActivity;
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
 
-public class SalaoDoReino extends Fragment {
+public class Anciaos extends Fragment {
     View rootView;
-    ListView salaoListView;
+    ListView anciaosListView;
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     Cursor cursor;
 
-    public SalaoDoReino() { }
+    public Anciaos() { }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_salao_do_reino, container, false);
-        salaoListView = (ListView) rootView.findViewById(R.id.salaoListView);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        rootView =  inflater.inflate(R.layout.fragment_anciaos, container, false);
+        anciaosListView = (ListView) rootView.findViewById(R.id.anciaosListView);
         dbAdapter = new DBAdapter(rootView.getContext());
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-        cursor = dbAdapter.cursorPublicadorPorGrupo("Salão do Reino");
+        cursor = dbAdapter.cursorPublicadorPorAnsepu("Ancião");
         if (cursor.getCount() > 0) {
             CursorAdapter listAdapter = new SimpleCursorAdapter(rootView.getContext(), R.layout.row,
                     cursor, new String[]{"nome", "familia"}, new int[]{R.id.nameTextView, R.id.familyTextView}, 0);
-            salaoListView.setAdapter(listAdapter);
+            anciaosListView.setAdapter(listAdapter);
         }
-        salaoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        anciaosListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 view.setSelected(true);

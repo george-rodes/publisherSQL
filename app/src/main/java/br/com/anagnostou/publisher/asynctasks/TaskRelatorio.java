@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,11 +47,11 @@ public class TaskRelatorio extends AsyncTask<String, Integer, String> {
         this.mSectionsPagerAdapter = mSectionsPagerAdapter;
         dbAdapter = new DBAdapter(context);
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-        SharedPreferences sp = context.getSharedPreferences("myPreferences", MODE_PRIVATE);
-        spUpdate = sp.getString("update", "N/A");
-        spRelatorio = sp.getString("relatorio", "N/A");
-        spHomepage = sp.getString("homepage", "N/A");
-        spCadastro = sp.getString("cadastro", "N/A");
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        spUpdate = sp.getString("update", "");
+        spRelatorio = sp.getString("relatorio", "");
+        spHomepage = sp.getString("homepage", "");
+        spCadastro = sp.getString("cadastro", "");
 
         progressDialog = new ProgressDialog(context);
         progressDialog.setMax(100);

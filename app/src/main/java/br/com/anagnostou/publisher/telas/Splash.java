@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher;
+package br.com.anagnostou.publisher.telas;
 
 import android.content.Intent;
 import android.os.Handler;
@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
+import br.com.anagnostou.publisher.MainActivity;
+import br.com.anagnostou.publisher.R;
 
 public class Splash extends AppCompatActivity {
 

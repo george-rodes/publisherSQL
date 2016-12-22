@@ -36,10 +36,14 @@
     <string name="pesquisas_especiais">Pesquisas Especiais</string>
     <string name="nome_do_publicador">Nome do Publicador</string>
     <string name="familia">Familia</string>
-    <string name="importacao_de_dados">Importação de Dados</string>
+    <string name="importacao_de_dados">Importação de Arquivo Texto</string>
     <string name="atualizando_relatorios">Atualizando Relatórios</string>
     <string name="aguardes_baixando_publicadores">Aguarde! Baixando Cadastro de Publicadores..</string>
     <string name="atualizando_publicadores">Atualizando Tabela Publicadores</string>
+    <string name="background_jobs_in_progress">Background Jobs in Progress</string>
+    <string name="sem_conexao_internet">Sem Conexão com a Internet</string>
+    <string name="atualizar_banco_pergunta">Atualização Disponivel!\nAtualizar Banco de Dados?</string>
+    <string name="import_SQL_not_implemented">Importação SQL não foi implementada ainda!</string>
 
     <string-array name="sourceDataImport">
         <item>Servidor SQL</item>

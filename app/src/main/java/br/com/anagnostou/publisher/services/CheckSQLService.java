@@ -1,4 +1,4 @@
-package br.com.anagnostou.publisher;
+package br.com.anagnostou.publisher.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -7,12 +7,14 @@ import android.os.IBinder;
 
 import java.util.Random;
 
+import br.com.anagnostou.publisher.utils.L;
+
 public class CheckSQLService extends Service {
     private int mRandomNumber;
     private boolean isRandomGeneratorOn;
 
-    class MyServiceBinder extends Binder {
-        CheckSQLService getService() {
+    public class MyServiceBinder extends Binder {
+        public CheckSQLService getService() {
             return CheckSQLService.this;
         }
     }

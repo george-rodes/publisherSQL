@@ -3,25 +3,48 @@
 
     <PreferenceCategory android:title="@string/geral">
 
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="usarDadosCelurares"
-            android:summary="Para fins de Teste"
-            android:title="Usar Dados Celulares" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/importacao_de_dados">
-        <EditTextPreference
-            android:defaultValue="http://www.anagnostou.com.br/overseer/"
-            android:key="server"
-            android:summary="Servidor do Banco de Dados"
-            android:title="Servidor" />
         <ListPreference
-            android:defaultValue="2"
+
+            android:defaultValue="SQL"
             android:entries="@array/sourceDataImport"
             android:entryValues="@array/sourceDataImportValues"
             android:key="sourceDataImport"
             android:summary="Escolhe de onde os registros serão obtidos"
             android:title="Origem dos Dados" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="Importação MySQL">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="fullMySQLImport"
+            android:summary="A Importação Completa do Banco não é recomendada"
+            android:title="Importação Completa" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/importacao_de_dados">
+        <EditTextPreference
+            android:defaultValue="http://www.anagnostou.com.br/overseer/"
+            android:key="homepage"
+            android:summary="Servidor do Banco de Dados"
+            android:title="Servidor" />
+
+        <EditTextPreference
+            android:defaultValue="update.txt"
+            android:key="update"
+            android:summary="Data da última atualização"
+            android:title="Update" />
+        <EditTextPreference
+            android:defaultValue="cadastro.txt"
+            android:key="cadastro"
+            android:summary="Arquivo texto de Publicadores"
+            android:title="Publicador" />
+        <EditTextPreference
+            android:defaultValue="relatorio.txt"
+            android:key="relatorio"
+            android:summary="Arquivo texto de Relatórios"
+            android:title="Relatorio" />
+    </PreferenceCategory>
+
 
 </PreferenceScreen>

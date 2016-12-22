@@ -1,3 +1,7 @@
+Formulario php no browser
+Abandonded shared preferences, adopted AppPreferences
+
+
 2016.12.13
 Pioneiros
    Mostrar o saldo e media mensal autal e medias mensal para alcançar o alvo no ano de serviço
@@ -10,18 +14,34 @@ MySQL
 
    Tres Maneiras de Alimentar o Banco base: Export/Import do Excel, Tela no Android
 
-   OFFLINE, cadastar no SQLITE local e depois pedir para syncronizar com MySQL remoto,
+TextImport
+MySQL Json import
+I want to keep  it separate
+
+
+   ?OFFLINE, cadastar no SQLITE local e depois pedir para syncronizar com MySQL remoto,
    criar uma tabela extra so para
-   atualziar e depois de enviar para o My SQLi apagar os registros?
+   atualizar e depois de enviar para o My SQLi apagar os registros?
    1. Cadastar diretamente no servidor o relatorio atraves de um formulario php
    2. O SQLlite busca a atualização diretamente do MySQL
 
-   Set up preferences pages
+
    Preference:
    1. Importar Dados do Servidor SQL ou Arquivo Texto? //temporário até conseguir a transição completa para o SQL
    2. ao importar SQL, importar tabela completa ou últimas atualizações?, Default autualizações
       o últmo a importar as atualizações envia commando para deletar o registro por id
    3. dominio, url 'http://www.anagnostou.com.br/phptut/', example REGISTER_REQUEST_URL = "http://www.anagnostou.com.br/phptut/json_report.php";
+
+
+O que acontece quando pedimos para atualizar o banco
+if (id == R.id.action_updateDatabase)  atualizarBancoDeDados();
+check if system is connected to the internet
+check if there are Asynctask(AST) or bBackgroundJobs under way
+call the first AST  DownloadTaskUpdate which calls DownloadTaskRelatorio
+which calls TaskRelatorio which calls DownloadTaskPublicador which calls TaskPublicador.
+
+
+
 
 
 
