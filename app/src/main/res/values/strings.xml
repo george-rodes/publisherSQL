@@ -44,6 +44,9 @@
     <string name="sem_conexao_internet">Sem Conexão com a Internet</string>
     <string name="atualizar_banco_pergunta">Atualização Disponivel!\nAtualizar Banco de Dados?</string>
     <string name="import_SQL_not_implemented">Importação SQL não foi implementada ainda!</string>
+    <string name="importacao_publicadores_MySQL_concluida">Importação dos publicadores MySQL concluida</string>
+    <string name="importacao_relatorios_MySQL_concluida">Importação dos relatorios MySQL concluida</string>
+    <string name="error">Houston, temos um problema</string>
 
     <string-array name="sourceDataImport">
         <item>Servidor SQL</item>

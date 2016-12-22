@@ -2,10 +2,9 @@ package br.com.anagnostou.publisher.phpmysql;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,35 +14,33 @@ import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.MainActivity;
 import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.objetos.Publicador;
-
+import br.com.anagnostou.publisher.objetos.Relatorio;
 import br.com.anagnostou.publisher.utils.L;
 import br.com.anagnostou.publisher.utils.Utilidades;
 
 /**
- * Created by George on 21/12/2016.
+ * Created by George on 22/12/2016.
  */
 
-public class JsonTaskPublicador extends AsyncTask<JSONArray, Integer, Boolean> {
+public class JsonTaskRelatorio extends AsyncTask<JSONArray,Integer,Boolean> {
     private Context context;
     private ProgressDialog progressDialog;
     private DBAdapter dbAdapter;
     private SQLiteDatabase sqLiteDatabase;
     private MainActivity mainActivity;
 
-    public JsonTaskPublicador(Context context,MainActivity mainActivity) {
+    public JsonTaskRelatorio(Context context, MainActivity mainActivity) {
         this.context = context;
         this.mainActivity = mainActivity;
-
         dbAdapter = new DBAdapter(context);
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
         progressDialog = new ProgressDialog(context);
         progressDialog.setMax(100);
-        progressDialog.setMessage("Atualizando Registros");
+        progressDialog.setMessage("Atualizando Relatórios");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setProgress(0);
         progressDialog.show();
     }
-
 
     @Override
     protected Boolean doInBackground(JSONArray... jsonArrays) {
@@ -54,15 +51,12 @@ public class JsonTaskPublicador extends AsyncTask<JSONArray, Integer, Boolean> {
             JSONObject jsonObject = null;
             try {
                 jsonObject = jsonArrays[0].getJSONObject(i);
-                dbAdapter.insertDataPublicador(new Publicador(
-                        jsonObject.getString("nome"), jsonObject.getString("familia"),
-                        jsonObject.getString("grupo"),
-                        Utilidades.trocaFormatoData(jsonObject.getString("databatismo")),
-                        Utilidades.trocaFormatoData(jsonObject.getString("datanascimento")),
-                        jsonObject.getString("fone"), jsonObject.getString("celular"),
-                        jsonObject.getString("rua"), jsonObject.getString("bairro"),
-                        jsonObject.getString("ASP"), jsonObject.getString("PP"),
-                        jsonObject.getString("sexo")));
+                dbAdapter.insertDataRelatorio(new Relatorio(
+                        jsonObject.getInt ("ano"), jsonObject.getInt("mes"),
+                        jsonObject.getString("nome"), jsonObject.getString("modalidade"),
+                        jsonObject.getInt("videos"), jsonObject.getInt("horas"),
+                        jsonObject.getInt("publicacoes"), jsonObject.getInt("revisitas"),
+                        jsonObject.getInt("estudos")));
                 publishProgress((int) ((i + 1) * 100 / counter));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -70,7 +64,6 @@ public class JsonTaskPublicador extends AsyncTask<JSONArray, Integer, Boolean> {
         }
         return true;
     }
-
     @Override
     protected void onProgressUpdate(Integer... progress) {
         progressDialog.setProgress(progress[0]);
@@ -80,12 +73,12 @@ public class JsonTaskPublicador extends AsyncTask<JSONArray, Integer, Boolean> {
     protected void onPostExecute(Boolean result) {
         if (result) {
             progressDialog.dismiss();
-            L.t(context, context.getString(R.string.importacao_publicadores_MySQL_concluida));
-            mainActivity.getPHPJsonRelatorioData();
+            L.t(context, context.getString(R.string.importacao_relatorios_MySQL_concluida));
         } else {
             progressDialog.dismiss();
             L.t(context, context.getString(R.string.error));
         }
     }
+
 
 }

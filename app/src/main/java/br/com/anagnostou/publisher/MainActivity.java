@@ -39,6 +39,7 @@ import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 
 import br.com.anagnostou.publisher.phpmysql.JsonTaskPublicador;
+import br.com.anagnostou.publisher.phpmysql.JsonTaskRelatorio;
 import br.com.anagnostou.publisher.telas.Adriano;
 import br.com.anagnostou.publisher.telas.Anciaos;
 import br.com.anagnostou.publisher.telas.AnoBatismo;
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Volley and JSON
      *********/
-    private ProgressDialog loading;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -181,14 +182,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Volley and JSON
      **/
 
-    private void getData() {
-        loading = ProgressDialog.show(this, "Please wait...", "Fetching...", false, false);
-        String url = "http://www.anagnostou.com.br/phptut/json_publisher.php";
+    public void getPHPJsonPublisherData() {
+        progressDialog = ProgressDialog.show(this, "Please wait...", "Fetching...", false, false);
+        //colocar no preferences
+        // com url errado, parou, como tratar do erro
+        String url = sp.getString("php_publisher_full", NA);
         StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                loading.dismiss();
-                showJSON(response);
+                progressDialog.dismiss();
+                showPHPJsonPublisherData(response);
             }
         },
                 new Response.ErrorListener() {
@@ -202,18 +205,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         requestQueue.add(stringRequest);
     }
 
-    private void showJSON(String response) {
+    public void showPHPJsonPublisherData(String response) {
+        if (!sqLiteDatabase.isOpen())
+            sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
         try {
             JSONArray arrayJSON = new JSONArray(response);
-            JsonTaskPublicador jsonTaskPublicador = new JsonTaskPublicador(MainActivity.this);
+            if (sp.getBoolean("fullMySQLImport", false)) {
+                dbAdapter.mydbHelper.dropTablePublicador(sqLiteDatabase);
+                L.m("Full Import, dropping table");
+            }
+            JsonTaskPublicador jsonTaskPublicador = new JsonTaskPublicador(MainActivity.this,this);
             jsonTaskPublicador.execute(arrayJSON);
-            /*for (int i = 0; i < arrayJSON.length(); i++) {
-                JSONObject jsonObject = null;
-                jsonObject = arrayJSON.getJSONObject(i);
-                L.m(jsonObject.getString("nome") );
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
-            }*/
+    public void getPHPJsonRelatorioData() {
+        progressDialog = ProgressDialog.show(this, "Please wait...", "Fetching...Reports", false, false);
+        //colocar no preferences
+        // com url errado, parou, como tratar do erro
+        String url = sp.getString("php_report_full", NA);
+        StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                progressDialog.dismiss();
+                showPHPJsonRelatorioData(response);
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        L.t(MainActivity.this, error.getMessage());
 
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    public void showPHPJsonRelatorioData(String response) {
+        if (!sqLiteDatabase.isOpen())
+            sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
+        try {
+            JSONArray arrayJSON = new JSONArray(response);
+            if (sp.getBoolean("fullMySQLImport", false)) {
+                dbAdapter.mydbHelper.dropTableRelatorio (sqLiteDatabase);
+                L.m("Full Import, dropping table");
+            }
+            JsonTaskRelatorio jsonTaskRelatorio = new JsonTaskRelatorio(MainActivity.this,this);
+            jsonTaskRelatorio.execute(arrayJSON);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -225,8 +266,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             /** em vez de chamar a activity, chamar várias Asynctask que uma chama a outra através do onPostExecute */
             if (!bBackgroundJobs) {
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) {
-                    //implementar importacao SQL
-                    L.t(getApplicationContext(), getString(R.string.import_SQL_not_implemented));
+                    //ononPostExecute chama a outra
+                    getPHPJsonPublisherData();
                 } else {
                     //importacao TEXTO
                     final DownloadTaskUpdate downloadTaskUpdate = new DownloadTaskUpdate(MainActivity.this, this, mSectionsPagerAdapter);
@@ -290,7 +331,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }*/
             return true;
         } else if (id == R.id.action_clear) {
-            getData();
             copyDataBaseSdCard();
         } else if (id == R.id.Json) {
             /**

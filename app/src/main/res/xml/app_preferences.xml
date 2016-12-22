@@ -20,6 +20,17 @@
             android:summary="A Importação Completa do Banco não é recomendada"
             android:title="Importação Completa" />
 
+        <EditTextPreference
+            android:defaultValue="http://www.anagnostou.com.br/phptut/json_publisher.php"
+            android:key="php_publisher_full"
+            android:summary="Script PHP para buscar a tabela completa do publicador"
+            android:title="Script PHP Publicador" />
+        <EditTextPreference
+            android:defaultValue="http://www.anagnostou.com.br/phptut/json_report.php"
+            android:key="php_report_full"
+            android:summary="Script PHP para buscar a tabela completa dos relatórios"
+            android:title="Script PHP Relatórios" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/importacao_de_dados">

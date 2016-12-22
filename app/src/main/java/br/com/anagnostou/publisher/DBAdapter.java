@@ -376,7 +376,8 @@ public class DBAdapter {
 
         //id of the column or -1 when insert failed
         long id = db.insert(DBHelper.TABLE_NAME_PUBLICADOR, null, cv);
-        db.close();
+
+         db.close();
         return id;
     }
 
