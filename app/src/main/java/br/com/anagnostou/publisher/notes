@@ -1,8 +1,10 @@
 What is next step:
-serviço que verifica se tem registros ttcadastro e ttrelatorios
+serviço que verifica se tem registros ttcadastro e ttrelatorios e e atualiza o banco
 
 What do I want:
-
+?ativar e desativar serviço de Verificação
+?mudar o intervalo para verificar
+verifcar as duas tabelas is there something for me I didnot download?
 
 What has been done:
 Formulario php no browser

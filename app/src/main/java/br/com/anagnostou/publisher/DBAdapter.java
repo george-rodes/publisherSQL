@@ -410,6 +410,32 @@ public class DBAdapter {
         db.close();
         return id;
     }
+    /****************
+     * UPDATE
+     */
+    public boolean updateDataRelatorio(Relatorio r) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        String ano = String.valueOf(r.getAno());
+        String mes = String.valueOf(r.getMes());
+        String nome = String.valueOf(r.getNome());
+
+        String selection = DBHelper.ANO + " = ? AND " + DBHelper.MES + " = ? AND " + DBHelper.NOME + " = ? ";
+        String[] selectionArgs = {ano,mes,nome};
+
+        cv.put(DBHelper.MODALIDADE, r.getModalidade());
+        cv.put(DBHelper.VIDEOS, r.getVideos());
+        cv.put(DBHelper.HORAS, r.getHoras());
+        cv.put(DBHelper.PUBLICACOES, r.getPublicacoes());
+        cv.put(DBHelper.REVISITAS, r.getRevisitas());
+        cv.put(DBHelper.ESTUDOS, r.getEstudos());
+
+        int count = db.update(DBHelper.TABLE_NAME_RELATORIO, cv, selection, selectionArgs);
+        return count > 0;
+
+    }
+
 
     /*************************************
      * SQLiteOpenHelper

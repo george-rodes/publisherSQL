@@ -1,4 +1,15 @@
 
+ //ttrelatorio_id = sp.getString("ttrelatorio_id", "").toString();
+       /* if (!ttrelatorio_id.isEmpty()) {
+            id = Integer.parseInt(ttrelatorio_id);
+            L.m("ttrelatorio_id antes: " + ttrelatorio_id);
+        } else id = 1;
+        idRegistroProcessado = id;*/
+        //L.m("id antes: " + ttrelatorio_id);
+//TTrelatorioRequest.REGISTER_REQUEST_URL = checkTTrelatorioUrl;
+        //TTrelatorioRequest ttRelatorioRequest = new TTrelatorioRequest("George", new Response.Listener<String>() {
+
+
 return db.rawQuery("SELECT DISTINCT publicador._id,  relatorio.nome, publicador.familia FROM relatorio,publicador " +
                 "WHERE  relatorio.nome = publicador.nome " +
                 "AND relatorio.ano >= ? " +

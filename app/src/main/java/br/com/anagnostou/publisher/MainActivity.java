@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 
         permissions();
-        PreferenceManager.setDefaultValues(this, R.xml.app_preferences, false);
+        PreferenceManager.setDefaultValues(this, R.xml.app_preferences, false);//set just once
         sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         spUpdate = sp.getString("update", NA);
@@ -582,6 +582,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     isServiceBound = false;
                 }
             };
+
+            //bindService(checkSQLServerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
         }
         bindService(checkSQLServerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
@@ -592,5 +594,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             isServiceBound = false;
         }
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+         try {
+
+         unbindService();
+         } catch (Exception e) {
+         //L.t(this, "Nothing Registered");
+         }
+    }
+
 
 }

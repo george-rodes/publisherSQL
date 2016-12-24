@@ -2,18 +2,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/geral">
-
         <ListPreference
-
             android:defaultValue="SQL"
             android:entries="@array/sourceDataImport"
             android:entryValues="@array/sourceDataImportValues"
             android:key="sourceDataImport"
-            android:summary="Escolhe de onde os registros serão obtidos"
+            android:summary="Os Registros serão obtidos do %s"
             android:title="Origem dos Dados" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Importação MySQL">
-
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="fullMySQLImport"
@@ -30,6 +27,26 @@
             android:key="php_report_full"
             android:summary="Script PHP para buscar a tabela completa dos relatórios"
             android:title="Script PHP Relatórios" />
+        <EditTextPreference
+            android:defaultValue="http://www.anagnostou.com.br/phptut/json_ttrelatorio.php"
+            android:key="php_ttrelatorio"
+            android:summary="Script PHP para buscar as atualizações da tabela dos relatórios"
+            android:title="Script PHP Atualização Relatórios " />
+        <EditTextPreference
+            android:defaultValue="http://www.anagnostou.com.br/phptut/json_ttcadastro.php"
+            android:key="php_ttcadastro"
+            android:summary="Script PHP para buscar as atualizações da tabela dos relatórios"
+            android:title="Script PHP Atualização Cadastros" />
+        <EditTextPreference
+            android:defaultValue="2"
+            android:key="ttrelatorio_id"
+            android:summary="ID do último registro dos relatorios atualizados"
+            android:title="ID Relatorios " />
+        <EditTextPreference
+            android:defaultValue="1"
+            android:key="ttcadastro_id"
+            android:summary="ID do último registro dos Cadastros atualizados"
+            android:title="ID Cadastros " />
 
     </PreferenceCategory>
 

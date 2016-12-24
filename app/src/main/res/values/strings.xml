@@ -47,6 +47,7 @@
     <string name="importacao_publicadores_MySQL_concluida">Importação dos publicadores MySQL concluida</string>
     <string name="importacao_relatorios_MySQL_concluida">Importação dos relatorios MySQL concluida</string>
     <string name="error">Houston, temos um problema</string>
+    <string name="os_registros_serao_obtidos">Os Registros serão obtidos do %s</string>
 
     <string-array name="sourceDataImport">
         <item>Servidor SQL</item>
