@@ -377,7 +377,7 @@ public class DBAdapter {
         //id of the column or -1 when insert failed
         long id = db.insert(DBHelper.TABLE_NAME_PUBLICADOR, null, cv);
 
-         db.close();
+       //  db.close();
         return id;
     }
 
@@ -387,7 +387,7 @@ public class DBAdapter {
         cv.put(DBHelper.ULTIMA_ATUALIZACAO, versao);
         //id of the column or -1 when insert failed
         long id = db.insert(DBHelper.TABLE_NAME_VERSAO, null, cv);
-        db.close();
+        //db.close();
         return id;
     }
 
@@ -407,7 +407,7 @@ public class DBAdapter {
 
         //id of the column or -1 when insert failed
         long id = db.insert(DBHelper.TABLE_NAME_RELATORIO, null, cv);
-        db.close();
+        //db.close();
         return id;
     }
     /****************
@@ -432,6 +432,7 @@ public class DBAdapter {
         cv.put(DBHelper.ESTUDOS, r.getEstudos());
 
         int count = db.update(DBHelper.TABLE_NAME_RELATORIO, cv, selection, selectionArgs);
+       // db.close();
         return count > 0;
 
     }

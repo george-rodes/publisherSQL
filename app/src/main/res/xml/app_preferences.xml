@@ -38,13 +38,15 @@
             android:summary="Script PHP para buscar as atualizações da tabela dos relatórios"
             android:title="Script PHP Atualização Cadastros" />
         <EditTextPreference
-            android:defaultValue="2"
+            android:defaultValue="1"
             android:key="ttrelatorio_id"
+            android:numeric="integer"
             android:summary="ID do último registro dos relatorios atualizados"
             android:title="ID Relatorios " />
         <EditTextPreference
             android:defaultValue="1"
             android:key="ttcadastro_id"
+            android:numeric="integer"
             android:summary="ID do último registro dos Cadastros atualizados"
             android:title="ID Cadastros " />
 

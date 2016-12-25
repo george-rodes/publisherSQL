@@ -1,17 +1,9 @@
 package br.com.anagnostou.publisher.services;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.app.TaskStackBuilder;
-import android.content.Context;
+import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Binder;
-import android.os.Handler;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 
 import com.android.volley.RequestQueue;
@@ -24,20 +16,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import br.com.anagnostou.publisher.DBAdapter;
-import br.com.anagnostou.publisher.MainActivity;
-import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.objetos.Relatorio;
-import br.com.anagnostou.publisher.utils.*;
+import br.com.anagnostou.publisher.utils.L;
 
-/*******
- * Creates multiples THREADs, not good. using Intentservice
- *
- *
+/**
+ * Created by George on 24/12/2016.
  */
 
-public class CheckSQLService extends Service {
-    private Handler mHandler;
-    public static final int NOTIFICATION_ID = 234;
+public class CheckSQLIntentService extends IntentService {
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     SharedPreferences sp;
@@ -47,77 +33,23 @@ public class CheckSQLService extends Service {
     Integer checkIntervall;
     String ttrelatorio_id;
     String ttcadastro_id;
-    Thread thread;
-
     Integer idRelatorio, idCadastro, idRegistroProcessadoRelatorio, idRegistroProcessadoCadastro;
     Boolean dataBaseOperationInProgress = false;
 
-    public class CheckSQLServiceBinder extends Binder {
-        public CheckSQLService getBinder() {
-            //L.m("CheckSQLServiceBinder.getService");
-            return CheckSQLService.this;
-        }
+    public CheckSQLIntentService() {
+        super("CheckSQLIntentService");
     }
 
-    private IBinder mBinder = new CheckSQLServiceBinder();
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        checkTTrelatorioUrl = sp.getString("php_ttrelatorio", "");
-        checkTTcadastroUrl = sp.getString("php_ttcadastro", "");
-
-        ttrelatorio_id = sp.getString("ttrelatorio_id", "");
-        if (!ttrelatorio_id.isEmpty()) {
-            idRelatorio = Integer.parseInt(ttrelatorio_id);
-        }
-
-        ttcadastro_id = sp.getString("ttcadastro_id", "");
-        if (!ttcadastro_id.isEmpty()) {
-            idCadastro = Integer.parseInt(ttcadastro_id);
-            L.m("onStartCommand ttcadastro_id: " + ttcadastro_id);
-        } else L.m("ttcadastro_id.isEmpty");
-
-        return START_NOT_STICKY; //START_STICKY
-    }
-
-    @Override
-    public void onCreate() {
-        // super.onCreate();
+    protected void onHandleIntent(Intent intent) {
         dbAdapter = new DBAdapter(getApplicationContext());
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-        checkTTrelatorioUrl = sp.getString("php_ttrelatorio", "");
-        checkTTcadastroUrl = sp.getString("php_ttcadastro", "");
-
-        ttrelatorio_id = sp.getString("ttrelatorio_id", "");
-        if (!ttrelatorio_id.isEmpty()) {
-            idRelatorio = Integer.parseInt(ttrelatorio_id);
-        } else {
-            idRelatorio = 0;
-        }
-        ttcadastro_id = sp.getString("ttcadastro_id", "");
-        if (!ttcadastro_id.isEmpty()) {
-            idCadastro = Integer.parseInt(ttcadastro_id);
-        } else {
-            idCadastro = 0;
-        }
-
+        getCheckTT();
         dataBaseOperationInProgress = false;
         checkIntervall = 60000;
-        if (thread == null) {
-            thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    checkUpdates();
-                }
-            });
-        }
-        thread.start();
+        checkUpdates();
     }
 
     private void checkUpdates() {
@@ -135,11 +67,29 @@ public class CheckSQLService extends Service {
                 e.printStackTrace();
             }
         }
-
-
     }
 
+    private void getCheckTT(){
+        checkTTrelatorioUrl = sp.getString("php_ttrelatorio", "");
+        checkTTcadastroUrl = sp.getString("php_ttcadastro", "");
+
+        ttrelatorio_id = sp.getString("ttrelatorio_id", "");
+        if (!ttrelatorio_id.isEmpty()) {
+            idRelatorio = Integer.parseInt(ttrelatorio_id);
+        } else {
+            idRelatorio = 0;
+        }
+        ttcadastro_id = sp.getString("ttcadastro_id", "");
+        if (!ttcadastro_id.isEmpty()) {
+            idCadastro = Integer.parseInt(ttcadastro_id);
+        } else {
+            idCadastro = 0;
+        }
+    }
+
+
     private void chechTTcadastro() {
+        getCheckTT();
         L.m("chechTTcadastro idCadstro beginning: " + idCadastro);
         StringRequest srCadastro = new StringRequest(checkTTcadastroUrl, new Response.Listener<String>() {
             @Override
@@ -194,6 +144,7 @@ public class CheckSQLService extends Service {
     }
 
     public void checkTTrelatorio() {
+        getCheckTT();
         L.m("checkTTrelatorio idRelatorio beginning: " + idRelatorio);
         StringRequest srRelatorio = new StringRequest(checkTTrelatorioUrl, new Response.Listener<String>() {
             @Override
@@ -240,27 +191,5 @@ public class CheckSQLService extends Service {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(srRelatorio);
     }
-
-
-    public void createNotification() {
-        Intent intent = new Intent(this, MainActivity.class);
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
-        taskStackBuilder.addParentStack(MainActivity.class);
-        taskStackBuilder.addNextIntent(intent);
-        PendingIntent pendingIntent = taskStackBuilder.
-                getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification notification = new Notification.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText("Existem Arquivos a serem baixados")
-                .setAutoCancel(true)
-                .setPriority(Notification.PRIORITY_MAX)
-                .setDefaults(Notification.DEFAULT_VIBRATE)
-                .setContentIntent(pendingIntent)
-                .build();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_ID, notification);
-    }
-
 
 }

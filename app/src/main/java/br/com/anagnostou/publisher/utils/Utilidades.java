@@ -1,6 +1,7 @@
 package br.com.anagnostou.publisher.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
@@ -16,6 +17,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 import br.com.anagnostou.publisher.DBAdapter;
@@ -191,5 +193,30 @@ public class Utilidades extends AppCompatActivity {
         File file = new File(sdcard, name);
         if (file.exists()) return true;
         else return false;
+    }
+
+    public static void checkPreferencesIntLimitReached(Context context) {
+        //I hope we will never need it
+        final int LIMIT = 2000000000;
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        String ttrelatorio_id = sp.getString("ttrelatorio_id", "");
+        String ttcadastro_id = sp.getString("ttcadastro_id", "");
+
+
+        if (!ttrelatorio_id.isEmpty()) {
+            if (Integer.parseInt(ttrelatorio_id) > LIMIT) {
+                SharedPreferences.Editor spEditor = sp.edit();
+                spEditor.putString("ttrelatorio_id", "1");
+                spEditor.apply();
+            }
+
+            if (!ttcadastro_id.isEmpty()) {
+                if (Integer.parseInt(ttcadastro_id) > LIMIT) {
+                    SharedPreferences.Editor spEditor = sp.edit();
+                    spEditor.putString("ttcadastro_id", "1");
+                    spEditor.apply();
+                }
+            }
+        }
     }
 }

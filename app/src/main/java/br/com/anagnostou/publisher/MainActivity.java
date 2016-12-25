@@ -3,7 +3,6 @@ package br.com.anagnostou.publisher;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +13,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -33,13 +31,27 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 
+import br.com.anagnostou.publisher.asynctasks.CheckUpdateAvailable;
+import br.com.anagnostou.publisher.asynctasks.DownloadTaskUpdate;
 import br.com.anagnostou.publisher.phpmysql.JsonTaskPublicador;
 import br.com.anagnostou.publisher.phpmysql.JsonTaskRelatorio;
+import br.com.anagnostou.publisher.services.*;
 import br.com.anagnostou.publisher.telas.Adriano;
 import br.com.anagnostou.publisher.telas.Anciaos;
 import br.com.anagnostou.publisher.telas.AnoBatismo;
@@ -53,38 +65,21 @@ import br.com.anagnostou.publisher.telas.Servos;
 import br.com.anagnostou.publisher.telas.VaroesBatizados;
 import br.com.anagnostou.publisher.telas.Vazio;
 import br.com.anagnostou.publisher.telas.VilaNova;
-import br.com.anagnostou.publisher.asynctasks.*;
-import br.com.anagnostou.publisher.services.CheckSQLService;
 import br.com.anagnostou.publisher.utils.L;
 import br.com.anagnostou.publisher.utils.Utilidades;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONArray;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     int PERM_EXT_STORAGE = 99;
     public boolean bancoTemDados = false;
     public boolean bBackgroundJobs = false;
-    boolean isServiceBound;
-    boolean mStopLoop;
-    CheckSQLService checkSQLService;
-    ConnectivityManager connMgr;
+
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
-    Intent checkSQLServerIntent;
+
     public static final String NA = "";
     SecondSectionsPagerAdapter secondSectionsPagerAdapter;
     public SectionsPagerAdapter mSectionsPagerAdapter;
-    ServiceConnection serviceConnection;
+
     SharedPreferences sp;
     SpecialPagerAdapter specialPagerAdapter;
     String DATABASE_NAME;
@@ -136,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DB_FULL_PATH = sqLiteDatabase.getPath();
         sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 
-        permissions();
+        checkPermissions();
         PreferenceManager.setDefaultValues(this, R.xml.app_preferences, false);//set just once
         sp = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -150,48 +145,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bBackgroundJobs = false;
 
         //Origem dos DAdos: SQL or Text
-        if (Utilidades.existeTabela("relatorio", MainActivity.this)
-                && Utilidades.existeTabela("publicador", MainActivity.this)
-                && Utilidades.existeTabela("versao", MainActivity.this)) {
+        //incialização Tabela,
+        if (tablesExist()) {
             if (Utilidades.temDadosNoBanco(MainActivity.this)) {
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) {
-                    if (sp.getBoolean("fullMySQLImport", false)){
+                    if (sp.getBoolean("fullMySQLImport", false)) {
                         //
                     } else {
                         //verficar se existem registros nas tabelas ttcadastro e ttrelatori
 
                     }
 
-
                 } else {
                     final CheckUpdateAvailable checkUpdateAvailable = new CheckUpdateAvailable(MainActivity.this, this);
                     checkUpdateAvailable.execute(spHomepage + spUpdate, fosUpdate);
                 }
                 bancoTemDados = true;
+
             }
+
+
         } else {
+            // criar tabelas e importar os dados
             atualizarBancoDeDados();
         }
 
-         checkSQLServerIntent = new Intent(this,CheckSQLService.class);
-         startService(checkSQLServerIntent);
-         bindService();
+        Intent intent = new Intent(this, CheckSQLIntentService.class);
+        startService(intent);
 
+        Utilidades.checkPreferencesIntLimitReached(this);
     }
 
-    /**
-     * Volley and JSON
-     **/
+
+    public boolean tablesExist() {
+        if (Utilidades.existeTabela("relatorio", MainActivity.this)
+                && Utilidades.existeTabela("publicador", MainActivity.this)
+                && Utilidades.existeTabela("versao", MainActivity.this)) return true;
+        else return false;
+    }
+
+
 
     public void getPHPJsonPublisherData() {
-        progressDialog = ProgressDialog.show(this, "Please wait...", "Fetching...", false, false);
         //colocar no preferences
         // com url errado, parou, como tratar do erro
         String url = sp.getString("php_publisher_full", NA);
-        StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
+        StringRequest srPublisher = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                progressDialog.dismiss();
                 showPHPJsonPublisherData(response);
             }
         },
@@ -199,23 +200,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         L.t(MainActivity.this, error.getMessage().toString());
-
                     }
                 });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        requestQueue.add(srPublisher);
     }
 
     public void showPHPJsonPublisherData(String response) {
-        if (!sqLiteDatabase.isOpen())
-            sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
+//        if (!sqLiteDatabase.isOpen())
+//            sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
         try {
             JSONArray arrayJSON = new JSONArray(response);
             if (sp.getBoolean("fullMySQLImport", false)) {
                 dbAdapter.mydbHelper.dropTablePublicador(sqLiteDatabase);
                 L.m("Full Import, dropping table");
             }
-            JsonTaskPublicador jsonTaskPublicador = new JsonTaskPublicador(MainActivity.this,this);
+            JsonTaskPublicador jsonTaskPublicador = new JsonTaskPublicador(MainActivity.this, this);
             jsonTaskPublicador.execute(arrayJSON);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -223,14 +223,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void getPHPJsonRelatorioData() {
-        progressDialog = ProgressDialog.show(this, "Please wait...", "Fetching...Reports", false, false);
         //colocar no preferences
         // com url errado, parou, como tratar do erro
         String url = sp.getString("php_report_full", NA);
-        StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
+        StringRequest srRelatorio = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                progressDialog.dismiss();
                 showPHPJsonRelatorioData(response);
             }
         },
@@ -242,33 +240,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        requestQueue.add(srRelatorio);
     }
 
     public void showPHPJsonRelatorioData(String response) {
-        if (!sqLiteDatabase.isOpen())
-            sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
+//        if (!sqLiteDatabase.isOpen())
+//            sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
+
         try {
             JSONArray arrayJSON = new JSONArray(response);
             if (sp.getBoolean("fullMySQLImport", false)) {
-                dbAdapter.mydbHelper.dropTableRelatorio (sqLiteDatabase);
+                dbAdapter.mydbHelper.dropTableRelatorio(sqLiteDatabase);
                 L.m("Full Import, dropping table");
             }
-            JsonTaskRelatorio jsonTaskRelatorio = new JsonTaskRelatorio(MainActivity.this,this);
+            JsonTaskRelatorio jsonTaskRelatorio = new JsonTaskRelatorio(MainActivity.this, this, mSectionsPagerAdapter);
             jsonTaskRelatorio.execute(arrayJSON);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-
     public boolean atualizarBancoDeDados() {
         if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
             /** em vez de chamar a activity, chamar várias Asynctask que uma chama a outra através do onPostExecute */
             if (!bBackgroundJobs) {
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) {
-                    //ononPostExecute chama a outra
-                    getPHPJsonPublisherData();
+
+//                    if (!sqLiteDatabase.isOpen())
+//                        sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
+                    dbAdapter.mydbHelper.dropTablePublicador(sqLiteDatabase);
+                    dbAdapter.mydbHelper.dropTableRelatorio(sqLiteDatabase);
+                    dbAdapter.mydbHelper.dropTableVersao(sqLiteDatabase);
+                    getPHPJsonPublisherData();//onPostExecute chama a outra
                 } else {
                     //importacao TEXTO
                     final DownloadTaskUpdate downloadTaskUpdate = new DownloadTaskUpdate(MainActivity.this, this, mSectionsPagerAdapter);
@@ -282,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void permissions() {
+    public void checkPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
             } else {
@@ -290,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, PERM_PHONE);
             }
         }
-
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -315,7 +317,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -343,13 +344,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.action_clear) {
             copyDataBaseSdCard();
         } else if (id == R.id.Json) {
-            /**
-             * object to Json
-             * */
             Gson gson = new GsonBuilder().create();
-            if(isServiceBound){
-              //
-            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -566,46 +561,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             L.m(e.toString());
         }
     }
-
-    private void bindService() {
-        if (serviceConnection == null) {
-            serviceConnection = new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                    CheckSQLService.CheckSQLServiceBinder myServiceBinder = (CheckSQLService.CheckSQLServiceBinder) iBinder;
-                    checkSQLService = myServiceBinder.getService();
-                    isServiceBound = true;
-                }
-
-                @Override
-                public void onServiceDisconnected(ComponentName componentName) {
-                    isServiceBound = false;
-                }
-            };
-
-            //bindService(checkSQLServerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-        }
-        bindService(checkSQLServerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    private void unbindService() {
-        if (isServiceBound) {
-            unbindService(serviceConnection);
-            isServiceBound = false;
-        }
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-         try {
-
-         unbindService();
-         } catch (Exception e) {
-         //L.t(this, "Nothing Registered");
-         }
-    }
-
 
 }

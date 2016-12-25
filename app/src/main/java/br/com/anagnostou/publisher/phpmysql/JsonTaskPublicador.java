@@ -44,6 +44,10 @@ public class JsonTaskPublicador extends AsyncTask<JSONArray, Integer, Boolean> {
         progressDialog.show();
     }
 
+    @Override
+    protected void onPreExecute() {
+        mainActivity.bBackgroundJobs = true;
+    }
 
     @Override
     protected Boolean doInBackground(JSONArray... jsonArrays) {

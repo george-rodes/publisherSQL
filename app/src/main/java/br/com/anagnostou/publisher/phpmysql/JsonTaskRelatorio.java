@@ -28,10 +28,12 @@ public class JsonTaskRelatorio extends AsyncTask<JSONArray,Integer,Boolean> {
     private DBAdapter dbAdapter;
     private SQLiteDatabase sqLiteDatabase;
     private MainActivity mainActivity;
+    private MainActivity.SectionsPagerAdapter mSectionsPagerAdapter;
 
-    public JsonTaskRelatorio(Context context, MainActivity mainActivity) {
+    public JsonTaskRelatorio(Context context, MainActivity mainActivity,MainActivity.SectionsPagerAdapter mSectionsPagerAdapter) {
         this.context = context;
         this.mainActivity = mainActivity;
+        this.mSectionsPagerAdapter = mSectionsPagerAdapter;
         dbAdapter = new DBAdapter(context);
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
         progressDialog = new ProgressDialog(context);
@@ -41,6 +43,8 @@ public class JsonTaskRelatorio extends AsyncTask<JSONArray,Integer,Boolean> {
         progressDialog.setProgress(0);
         progressDialog.show();
     }
+
+
 
     @Override
     protected Boolean doInBackground(JSONArray... jsonArrays) {
@@ -71,9 +75,13 @@ public class JsonTaskRelatorio extends AsyncTask<JSONArray,Integer,Boolean> {
 
     @Override
     protected void onPostExecute(Boolean result) {
+        mainActivity.bBackgroundJobs = true;
         if (result) {
             progressDialog.dismiss();
             L.t(context, context.getString(R.string.importacao_relatorios_MySQL_concluida));
+            mainActivity.bancoTemDados = true;
+            mainActivity.mViewPager.setAdapter(mSectionsPagerAdapter);
+
         } else {
             progressDialog.dismiss();
             L.t(context, context.getString(R.string.error));

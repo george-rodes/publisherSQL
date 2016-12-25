@@ -80,6 +80,7 @@
             android:name=".services.CheckSQLService"
             android:enabled="true"
             android:exported="false"/>
+        <service  android:name=".services.CheckSQLIntentService" />
     </application>
 
 </manifest>
