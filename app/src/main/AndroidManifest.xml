@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="br.com.anagnostou.publisher"
     android:installLocation="preferExternal">
 
@@ -30,7 +29,6 @@
                 android:name="android.app.default_searchable"
                 android:value=".telas.SearchResults" />
         </activity>
-
         <activity
             android:name=".telas.AtividadesActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -76,8 +74,9 @@
             android:label="@string/preferencias"
             android:parentActivityName=".MainActivity" />
 
+        <service android:name=".services.CheckSQLIntentService" />
 
-        <service  android:name=".services.CheckSQLIntentService" />
+        <activity android:name=".telas.LoginActivity"></activity>
     </application>
 
 </manifest>

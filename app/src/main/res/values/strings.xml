@@ -54,6 +54,20 @@
     <string name="copy">Copiar Banco para Memória</string>
     <string name="novo_relatorio">Novo Relatório</string>
     <string name="corrrigir_relatorio">Corrigir Relatório</string>
+    <string name="autenticacao_falhou">A autenticação falhou!</string>
+    <string name="ok">OK</string>
+    <string name="login">Login</string>
+    <string name="email">email</string>
+    <string name="password">Password</string>
+    <string name="falta_email_senha">Falta email e/ou senha</string>
+    <string name="email_invalido">Email não é um endereço válido</string>
+    <string name="servidor_nao_respondeu">Servidor não respondeu NADA</string>
+    <string name="autenticacao">AUTENTICAÇÂO</string>
+    <string name="autenticacao_instalacao">A autenticação é feita apenas na primeira vez após a instalação do aplicativo.
+        Sem a a autenticação não será possivel enviar relatórios para o servidor.
+    </string>
+    <string name="enviar">Enviar</string>
+    <string name="nao_quero">Mais Tarde</string>
 
 
     <string-array name="sourceDataImport">

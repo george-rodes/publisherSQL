@@ -227,4 +227,16 @@ public class Utilidades extends AppCompatActivity {
         spEditor.putString("ttcadastro_id", "0");
         spEditor.apply();
     }
+
+    /*public static boolean areWeAuthenticated() {
+        //check shared prefekeys
+        //user, mail, cleareance, timestamp
+        //chach if we are on line
+
+        return true;
+    }*/
+
+    public static boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
 }

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -25,6 +26,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -57,6 +59,7 @@ import br.com.anagnostou.publisher.telas.Anciaos;
 import br.com.anagnostou.publisher.telas.AnoBatismo;
 import br.com.anagnostou.publisher.telas.Centro;
 import br.com.anagnostou.publisher.telas.Irregulares;
+import br.com.anagnostou.publisher.telas.LoginActivity;
 import br.com.anagnostou.publisher.telas.NaoBatizados;
 import br.com.anagnostou.publisher.telas.Pioneiros;
 import br.com.anagnostou.publisher.telas.Pregadores;
@@ -87,15 +90,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String fosPublicador;
     String fosRelatorio;
     String fosUpdate;
-    String nameSearch;
+    //String nameSearch;
     String sdcard;
     String spCadastro;
     String spHomepage;
     String spRelatorio;
     String spUpdate;
     public ViewPager mViewPager;
-    private ProgressDialog progressDialog;
 
+    public static final String SP_SPNAME = "mySharedPreferences";
+    public static final String SP_USER = "user";
+    public static final String SP_EMAIL = "email";
+    public static final String SP_AUTHENTICATED = "authenticated";
+    public static final String DEFAULT = "N/A";
+    private static final int LOGIN_INTENT = 572;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,8 +165,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(this, CheckSQLIntentService.class);
         startService(intent);
         Utilidades.checkPreferencesIntLimitReached(this);
+        firstTimeLogin();
     }
 
+    private void firstTimeLogin() {
+        //user, mail, cleareance, timestamp
+        //check if we are on line
+        SharedPreferences sp = getSharedPreferences(SP_SPNAME, MODE_PRIVATE);
+        //'authenticated ' is what we receive from the server
+        if (!sp.getString(SP_AUTHENTICATED, DEFAULT).equals("authenticated")
+                && (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)))) {
+            // we are not authenticated and we are on line, so lets login
+            //call activity for result
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.putExtra("Origem", "MainActivity");
+            startActivityForResult(intent, LOGIN_INTENT);
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            if (requestCode == LOGIN_INTENT) {
+                SharedPreferences sp = getSharedPreferences(SP_SPNAME, MODE_PRIVATE);
+                if (!sp.getString(SP_AUTHENTICATED, DEFAULT).equals("authenticated")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage(R.string.autenticacao_falhou);
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else L.m("Usuario Authenticado");
+            }
+        }
+    }
 
     public boolean tablesExist() {
         if (Utilidades.existeTabela("relatorio", MainActivity.this)
@@ -312,9 +357,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.novo_relatorio){
-           //Activity novo relatorio
-        } else if (id==R.id.editar_relatorio){
+        if (id == R.id.novo_relatorio) {
+            //Activity novo relatorio
+        } else if (id == R.id.editar_relatorio) {
             //Activity novo relatorio
         }
         return super.onOptionsItemSelected(item);
@@ -507,15 +552,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             return null;
         }
+
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
-        /** http://stackoverflow.com/questions/22083639/calling-activity-from-fragment-then-return-to-fragment
-         * returns to the calling fragment */
-    }
 
     public void copyDataBaseSdCard() {
         try {

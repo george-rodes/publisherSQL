@@ -1,10 +1,30 @@
+[{
+	"user_id": 1,
+	"email": "george.a.1968@gmail.com",
+	"autenticado": "authenticated",
+	"username": "George",
+	"timestamp ": "2016-12-26 11:34:29"
+}]
+
+[{
+	"user_id": 0,
+	"email": "george.a.1968@gmail.com",
+	"autenticado": "not authenticated",
+	"username": "unknown",
+	"timestamp ": "2016-12-26 11:35:01"
+}]A
+
+my OWN password Af..3
+the others Salmos37#11
 What is next step:
-serviço que verifica se tem registros ttcadastro e ttrelatorios e e atualiza o banco
+Criar shared Preferences para identificar usuário
+se não existir enviar email e senha e se authenticado gravar "para sempre"
+antes de enviar/corrigir relatorio verificar shared prefs
 
 What do I want:
-?ativar e desativar serviço de Verificação
+?
 ?mudar o intervalo para verificar
-verifcar as duas tabelas is there something for me I didnot download?
+
 
 What has been done:
 Formulario php no browser
@@ -13,8 +33,9 @@ Full update JSON Array, MySQL
 Dois Modos:
 1.Modo SQL (Padrão)
 2.Modo Texto
-
-
+serviço que verifica se tem registros ttcadastro e ttrelatorios e e atualiza o banco
+ativar e desativar serviço de Verificação
+O SQLlite busca a atualização diretamente do MySQL
 
    ?OFFLINE, cadastar no SQLITE local e depois pedir para syncronizar com MySQL remoto,
    criar uma tabela extra so para atualizar e depois de enviar para o My SQLi apagar os registros?
@@ -22,7 +43,7 @@ Dois Modos:
 
 
 
-   2. O SQLlite busca a atualização diretamente do MySQL
+
 
 
    Preference:

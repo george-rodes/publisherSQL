@@ -9,18 +9,17 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by George on 23/12/2016.
- */
 
-public class TTrelatorioRequest extends StringRequest {
-    public static String REGISTER_REQUEST_URL; //= "http://www.anagnostou.com.br/phptut/json_report.php";
+
+public class LoginRequest extends StringRequest {
+    public static String REGISTER_REQUEST_URL= "http://www.anagnostou.com.br/phptut/report_signin_app.php";
     private Map<String , String > params;
 
-    public TTrelatorioRequest(String username, Response.Listener<String> listener){
+    public LoginRequest(String email,String password, Response.Listener<String> listener){
         super(Method.POST, REGISTER_REQUEST_URL, listener, null);
         params = new HashMap<>();
-        params.put("username", username);
+        params.put("email", email);
+        params.put("password", password);
     }
 
     @Override
@@ -29,3 +28,4 @@ public class TTrelatorioRequest extends StringRequest {
     }
 
 }
+

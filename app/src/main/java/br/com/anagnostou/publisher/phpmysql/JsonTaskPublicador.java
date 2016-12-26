@@ -19,10 +19,6 @@ import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.utils.L;
 import br.com.anagnostou.publisher.utils.Utilidades;
 
-/**
- * Created by George on 21/12/2016.
- */
-
 public class JsonTaskPublicador extends AsyncTask<JSONArray, Integer, Boolean> {
     private Context context;
     private ProgressDialog progressDialog;
@@ -57,7 +53,7 @@ public class JsonTaskPublicador extends AsyncTask<JSONArray, Integer, Boolean> {
         for (int i = 0; i < jsonArrays[0].length(); i++) {
             JSONObject jsonObject = null;
             try {
-                jsonObject = jsonArrays[0].getJSONObject(i);
+               jsonObject = jsonArrays[0].getJSONObject(i);
                 dbAdapter.insertDataPublicador(new Publicador(
                         jsonObject.getString("nome"), jsonObject.getString("familia"),
                         jsonObject.getString("grupo"),
