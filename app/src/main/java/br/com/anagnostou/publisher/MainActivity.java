@@ -144,35 +144,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fosUpdate = sdcard + spUpdate;
         bBackgroundJobs = false;
 
-        //Origem dos DAdos: SQL or Text
-        //incialização Tabela,
-        if (tablesExist()) {
-            if (Utilidades.temDadosNoBanco(MainActivity.this)) {
-                if (sp.getString("sourceDataImport", "").contentEquals("SQL")) {
-                    if (sp.getBoolean("fullMySQLImport", false)) {
-                        //
-                    } else {
-                        //verficar se existem registros nas tabelas ttcadastro e ttrelatori
-
-                    }
-
-                } else {
-                    final CheckUpdateAvailable checkUpdateAvailable = new CheckUpdateAvailable(MainActivity.this, this);
-                    checkUpdateAvailable.execute(spHomepage + spUpdate, fosUpdate);
-                }
-                bancoTemDados = true;
-
+        if (tablesExist() && Utilidades.temDadosNoBanco(MainActivity.this)) {
+            if (sp.getString("sourceDataImport", "").contentEquals("Texto")) {
+                final CheckUpdateAvailable checkUpdateAvailable = new CheckUpdateAvailable(MainActivity.this, this);
+                checkUpdateAvailable.execute(spHomepage + spUpdate, fosUpdate);
             }
-
-
+            bancoTemDados = true;
         } else {
-            // criar tabelas e importar os dados
             atualizarBancoDeDados();
         }
 
         Intent intent = new Intent(this, CheckSQLIntentService.class);
         startService(intent);
-
         Utilidades.checkPreferencesIntLimitReached(this);
     }
 
@@ -183,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 && Utilidades.existeTabela("versao", MainActivity.this)) return true;
         else return false;
     }
-
 
 
     public void getPHPJsonPublisherData() {
@@ -265,15 +247,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             /** em vez de chamar a activity, chamar várias Asynctask que uma chama a outra através do onPostExecute */
             if (!bBackgroundJobs) {
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) {
-
-//                    if (!sqLiteDatabase.isOpen())
-//                        sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
                     dbAdapter.mydbHelper.dropTablePublicador(sqLiteDatabase);
                     dbAdapter.mydbHelper.dropTableRelatorio(sqLiteDatabase);
                     dbAdapter.mydbHelper.dropTableVersao(sqLiteDatabase);
+                    Utilidades.resetPreferencesCounter(this);
                     getPHPJsonPublisherData();//onPostExecute chama a outra
                 } else {
                     //importacao TEXTO
+                    Utilidades.resetPreferencesCounter(this);
                     final DownloadTaskUpdate downloadTaskUpdate = new DownloadTaskUpdate(MainActivity.this, this, mSectionsPagerAdapter);
                     downloadTaskUpdate.execute(spHomepage + spUpdate);
                 }
@@ -330,23 +311,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        /** Handle action bar item clicks here. The action bar will
-         * automatically handle clicks on the Home/Up button, so long
-         * as you specify a parent activity in AndroidManifest.xml. **/
         int id = item.getItemId();
-        if (id == R.id.action_updateDatabase) {
-            atualizarBancoDeDados();
-            return true;
-        } else if (id == R.id.action_settings) {
-            startActivity(new Intent(this, AppPreferences.class));
-
-            return true;
-        } else if (id == R.id.action_clear) {
-            copyDataBaseSdCard();
-        } else if (id == R.id.Json) {
-            Gson gson = new GsonBuilder().create();
+        if (id == R.id.novo_relatorio){
+           //Activity novo relatorio
+        } else if (id==R.id.editar_relatorio){
+            //Activity novo relatorio
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    /***DrawerLayout **/
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.publicadores) {
+            mViewPager.setAdapter(mSectionsPagerAdapter);
+            getSupportActionBar().setTitle(getString(R.string.por_grupo));
+        } else if (id == R.id.porPrivilegio) {
+            mViewPager.setAdapter(secondSectionsPagerAdapter);
+            getSupportActionBar().setTitle(getString(R.string.por_privilegio));
+        } else if (id == R.id.pesquisasEspeciais) {
+            mViewPager.setAdapter(specialPagerAdapter);
+            getSupportActionBar().setTitle(getString(R.string.pesquisas_especiais));
+        } else if (id == R.id.atualizar) {
+            atualizarBancoDeDados();
+        } else if (id == R.id.preferencias) {
+            startActivity(new Intent(this, AppPreferences.class));
+        } else if (id == R.id.copy) {
+            copyDataBaseSdCard();
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
@@ -509,27 +507,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             return null;
         }
-    }
-
-    @Override
-    /***DrawerLayout **/
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.publicadores) {
-            mViewPager.setAdapter(mSectionsPagerAdapter);
-            getSupportActionBar().setTitle(getString(R.string.por_grupo));
-        } else if (id == R.id.porPrivilegio) {
-            mViewPager.setAdapter(secondSectionsPagerAdapter);
-            getSupportActionBar().setTitle(getString(R.string.por_privilegio));
-        } else if (id == R.id.pesquisasEspeciais) {
-            mViewPager.setAdapter(specialPagerAdapter);
-            getSupportActionBar().setTitle(getString(R.string.pesquisas_especiais));
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
 

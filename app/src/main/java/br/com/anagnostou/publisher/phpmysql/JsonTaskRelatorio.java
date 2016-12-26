@@ -2,21 +2,17 @@ package br.com.anagnostou.publisher.phpmysql;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.MainActivity;
 import br.com.anagnostou.publisher.R;
-import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
 import br.com.anagnostou.publisher.utils.L;
-import br.com.anagnostou.publisher.utils.Utilidades;
+
 
 /**
  * Created by George on 22/12/2016.

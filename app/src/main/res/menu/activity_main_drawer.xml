@@ -1,23 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/listas">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/publicadores"
+                    android:icon="@drawable/ic_people_48dp"
+                    android:title="@string/publicadores_por_grupos" />
+                <item
+                    android:id="@+id/porPrivilegio"
+                    android:icon="@drawable/ic_people_48dp"
+                    android:title="@string/por_privilegio" />
+                <item
+                    android:id="@+id/pesquisasEspeciais"
+                    android:icon="@drawable/ic_people_48dp"
+                    android:title="@string/pesquisas_especiais" />
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/publicadores"
-            android:icon="@drawable/ic_people_48dp"
-            android:title="@string/publicadores_por_grupos" />
-        <item
-            android:id="@+id/porPrivilegio"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/por_privilegio" />
-        <item
-            android:id="@+id/pesquisasEspeciais"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/pesquisas_especiais" />
+            </group>
+        </menu>
+    </item>
+    <item android:title="@string/rotinas_do_sistema">
+        <menu>
+            <item
+                android:id="@+id/atualizar"
+                android:icon="@drawable/ic_cached_black_36dp"
+                android:title="@string/atualizar" />
 
+            <item
+                android:id="@+id/preferencias"
+                android:icon="@drawable/ic_settings_black_36dp"
+                android:title="@string/preferencias" />
 
-    </group>
-
+            <item
+                android:id="@+id/copy"
+                android:icon="@drawable/ic_sd_card_black_36dp"
+                android:title="@string/copy" />
+        </menu>
+    </item>
 
 
 </menu>

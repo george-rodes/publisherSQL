@@ -2,6 +2,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="br.com.anagnostou.publisher.MainActivity">
+
+    <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/ic_action_search"
+        android:orderInCategory="1"
+        android:title="@string/menu_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/novo_relatorio"
+        android:orderInCategory="200"
+        android:title="@string/novo_relatorio"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/editar_relatorio"
+        android:orderInCategory="300"
+        android:title="@string/corrrigir_relatorio"
+        app:showAsAction="never" />
+
+    <!--
     <item
         android:id="@+id/action_updateDatabase"
         android:orderInCategory="100"
@@ -18,21 +38,9 @@
         android:icon="@drawable/ic_action_clear"
         android:title="Copiar Banco"
         android:orderInCategory="300"
-
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/Json"
-        android:icon="@drawable/ic_action_clear"
-        android:title="Gerar JSON"
-        android:orderInCategory="300"
-
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/menu_search"
-        android:icon="@drawable/ic_action_search"
-        android:title="@string/menu_search"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="ifRoom|collapseActionView" />
+-->
+
 
 </menu><!--android:title="@string/limpar_historico" -->

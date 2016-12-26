@@ -76,10 +76,7 @@
             android:label="@string/preferencias"
             android:parentActivityName=".MainActivity" />
 
-        <service
-            android:name=".services.CheckSQLService"
-            android:enabled="true"
-            android:exported="false"/>
+
         <service  android:name=".services.CheckSQLIntentService" />
     </application>
 

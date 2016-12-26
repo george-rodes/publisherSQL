@@ -21,6 +21,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 import br.com.anagnostou.publisher.DBAdapter;
+import br.com.anagnostou.publisher.MainActivity;
 
 public class Utilidades extends AppCompatActivity {
 
@@ -65,7 +66,6 @@ public class Utilidades extends AppCompatActivity {
         } catch (ParseException e) {
             return "";
         }
-
 
 
     }
@@ -218,5 +218,13 @@ public class Utilidades extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public static void resetPreferencesCounter(MainActivity mainActivity) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        SharedPreferences.Editor spEditor = sp.edit();
+        spEditor.putString("ttrelatorio_id", "0");
+        spEditor.putString("ttcadastro_id", "0");
+        spEditor.apply();
     }
 }

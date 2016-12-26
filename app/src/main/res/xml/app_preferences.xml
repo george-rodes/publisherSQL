@@ -7,7 +7,7 @@
             android:entries="@array/sourceDataImport"
             android:entryValues="@array/sourceDataImportValues"
             android:key="sourceDataImport"
-            android:summary="Os Registros serão obtidos do %s"
+            android:summary="Os Registros serão obtidos do %s."
             android:title="Origem dos Dados" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Importação MySQL">

@@ -207,11 +207,10 @@ public class DBAdapter {
     }
 
 
-
     /********
      * 14/12/2016
      *******/
-     public Publicador retrievePublisherData(String name) {
+    public Publicador retrievePublisherData(String name) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.FAMILIA, DBHelper.GRUPO, DBHelper.BATISMO, DBHelper.CELULAR,
                 DBHelper.RUA, DBHelper.NASCIMENTO, DBHelper.FONE, DBHelper.BAIRRO, DBHelper.ANSEPU, DBHelper.PIPU, DBHelper.SEXO};
@@ -242,7 +241,7 @@ public class DBAdapter {
      * RELATORIO
      **************************************/
 
-     public String findFirstRelatorio() {
+    public String findFirstRelatorio() {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.UID, DBHelper.ANO, DBHelper.MES, DBHelper.NOME, DBHelper.HORAS};
         StringBuilder sb = new StringBuilder();
@@ -267,7 +266,7 @@ public class DBAdapter {
         }
     }
 
-     public String[] somaHorasMeses(String nome) {
+    public String[] somaHorasMeses(String nome) {
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome};
@@ -294,7 +293,7 @@ public class DBAdapter {
 
     }
 
-     public String[] retrieveTotais(String nome) {
+    public String[] retrieveTotais(String nome) {
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome};
@@ -321,7 +320,7 @@ public class DBAdapter {
 
     }
 
-     public String contaPioneiroAuxiliar(String nome) {
+    public String contaPioneiroAuxiliar(String nome) {
         String resultado;
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome, "Pioneiro Auxiliar"};
@@ -337,7 +336,7 @@ public class DBAdapter {
         }
     }
 
-     public String deixouDeRelatar(String nome) {
+    public String deixouDeRelatar(String nome) {
         String resultado;
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome, "0"};
@@ -356,7 +355,7 @@ public class DBAdapter {
     /*****************************************
      * INSERT
      ****************************************/
-     public long insertDataPublicador(Publicador p) {
+    public long insertDataPublicador(Publicador p) {
 
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -377,11 +376,11 @@ public class DBAdapter {
         //id of the column or -1 when insert failed
         long id = db.insert(DBHelper.TABLE_NAME_PUBLICADOR, null, cv);
 
-       //  db.close();
+        //  db.close();
         return id;
     }
 
-     public long insertDataVersao(String versao) {
+    public long insertDataVersao(String versao) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(DBHelper.ULTIMA_ATUALIZACAO, versao);
@@ -391,7 +390,7 @@ public class DBAdapter {
         return id;
     }
 
-     public long insertDataRelatorio(Relatorio r) {
+    public long insertDataRelatorio(Relatorio r) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -410,6 +409,7 @@ public class DBAdapter {
         //db.close();
         return id;
     }
+
     /****************
      * UPDATE
      */
@@ -422,7 +422,7 @@ public class DBAdapter {
         String nome = String.valueOf(r.getNome());
 
         String selection = DBHelper.ANO + " = ? AND " + DBHelper.MES + " = ? AND " + DBHelper.NOME + " = ? ";
-        String[] selectionArgs = {ano,mes,nome};
+        String[] selectionArgs = {ano, mes, nome};
 
         cv.put(DBHelper.MODALIDADE, r.getModalidade());
         cv.put(DBHelper.VIDEOS, r.getVideos());
@@ -432,19 +432,40 @@ public class DBAdapter {
         cv.put(DBHelper.ESTUDOS, r.getEstudos());
 
         int count = db.update(DBHelper.TABLE_NAME_RELATORIO, cv, selection, selectionArgs);
-       // db.close();
+        // db.close();
         return count > 0;
 
+    }
+
+    public boolean updateDataPublicador(Publicador p) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        String selection = DBHelper.NOME + " = ? ";
+        String[] selectionArgs = {p.getNome()};
+        cv.put(DBHelper.FAMILIA, p.getFamilia());
+        cv.put(DBHelper.GRUPO, p.getGrupo());
+        cv.put(DBHelper.BATISMO, p.getBatismo());
+        cv.put(DBHelper.NASCIMENTO, p.getNascimento());
+        cv.put(DBHelper.FONE, p.getFone());
+        cv.put(DBHelper.CELULAR, p.getCelular());
+        cv.put(DBHelper.RUA, p.getRua());
+        cv.put(DBHelper.BAIRRO, p.getBairro());
+        cv.put(DBHelper.ANSEPU, p.getAnsepu());
+        cv.put(DBHelper.PIPU, p.getPipu());
+        cv.put(DBHelper.SEXO, p.getSexo());
+
+        int count = db.update(DBHelper.TABLE_NAME_PUBLICADOR, cv, selection, selectionArgs);
+        return count > 0;
     }
 
 
     /*************************************
      * SQLiteOpenHelper
      ************************************/
-     public static class DBHelper extends SQLiteOpenHelper {
+    public static class DBHelper extends SQLiteOpenHelper {
         private static DBHelper sInstance;
 
-        public static synchronized DBHelper getInstance(Context context) {
+        static synchronized DBHelper getInstance(Context context) {
             if (sInstance == null) {
                 sInstance = new DBHelper(context.getApplicationContext());
             }
@@ -453,8 +474,6 @@ public class DBAdapter {
 
         private DBHelper(Context context) {
             super(context, DB_NAME, null, DB_VERSION);
-
-
         }
 
         //DATABASE COMMON
@@ -521,7 +540,7 @@ public class DBAdapter {
         private static final String REVISITAS = "revisitas";
         private static final String ESTUDOS = "estudos";
 
-        //2016;6;Rosangela Souza;Pioneiro Regular;10;71;26;15;6
+
         private static final String CREATE_TABLE_RELATORIO = "CREATE TABLE "
                 + TABLE_NAME_RELATORIO + " ( "
                 + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -567,18 +586,15 @@ public class DBAdapter {
 
         public void dropTablePublicador(SQLiteDatabase db) {
             try {
-                //L.m("Dropping Table Publicador\n" + db.getVersion());
                 db.execSQL(DROP_TABLE_PUBLICADOR);
                 db.execSQL(CREATE_TABLE_PUBLICADOR);
                 onCreate(db);
             } catch (SQLException e) {
-                //L.m(e + "\nDropping Table Publicador failed");
             }
         }
 
         public void dropTableVersao(SQLiteDatabase db) {
             try {
-                //L.m("Dropping Table Versao\n" + db.getVersion());
                 db.execSQL(DROP_TABLE_VERSAO);
                 db.execSQL(CREATE_TABLE_VERSAO);
                 //db.execSQL(INSERT_VERSAO);
@@ -590,12 +606,10 @@ public class DBAdapter {
 
         public void dropTableRelatorio(SQLiteDatabase db) {
             try {
-                //L.m("Dropping Table Relaotorio" + db.getVersion());
                 db.execSQL(DROP_TABLE_RELATORIO);
                 db.execSQL(CREATE_TABLE_RELATORIO);
                 onCreate(db);
             } catch (SQLException e) {
-                //L.m("Dropping Table Relatorio failed");
             }
         }
     }

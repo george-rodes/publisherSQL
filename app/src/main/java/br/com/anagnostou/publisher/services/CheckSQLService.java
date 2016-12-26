@@ -31,8 +31,6 @@ import br.com.anagnostou.publisher.utils.*;
 
 /*******
  * Creates multiples THREADs, not good. using Intentservice
- *
- *
  */
 
 public class CheckSQLService extends Service {
@@ -264,3 +262,57 @@ public class CheckSQLService extends Service {
 
 
 }
+
+/*
+<service
+            android:name=".services.CheckSQLService"
+            android:enabled="true"
+            android:exported="false"/>
+*************
+
+
+Intent checkSQLServerIntent;
+ServiceConnection serviceConnection;
+CheckSQLService checkSQLService;
+boolean isServiceBound;
+
+@Override
+    protected void onStart() {
+        super.onStart();
+        checkSQLServerIntent = new Intent(this, CheckSQLService.class);
+        bindService();
+
+    }
+
+    private void bindService() {
+        if (serviceConnection == null) {
+            serviceConnection = new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                    CheckSQLService.CheckSQLServiceBinder checkSQLBinder = (CheckSQLService.CheckSQLServiceBinder) iBinder;
+                    checkSQLService = checkSQLBinder.getBinder();
+                    isServiceBound = true;
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName componentName) {
+                    isServiceBound = false;
+                }
+            };
+
+        }
+        bindService(checkSQLServerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void unbindService() {
+        if (isServiceBound) {
+            unbindService(serviceConnection);
+            isServiceBound = false;
+        }
+    }
+
+
+
+
+
+ */

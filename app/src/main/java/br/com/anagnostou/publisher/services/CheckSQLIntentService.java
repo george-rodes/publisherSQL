@@ -16,12 +16,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import br.com.anagnostou.publisher.DBAdapter;
+import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
 import br.com.anagnostou.publisher.utils.L;
-
-/**
- * Created by George on 24/12/2016.
- */
+import br.com.anagnostou.publisher.utils.Utilidades;
 
 public class CheckSQLIntentService extends IntentService {
     DBAdapter dbAdapter;
@@ -53,23 +51,25 @@ public class CheckSQLIntentService extends IntentService {
     }
 
     private void checkUpdates() {
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
         L.m("checkUpdates every ms: " + checkIntervall);
         while (!dataBaseOperationInProgress) {
             try {
                 //createNotification();
                 L.m("Thread ID " + Thread.currentThread().getId());
                 Thread.sleep(5000);
-                checkTTrelatorio();
+                if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTrelatorio();
                 Thread.sleep(5000);
-                chechTTcadastro();
+                if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTcadastro();
                 Thread.sleep(checkIntervall);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void getCheckTT(){
+    private void getCheckTT() {
         checkTTrelatorioUrl = sp.getString("php_ttrelatorio", "");
         checkTTcadastroUrl = sp.getString("php_ttcadastro", "");
 
@@ -88,9 +88,9 @@ public class CheckSQLIntentService extends IntentService {
     }
 
 
-    private void chechTTcadastro() {
+    private void checkTTcadastro() {
         getCheckTT();
-        L.m("chechTTcadastro idCadstro beginning: " + idCadastro);
+        L.m("checkTTcadastro idCadastro beginning: " + idCadastro);
         StringRequest srCadastro = new StringRequest(checkTTcadastroUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -104,21 +104,28 @@ public class CheckSQLIntentService extends IntentService {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             if (jsonObject.getInt("id") > idCadastro) {
                                 if (jsonObject.getString("action").contentEquals("INSERT")) {
-                                    /*
-                                    dbAdapter.insertDataRelatorio(new Relatorio(jsonObject.getInt("ano"),
-                                            jsonObject.getInt("mes"), jsonObject.getString("nome"),
-                                            jsonObject.getString("modalidade"), jsonObject.getInt("videos"),
-                                            jsonObject.getInt("horas"), jsonObject.getInt("publicacoes"),
-                                            jsonObject.getInt("revisitas"), jsonObject.getInt("estudos")));
-                                    */
+
+                                    dbAdapter.insertDataPublicador(new Publicador(
+                                            jsonObject.getString("nome"), jsonObject.getString("familia"),
+                                            jsonObject.getString("grupo"),
+                                            Utilidades.trocaFormatoData(jsonObject.getString("databatismo")),
+                                            Utilidades.trocaFormatoData(jsonObject.getString("datanascimento")),
+                                            jsonObject.getString("fone"), jsonObject.getString("celular"),
+                                            jsonObject.getString("rua"), jsonObject.getString("bairro"),
+                                            jsonObject.getString("ASP"), jsonObject.getString("PP"),
+                                            jsonObject.getString("sexo")));
+
                                 } else if (jsonObject.getString("action").contentEquals("UPDATE")) {
-                                    /*
-                                    dbAdapter.updateDataRelatorio(new Relatorio(jsonObject.getInt("ano"),
-                                            jsonObject.getInt("mes"), jsonObject.getString("nome"),
-                                            jsonObject.getString("modalidade"), jsonObject.getInt("videos"),
-                                            jsonObject.getInt("horas"), jsonObject.getInt("publicacoes"),
-                                            jsonObject.getInt("revisitas"), jsonObject.getInt("estudos")));
-                                    */
+                                    dbAdapter.updateDataPublicador(new Publicador(
+                                            jsonObject.getString("nome"), jsonObject.getString("familia"),
+                                            jsonObject.getString("grupo"),
+                                            Utilidades.trocaFormatoData(jsonObject.getString("databatismo")),
+                                            Utilidades.trocaFormatoData(jsonObject.getString("datanascimento")),
+                                            jsonObject.getString("fone"), jsonObject.getString("celular"),
+                                            jsonObject.getString("rua"), jsonObject.getString("bairro"),
+                                            jsonObject.getString("ASP"), jsonObject.getString("PP"),
+                                            jsonObject.getString("sexo")));
+
                                 }
                                 idRegistroProcessadoCadastro = jsonObject.getInt("id");
                             }
@@ -128,12 +135,12 @@ public class CheckSQLIntentService extends IntentService {
                             spEditor = sp.edit();
                             spEditor.putString("ttcadastro_id", idRegistroProcessadoCadastro.toString());
                             spEditor.commit();
-                        } else L.m("chechTTcadastro idRegistroProcessado is null ");
+                        } else L.m("checkTTcadastro idRegistroProcessado is null ");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     dataBaseOperationInProgress = false;
-                    L.m("chechTTcadastro DatabaseOperation Completed! with ID: " + idRegistroProcessadoCadastro);
+                    L.m("checkTTcadastro DatabaseOperation Completed! with ID: " + idRegistroProcessadoCadastro);
                 }
             }
         }, null);
