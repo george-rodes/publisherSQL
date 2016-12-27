@@ -17,7 +17,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
@@ -98,6 +100,21 @@ public class DBAdapter {
     /*************************
      * PUBLICADOR
      ***************************/
+    public List<String> retrieveAllPublicadores() {
+        SQLiteDatabase db = mydbHelper.getReadableDatabase();
+        String[] columns = {DBHelper.NOME};
+        Cursor c = db.query(DBHelper.TABLE_NAME_PUBLICADOR, columns, null, null, null, null, DBHelper.NOME);
+        List<String> nomes = new ArrayList<>();
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                nomes.add(c.getString(c.getColumnIndex(DBHelper.NOME)));
+            }
+        } else nomes.add("Sem Nomes");
+        c.close();
+        return nomes;
+    }
+
+
 
     public Cursor retrieveRelatorios(String nome) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();

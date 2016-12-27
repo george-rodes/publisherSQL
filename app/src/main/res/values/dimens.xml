@@ -13,4 +13,8 @@
     <dimen name="relatorio_cabecalho_grande">14sp</dimen>
     <dimen name="settings_text">14sp</dimen>
 
+    <dimen name="clearBig">30dp</dimen>
+    <dimen name="clearBigger">50dp</dimen>
+    <dimen name="clearBigger2">70dp</dimen>
+
 </resources>

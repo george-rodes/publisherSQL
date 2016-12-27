@@ -11,10 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
+import br.com.anagnostou.publisher.utils.L;
 
 public class VilaNova extends Fragment {
     View rootView;
@@ -29,17 +31,23 @@ public class VilaNova extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_vila_nova, container, false);
         vilaListView = (ListView) rootView.findViewById(R.id.vilaListView);
+
         dbAdapter = new DBAdapter(rootView.getContext());
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
         cursor = dbAdapter.cursorPublicadorPorGrupo("Vila Nova");
+
+
+
         if (cursor.getCount() > 0) {
             CursorAdapter listAdapter = new SimpleCursorAdapter(rootView.getContext(), R.layout.row,
                     cursor, new String[]{"nome", "familia"}, new int[]{R.id.nameTextView, R.id.familyTextView}, 0);
             vilaListView.setAdapter(listAdapter);
         }
+
         vilaListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                L.m(view.toString());
                 view.setSelected(true);
                 cursor.moveToPosition(position);
                 Intent intent = new Intent(view.getContext(), AtividadesActivity.class);
@@ -47,6 +55,9 @@ public class VilaNova extends Fragment {
                 startActivity(intent);
             }
         });
+
         return rootView;
     }
+
+
 }

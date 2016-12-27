@@ -19,6 +19,7 @@ import java.util.Random;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Spinner;
 
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.MainActivity;
@@ -238,5 +239,16 @@ public class Utilidades extends AppCompatActivity {
 
     public static boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    public static int getIndex(Spinner spinner, String myString) {
+        // USE spMes.setSelection(Utilidades.getIndex(spMes, "Março"));
+        int index = 0;
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).equals(myString)) {
+                index = i;
+            }
+        }
+        return index;
     }
 }

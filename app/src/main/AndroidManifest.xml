@@ -76,7 +76,16 @@
 
         <service android:name=".services.CheckSQLIntentService" />
 
-        <activity android:name=".telas.LoginActivity"></activity>
+        <activity android:name=".telas.LoginActivity" />
+        <activity android:name=".telas.RelatorioActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.anagnostou.publisher.MainActivity" />
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".telas.SearchResults" />
+
+        </activity>
     </application>
 
 </manifest>

@@ -35,6 +35,10 @@
                 android:id="@+id/copy"
                 android:icon="@drawable/ic_sd_card_black_36dp"
                 android:title="@string/copy" />
+            <item
+                android:id="@+id/logoff"
+                android:icon="@drawable/logoff"
+                android:title="@string/log_off" />
         </menu>
     </item>
 

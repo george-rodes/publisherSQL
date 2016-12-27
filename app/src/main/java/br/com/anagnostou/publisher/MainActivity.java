@@ -1,13 +1,10 @@
 package br.com.anagnostou.publisher;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -38,8 +35,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,6 +58,7 @@ import br.com.anagnostou.publisher.telas.LoginActivity;
 import br.com.anagnostou.publisher.telas.NaoBatizados;
 import br.com.anagnostou.publisher.telas.Pioneiros;
 import br.com.anagnostou.publisher.telas.Pregadores;
+import br.com.anagnostou.publisher.telas.RelatorioActivity;
 import br.com.anagnostou.publisher.telas.SalaoDoReino;
 import br.com.anagnostou.publisher.telas.Servos;
 import br.com.anagnostou.publisher.telas.VaroesBatizados;
@@ -165,10 +161,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(this, CheckSQLIntentService.class);
         startService(intent);
         Utilidades.checkPreferencesIntLimitReached(this);
-        firstTimeLogin();
+        areWeAuthenticated();
     }
 
-    private void firstTimeLogin() {
+    private boolean areWeAuthenticated() {
         //user, mail, cleareance, timestamp
         //check if we are on line
         SharedPreferences sp = getSharedPreferences(SP_SPNAME, MODE_PRIVATE);
@@ -180,9 +176,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, LoginActivity.class);
             intent.putExtra("Origem", "MainActivity");
             startActivityForResult(intent, LOGIN_INTENT);
-        }
+            return false;
+        } else return true;
     }
 
+    private void clearAuthenticationKey() {
+        final SharedPreferences sp = getSharedPreferences(SP_SPNAME, MODE_PRIVATE);
+        if (sp.getString(SP_AUTHENTICATED, DEFAULT).equals("authenticated")) {
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+            builder1.setMessage(R.string.deseja_logoff);
+            builder1.setCancelable(true);
+            builder1.setPositiveButton("SIM", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString(SP_AUTHENTICATED, "");
+                    editor.apply();
+                    dialog.cancel();
+                }
+            });
+            builder1.setNegativeButton("NÂO", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -200,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     });
                     AlertDialog dialog = builder.create();
                     dialog.show();
-                } else L.m("Usuario Authenticado");
+                }
             }
         }
     }
@@ -212,10 +232,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else return false;
     }
 
-
     public void getPHPJsonPublisherData() {
-        //colocar no preferences
-        // com url errado, parou, como tratar do erro
         String url = sp.getString("php_publisher_full", NA);
         StringRequest srPublisher = new StringRequest(url, new Response.Listener<String>() {
             @Override
@@ -234,8 +251,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void showPHPJsonPublisherData(String response) {
-//        if (!sqLiteDatabase.isOpen())
-//            sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
         try {
             JSONArray arrayJSON = new JSONArray(response);
             if (sp.getBoolean("fullMySQLImport", false)) {
@@ -250,8 +265,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void getPHPJsonRelatorioData() {
-        //colocar no preferences
-        // com url errado, parou, como tratar do erro
         String url = sp.getString("php_report_full", NA);
         StringRequest srRelatorio = new StringRequest(url, new Response.Listener<String>() {
             @Override
@@ -271,9 +284,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void showPHPJsonRelatorioData(String response) {
-//        if (!sqLiteDatabase.isOpen())
-//            sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-
         try {
             JSONArray arrayJSON = new JSONArray(response);
             if (sp.getBoolean("fullMySQLImport", false)) {
@@ -358,9 +368,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.novo_relatorio) {
-            //Activity novo relatorio
+            if (areWeAuthenticated()) {
+                Intent intent = new Intent(this, RelatorioActivity.class);
+                intent.putExtra("origem", "MainActivity");
+                intent.putExtra("objetivo", "novo relatorio");
+                startActivity(intent);
+            }
         } else if (id == R.id.editar_relatorio) {
-            //Activity novo relatorio
+            if (areWeAuthenticated()) {
+                Intent intent = new Intent(this, RelatorioActivity.class);
+                intent.putExtra("origem", "MainActivity");
+                intent.putExtra("objetivo", "editar relatorio");
+                startActivity(intent);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -385,12 +405,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(this, AppPreferences.class));
         } else if (id == R.id.copy) {
             copyDataBaseSdCard();
+        } else if (id == R.id.logoff) {
+            clearAuthenticationKey();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
         public SectionsPagerAdapter(FragmentManager fm) {

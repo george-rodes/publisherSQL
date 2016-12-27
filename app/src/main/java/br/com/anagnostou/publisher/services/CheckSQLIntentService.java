@@ -56,7 +56,7 @@ public class CheckSQLIntentService extends IntentService {
         while (!dataBaseOperationInProgress) {
             try {
                 //createNotification();
-                L.m("Thread ID " + Thread.currentThread().getId());
+                //L.m("Thread ID " + Thread.currentThread().getId());
                 Thread.sleep(5000);
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTrelatorio();
                 Thread.sleep(5000);
@@ -90,7 +90,7 @@ public class CheckSQLIntentService extends IntentService {
 
     private void checkTTcadastro() {
         getCheckTT();
-        L.m("checkTTcadastro idCadastro beginning: " + idCadastro);
+        //L.m("checkTTcadastro idCadastro beginning: " + idCadastro);
         StringRequest srCadastro = new StringRequest(checkTTcadastroUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -135,12 +135,12 @@ public class CheckSQLIntentService extends IntentService {
                             spEditor = sp.edit();
                             spEditor.putString("ttcadastro_id", idRegistroProcessadoCadastro.toString());
                             spEditor.commit();
-                        } else L.m("checkTTcadastro idRegistroProcessado is null ");
+                        }; //else L.m("checkTTcadastro idRegistroProcessado is null ");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     dataBaseOperationInProgress = false;
-                    L.m("checkTTcadastro DatabaseOperation Completed! with ID: " + idRegistroProcessadoCadastro);
+                   // L.m("checkTTcadastro DatabaseOperation Completed! with ID: " + idRegistroProcessadoCadastro);
                 }
             }
         }, null);
