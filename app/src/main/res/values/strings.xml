@@ -71,6 +71,31 @@
     <string name="publicador">Publicador</string>
     <string name="log_off">Log Off</string>
     <string name="deseja_logoff">Deseja fazer logoff do servidor?</string>
+    <string name="cancelar">CANCELAR</string>
+    <string name="enviarM">ENVIAR</string>
+    <string name="Label_familia">Familia:</string>
+    <string name="label_grupo">Grupo:</string>
+    <string name="label_medias_meses">Médias últimos x Meses</string>
+    <string name="label_media_horas">Média Horas 6 Meses</string>
+    <string name="label_media_revisitas">Média Revisitas 6 Meses</string>
+    <string name="label_media_estudos">Média Estudos 6 Meses</string>
+    <string name="label_media_videos">Média Videos</string>
+    <string name="label_media_publicaoes">Média Publicações</string>
+    <string name="label_pioneiro_aux">Saiu de Pioneiro Auxiliar x vezes</string>
+    <string name="label_nao_relatou">Deixou de relatar x vezes</string>
+    <string name="contato">Contato</string>
+    <string name="rua">Rua</string>
+    <string name="bairro">Bairro</string>
+    <string name="extra">Extra</string>
+    <string name="label_tempo_de_batismo">Tempo de Batismo</string>
+    <string name="label_dados_pessoais">Dados Pessoais</string>
+    <string name="label_idade">Idade:</string>
+    <string name="relatorio">Relatório</string>
+    <string name="SIM">SIM</string>
+    <string name="NAO">NÂO</string>
+    <string name="dialogo_cancelar_envio">Deseja Cancelar o Envio do Relatório?</string>
+    <string name="dialogo_relatorio_existe">Este relatório já foi enviado!\nDeseja corrigir o relatório atual?</string>
+    <string name="dialogo_escolhe_publicador">Por favor, escolhe um publicador!</string>
 
 
     <string-array name="sourceDataImport">

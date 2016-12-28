@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void requestLogin(String email, String password) {
+    private void requestLogin(final String email, String password) {
         final SharedPreferences sp = getSharedPreferences( SP_SPNAME, MODE_PRIVATE);
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -76,6 +76,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 && jsonObject.getString("result").contentEquals("authenticated")) {
                             SharedPreferences.Editor editor = sp.edit();
                             editor.putString(SP_AUTHENTICATED, "authenticated" );
+                            editor.putString("email", email );
                             editor.apply();
                             voltaParaCasa();
                         }  naoLogouNoServidor (jsonObject.getString("result"));

@@ -38,6 +38,11 @@
             android:summary="Script PHP para buscar as atualizações da tabela dos relatórios"
             android:title="Script PHP Atualização Cadastros" />
         <EditTextPreference
+            android:defaultValue="http://www.anagnostou.com.br/phptut/report_send.php"
+            android:key="php_report_send"
+            android:summary="Script PHP para envio de relatórios"
+            android:title="Script PHP Envio de Relatórios" />
+        <EditTextPreference
             android:defaultValue="1"
             android:key="ttrelatorio_id"
             android:numeric="integer"

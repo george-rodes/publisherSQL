@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="pressed_color">#8b9afd</color>
     <color name="depressed_color">#d3e9fd</color>
+    <color name="white">#FFF</color>
     <color name="dark_color">#000</color>
     <color name="black">#000</color>
 

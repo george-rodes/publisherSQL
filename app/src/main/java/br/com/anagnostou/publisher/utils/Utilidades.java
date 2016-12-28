@@ -23,6 +23,7 @@ import android.widget.Spinner;
 
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.MainActivity;
+import java.util.StringTokenizer;
 
 public class Utilidades extends AppCompatActivity {
 
@@ -100,16 +101,7 @@ public class Utilidades extends AppCompatActivity {
         return cal;
     }
 
-    /**
-     * Returns a psuedo-random number between min and max, inclusive.
-     * The difference between min and max can be at most
-     * <code>Integer.MAX_VALUE - 1</code>.
-     *
-     * @param min Minimim value
-     * @param max Maximim value.  Must be greater than min.
-     * @return Integer between min and max, inclusive.
-     * @see Random#nextInt(int)
-     */
+
     public static int randInt(int min, int max) {
 
         // Usually this can be a field rather than a method variable
@@ -229,19 +221,11 @@ public class Utilidades extends AppCompatActivity {
         spEditor.apply();
     }
 
-    /*public static boolean areWeAuthenticated() {
-        //check shared prefekeys
-        //user, mail, cleareance, timestamp
-        //chach if we are on line
-
-        return true;
-    }*/
-
     public static boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    public static int getIndex(Spinner spinner, String myString) {
+    public static int getSpinnerIndex(Spinner spinner, String myString) {
         // USE spMes.setSelection(Utilidades.getIndex(spMes, "Março"));
         int index = 0;
         for (int i = 0; i < spinner.getCount(); i++) {
@@ -251,4 +235,69 @@ public class Utilidades extends AppCompatActivity {
         }
         return index;
     }
+
+    public static int[] diaMesAno(String data) {
+        int[] result = {1, 1, 2016};
+        String dia;
+        String mes;
+        String ano;
+        StringTokenizer token = new StringTokenizer(data, "/");
+
+        dia = token.nextToken();
+        mes = token.nextToken();
+        ano = token.nextToken();
+
+        result[0] = Integer.parseInt(dia);
+        result[1] = Integer.parseInt(mes);
+        result[2] = Integer.parseInt(ano);
+        return result;
+    }
+
+
+    public static boolean validarData(String data) {
+        String dia;
+        String mes;
+        String ano;
+        StringTokenizer token = new StringTokenizer(data, "/");
+        try {
+            dia = token.nextToken();
+            mes = token.nextToken();
+            ano = token.nextToken();
+
+            if (dia.length() < 1 || dia.length() > 2)
+                return false;
+            if (mes.length() < 1 || mes.length() > 2)
+                return false;
+            if (ano.length() != 4)
+                return false;
+
+
+            int intDia = Integer.parseInt(dia);
+            int intMes = Integer.parseInt(mes);
+            int intAno = Integer.parseInt(ano);
+            if (intMes < 1 || intMes > 12)
+                return false;
+
+            if (intMes == 1 || intMes == 3 || intMes == 5 || intMes == 7 || intMes == 8 || intMes == 10 || intMes == 12) {
+                if (intDia < 1 || intDia > 31) return false;
+
+            } else if (intMes == 4 || intMes == 6 || intMes == 9 || intMes == 11) {
+                if (intDia < 1 || intDia > 30) return false;
+
+            } else if (intMes == 2) {
+                if (new GregorianCalendar().isLeapYear(intAno)) {
+                    if (intDia < 1 || intDia > 29) return false;
+
+                } else {
+                    if (intDia < 1 || intDia > 28) return false;
+                }
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
 }

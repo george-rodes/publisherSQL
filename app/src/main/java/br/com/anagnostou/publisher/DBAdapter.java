@@ -115,7 +115,6 @@ public class DBAdapter {
     }
 
 
-
     public Cursor retrieveRelatorios(String nome) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String orderBy = " ano asc, mes asc ";
@@ -137,6 +136,28 @@ public class DBAdapter {
         cursor.close();
         return sb.toString();
     }
+
+    public boolean checkIfPublisherExists(String name) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String[] columns = {DBHelper.NOME};
+        String[] selectionArgs = {name};
+        Cursor cursor = db.query(DBHelper.TABLE_NAME_PUBLICADOR, columns, DBHelper.NOME + " = ?", selectionArgs, null, null, null);
+        boolean result = cursor.getCount() > 0;
+        cursor.close();
+        return result;
+    }
+    public boolean checkIfReportExists(String ano, String mes, String nome) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String[] columns = {DBHelper.NOME};
+        String[] selectionArgs = {ano,mes,nome};
+        String criteria = " ano = ? AND mes = ? AND nome = ? ";
+        Cursor cursor = db.query(DBHelper.TABLE_NAME_RELATORIO, columns, criteria, selectionArgs, null, null, null);
+        boolean result = cursor.getCount() > 0;
+        cursor.close();
+        return result;
+
+    }
+
 
     public String selectVersao() {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
@@ -474,6 +495,8 @@ public class DBAdapter {
         int count = db.update(DBHelper.TABLE_NAME_PUBLICADOR, cv, selection, selectionArgs);
         return count > 0;
     }
+
+
 
 
     /*************************************
