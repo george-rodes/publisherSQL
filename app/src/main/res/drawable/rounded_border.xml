@@ -28,10 +28,10 @@
         />
 
     <padding
-        android:left="10dp"
-        android:top="5dp"
-        android:right="10dp"
-        android:bottom="5dp"
+        android:left="1dp"
+        android:top="1dp"
+        android:right="1dp"
+        android:bottom="1dp"
         />
 
 </shape>

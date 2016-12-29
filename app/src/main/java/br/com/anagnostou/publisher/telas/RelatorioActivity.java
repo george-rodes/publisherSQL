@@ -37,6 +37,7 @@ import java.util.List;
 
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
+import br.com.anagnostou.publisher.objetos.Relatorio;
 import br.com.anagnostou.publisher.phpmysql.LoginRequest;
 import br.com.anagnostou.publisher.phpmysql.SendReportRequest;
 import br.com.anagnostou.publisher.utils.L;
@@ -49,10 +50,12 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     AutoCompleteTextView etPublicador;
-    ArrayAdapter aPub, aAno, aMes;
-    Spinner spAno, spMes;
+    ArrayAdapter aPub, aAno, aMes, aModalidade;
+    Spinner spAno, spMes, spModalidade;
     EditText etPublicacoes, etVideos, etHoras, etRevisitas, etEstudos;
     Button clearPublicador, clearPublicacoes, clearVideos, clearHoras, clearRevisitas, clearEstudos, btCancel, btSend;
+    SharedPreferences sp, mySp;
+    String url, email;
 
 
     @Override
@@ -69,6 +72,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         etPublicador = (AutoCompleteTextView) findViewById(R.id.etPublicador);
         spAno = (Spinner) findViewById(R.id.spAno);
         spMes = (Spinner) findViewById(R.id.spMes);
+        spModalidade = (Spinner) findViewById(R.id.spModalidade);
         etPublicacoes = (EditText) findViewById(R.id.etPublicacoes);
         etVideos = (EditText) findViewById(R.id.etVideos);
         etHoras = (EditText) findViewById(R.id.etHoras);
@@ -92,23 +96,44 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         btSend.setOnClickListener(this);
         btCancel.setOnClickListener(this);
         aPub = new ArrayAdapter<>(this, R.layout.item_height, dbAdapter.retrieveAllPublicadores());
-        aAno = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.ano));
-        aMes = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.mesesNomes));
+        aAno = new ArrayAdapter<>(this, R.layout.spinner, getResources().getStringArray(R.array.ano));
+        aMes = new ArrayAdapter<>(this, R.layout.spinner, getResources().getStringArray(R.array.mesesNomes));
+        //aModalidade = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.modalidade));
+        aModalidade = new ArrayAdapter<>(this, R.layout.spinner, getResources().getStringArray(R.array.modalidade));
+
         etPublicador.setAdapter(aPub);
         spAno.setAdapter(aAno);
         spMes.setAdapter(aMes);
+        spModalidade.setAdapter(aModalidade);
         spAno.setSelection(anoNumero());
         spMes.setSelection(mesNumero() - 1);
 
-        Intent intent = getIntent();
-        if (intent.hasExtra("origem") && intent.hasExtra("objetivo")) {
-            L.t(this, getIntent().getStringExtra("origem") + " / " + getIntent().getStringExtra("objetivo"));
-        }
-        //apos enviar e receber a confirmacao do servidor incluir no banco local.
-        // nao esperar pelo serviço.
-        //after we receive an ok by the server we put it in here
-        //PHP check if it exists i not insert if yes update
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        url = sp.getString("php_report_send", "");
+        mySp = getSharedPreferences(SP_SPNAME, MODE_PRIVATE);
+        email = mySp.getString("email", "");
 
+        Intent intent = getIntent();
+        if (intent.hasExtra("nome")) {
+            String nome = intent.getStringExtra("nome");
+            etPublicador.setText(nome);
+            if (dbAdapter.retrieveModalidade(nome).contentEquals("Pioneiro")) {
+                spModalidade.setSelection(Utilidades.getSpinnerIndex(spModalidade, "Pioneiro Regular"));
+            }
+        }
+        if (intent.hasExtra("Origem") && intent.getStringExtra("Origem").contentEquals("CartaoAdapter")) {
+            String nome = intent.getStringExtra("nome");
+            int ano = intent.getIntExtra("ano", 0);
+            int mes = intent.getIntExtra("mes", 0);
+            etPublicador.setText(nome);
+            if (dbAdapter.retrieveModalidade(nome).contentEquals("Pioneiro")) {
+                spModalidade.setSelection(Utilidades.getSpinnerIndex(spModalidade, "Pioneiro Regular"));
+            }
+            spAno.setSelection(Utilidades.getSpinnerIndex(spAno, "" + ano));
+            spMes.setSelection(mes - 1);
+            buscaRelatorio(nome, ano, mes);
+
+        }
         editTextListener(etPublicacoes);
         editTextListener(etVideos);
         editTextListener(etHoras);
@@ -116,6 +141,30 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         editTextListener(etEstudos);
     }
 
+    private void buscaRelatorio(String nome, int ano, int mes) {
+        Relatorio r = dbAdapter.findRelatorio(nome, "" + ano, "" + mes);
+        if (r != null) {
+            String pub = ""+r.getPublicacoes();
+            String vid = ""+r.getVideos();
+            String hor = ""+r.getHoras();
+            String rev = ""+r.getRevisitas();
+            String est = ""+r.getEstudos();
+            etPublicacoes.setText(pub);
+            etVideos.setText(vid);
+            etHoras.setText(hor);
+            etRevisitas.setText(rev);
+            etEstudos.setText(est);
+        }
+    }
+
+    public void impedirPublicadorPassarPorPioneiro() {
+        String nome = etPublicador.getText().toString();
+        String mod = spModalidade.getSelectedItem().toString();
+        if (dbAdapter.retrieveModalidade(nome).contentEquals("Publicador") && mod.contentEquals("Pioneiro Regular")) {
+            //set the spinner to publicador
+            spModalidade.setSelection(Utilidades.getSpinnerIndex(spModalidade, "Publicador"));
+        }
+    }
 
     @Override
     public void onClick(View view) {
@@ -136,6 +185,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
             dialogoCancelarEnvio();
         } else if (id == R.id.btnRelatorioSend) {
             //vamos verificar e enviar
+            impedirPublicadorPassarPorPioneiro();
             checkBeforeSend();
         }
     }
@@ -143,6 +193,12 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
     public void verificaSeExistePublicador() {
         if (!dbAdapter.checkIfPublisherExists(etPublicador.getText().toString())) {
             dialogoPublicadorNaoExiste();
+        } else {
+            if (dbAdapter.retrieveModalidade(etPublicador.getText().toString()).contentEquals("Pioneiro")) {
+                //set the spinner to pioneiro
+                spModalidade.setSelection(Utilidades.getSpinnerIndex(spModalidade, "Pioneiro Regular"));
+            }
+            impedirPublicadorPassarPorPioneiro();
         }
     }
 
@@ -150,24 +206,26 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         final String nome = etPublicador.getText().toString();
         final String ano = spAno.getSelectedItem().toString();
         final String mes = "" + (Utilidades.getSpinnerIndex(spMes, spMes.getSelectedItem().toString()) + 1);
+        final String modalidade = spModalidade.getSelectedItem().toString();
+
         final String publicacoes = notEmpty(etPublicacoes.getText().toString());
         final String videos = notEmpty(etVideos.getText().toString());
         final String horas = notEmpty(etHoras.getText().toString());
         final String revisitas = notEmpty(etRevisitas.getText().toString());
         final String estudos = notEmpty(etEstudos.getText().toString());
-        //L.m(nome+"/"+ano+"/"+mes+"/"+ publicacoes+"/"+videos+"/"+horas+"/"+revisitas+"/"+estudos);
+
 
         if (!nome.isEmpty()) {
             if (dbAdapter.checkIfPublisherExists(etPublicador.getText().toString())) {
                 if (!dbAdapter.checkIfReportExists(ano, mes, nome)) {
-                    confirmarRelatorio(nome, ano, mes, publicacoes, videos, horas, revisitas, estudos);
+                    confirmarRelatorio(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos);
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(RelatorioActivity.this);
                     builder.setMessage(R.string.dialogo_relatorio_existe);
                     builder.setCancelable(true);
                     builder.setPositiveButton(R.string.SIM, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            confirmarRelatorio(nome, ano, mes, publicacoes, videos, horas, revisitas, estudos);
+                            confirmarRelatorio(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos);
                             dialog.cancel();
                         }
                     });
@@ -183,15 +241,21 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         } else dialogoPublicadorNaoInformado();
     }
 
-    private void confirmarRelatorio(final String nome, final String ano, final String mes, final String publicacoes, final String videos, final String horas, final String revisitas, final String estudos) {
-        String msg = "Confirmar Envio:" + "\nNome: " + nome + "\nMes: " + ano + "/" + mes
-                + "\nPublicações: " + publicacoes + "\nVideos: " + videos
+    private void confirmarRelatorio(final String nome, final String ano, final String mes, final String modalidade,
+                                    final String publicacoes, final String videos, final String horas, final String revisitas, final String estudos) {
+        String msg = "Confirmar Envio:" + "\nNome: " + nome + "\nMes: " + mes + "/" + ano
+                + "\nModalidade: " + modalidade + "\nPublicações: " + publicacoes + "\nVideos: " + videos
                 + "\nHoras: " + horas + "\nRevisitas: " + revisitas + "\nEstudos: " + estudos;
         AlertDialog.Builder builder = new AlertDialog.Builder(RelatorioActivity.this);
         builder.setMessage(msg);
         builder.setPositiveButton(R.string.SIM, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                enviarRelatorio(nome, ano, mes, publicacoes, videos, horas, revisitas, estudos);
+                enviarRelatorio(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos);
+                dialog.cancel();
+            }
+        });
+        builder.setNegativeButton(R.string.CANCEL, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
             }
         });
@@ -199,11 +263,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         dialog.show();
     }
 
-    private void enviarRelatorio(String nome, String ano, String mes, String publicacoes, String videos, String horas, String revisitas, String estudos) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        String url = sp.getString("php_report_send", "");
-        SharedPreferences mySp = getSharedPreferences(SP_SPNAME, MODE_PRIVATE);
-        String email = mySp.getString("email","");
+    private void enviarRelatorio(String nome, String ano, String mes, String modalidade, String publicacoes, String videos, String horas, String revisitas, String estudos) {
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -212,12 +272,15 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
                 try {
                     JSONArray arrayJSON = new JSONArray(response);
                     if (arrayJSON.length() > 0) {
-
                         JSONObject jsonObject = arrayJSON.getJSONObject(0);
                         if (!jsonObject.getString("result").isEmpty()) {
-                            //
-
-
+                            if (jsonObject.getString("result").contentEquals("SUCCESS")) {
+                                if (jsonObject.getString("action").contentEquals("INSERT")) {
+                                    dialogoServidorSucessoInsert();
+                                } else {
+                                    dialogoServidorSucessoUpdate();
+                                }
+                            } else dialogoServidorFailure();
                         }
                     } else dialogoServidor();
                 } catch (JSONException e) {
@@ -226,8 +289,31 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
             }
         };
         RequestQueue queue = Volley.newRequestQueue(RelatorioActivity.this);
-        queue.add(new SendReportRequest(email, url, nome, ano, mes, publicacoes, videos, horas, revisitas, estudos, responseListener));
+        queue.add(new SendReportRequest(email, url, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, responseListener));
+    }
 
+    private void dialogoServidorSucessoUpdate() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(RelatorioActivity.this);
+        builder.setMessage(R.string.dialogo_servidor_corrigido);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void dialogoServidorSucessoInsert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(RelatorioActivity.this);
+        builder.setMessage(R.string.dialogo_servidor_gravado);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void dialogoServidor() {
@@ -242,25 +328,22 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         dialog.show();
     }
 
+    private void dialogoServidorFailure() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(RelatorioActivity.this);
+        builder.setMessage(R.string.problema_servidor_verificar);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     private String notEmpty(String s) {
         if (s.isEmpty()) return "0";
         else return s;
     }
-
-
-    //ano, mes, nome
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_atividades, menu);
-        /** SEARCH **/
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        return true;
-    }
-
 
     public int mesNumero() {
         int mes;
@@ -313,7 +396,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
 
     private void dialogoPublicadorNaoExiste() {
         AlertDialog.Builder builder = new AlertDialog.Builder(RelatorioActivity.this);
-        builder.setMessage("Publicador não existe!\nEscolhe um nome da lista.");
+        builder.setMessage(R.string.dialogo_publicador_nao_existe);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
@@ -333,10 +416,6 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         });
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    private void dialogoRelatorioExiste() {
-
     }
 
     public void editTextListener(EditText editText) {

@@ -20,95 +20,95 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/depressed_color"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvPubDados"
                 style="@style/publisherDetailsTitle"
-                android:text="Dados Pessoais" />
+                android:text="@string/label_dados_pessoais" />
 
             <TextView
                 android:id="@+id/tvPub5"
                 style="@style/publisherDetails"
-                android:text="Idade:" />
+                android:text="@string/label_idade" />
 
             <TextView
                 android:id="@+id/tvPub6"
                 style="@style/publisherDetails"
-                android:text="Tempo de Batismo" />
+                android:text="@string/label_tempo_de_batismo" />
 
             <TextView
                 android:id="@+id/tvPub1"
                 style="@style/publisherDetails"
-                android:text="Familia: " />
+                android:text="@string/Label_familia" />
 
             <TextView
                 android:id="@+id/tvPub2"
                 style="@style/publisherDetails"
-                android:text="Grupo:" />
+                android:text="@string/label_grupo" />
 
             <TextView
                 android:id="@+id/tvPubTitle"
                 style="@style/publisherDetailsTitle"
-                android:text="Médias últimos x Meses" />
+                android:text="@string/label_medias_meses" />
 
             <TextView
                 android:id="@+id/tvPub7"
                 style="@style/publisherDetails"
-               android:text="Média Horas 6 Meses" />
+               android:text="@string/label_media_horas" />
 
             <TextView
                 android:id="@+id/tvPub8"
                 style="@style/publisherDetails"
 
-                android:text="Média Revisitas 6 Meses" />
+                android:text="@string/label_media_revisitas" />
 
             <TextView
                 android:id="@+id/tvPub9"
                 style="@style/publisherDetails"
-                android:text="Média Estudos 6 Meses" />
+                android:text="@string/label_media_estudos" />
 
             <TextView
                 android:id="@+id/tvPub13"
                 style="@style/publisherDetails"
-                android:text="Média Videos" />
+                android:text="@string/label_media_videos" />
 
             <TextView
                 android:id="@+id/tvPub14"
                 style="@style/publisherDetails"
-               android:text="Média Publicações" />
+               android:text="@string/label_media_publicaoes" />
 
             <TextView
                 android:id="@+id/tvPub10"
                 style="@style/publisherDetails"
-                android:text="Saiu de Pioneiro Auxiliar x vezes" />
+                android:text="@string/label_pioneiro_aux" />
 
             <TextView
                 android:id="@+id/tvPub11"
                 style="@style/publisherDetails"
-                android:text="Deixou de relatar x vezes" />
+                android:text="@string/label_nao_relatou" />
 
             <TextView
                 android:id="@+id/textView"
                 style="@style/publisherDetailsTitle"
-                android:text="Contato" />
+                android:text="@string/contato" />
 
             <TextView
                 android:id="@+id/tvPub3"
                 style="@style/publisherDetails"
-                android:text="Rua" />
+                android:text="@string/rua" />
 
             <TextView
                 android:id="@+id/tvPub4"
                 style="@style/publisherDetails"
-                android:text="Bairro" />
+                android:text="@string/bairro" />
 
             <TextView
                 android:id="@+id/tvPub12"
                 style="@style/publisherDetails"
-                android:text="Extra" />
+                android:text="@string/extra" />
 
             <TextView
                 style="@style/publisherDetails" />
@@ -130,13 +130,12 @@
 
         <TextView
             android:id="@+id/tvPubFone"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_above="@+id/button"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
             android:gravity="center_vertical|center_horizontal"
-            android:text="015-981...58.27.26"
+            android:text="@string/fone"
             android:textAlignment="center"
             android:textColor="#FFF"
             android:textSize="24sp" />
@@ -149,6 +148,7 @@
             android:onClick="ligarFone"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_call_white_24dp"
-            android:textSize="20dp" />
+            android:textSize="20sp"
+            android:contentDescription="@string/videos" />
     </LinearLayout>
 </RelativeLayout>

@@ -1,8 +1,11 @@
 package br.com.anagnostou.publisher.telas;
 
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,13 +22,17 @@ import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.utils.Utilidades;
 import br.com.anagnostou.publisher.objetos.Publicador;
 
+import static br.com.anagnostou.publisher.MainActivity.DEFAULT;
+import static br.com.anagnostou.publisher.MainActivity.SP_AUTHENTICATED;
+import static br.com.anagnostou.publisher.MainActivity.SP_SPNAME;
+
 public class AtividadesActivity extends AppCompatActivity {
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     TextView tvPub1, tvPub2, tvPub3, tvPub4, tvPub5, tvPub6, tvPub7, tvPub8, tvPub9,
             tvPub10, tvPub11, tvPub12, tvPub13, tvPub14, tvPubTitle, tvPubFone, tvNomePublicador;
     String nome;
-
+    private static final int LOGIN_INTENT = 275;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,9 +95,35 @@ public class AtividadesActivity extends AppCompatActivity {
             startActivity(intent);
 
             return true;
+        } else if (item.getItemId() == R.id.enviarRelatorio) {
+            if (areWeAuthenticated()) {
+                Intent intent = new Intent(this, RelatorioActivity.class);
+                intent.putExtra("origem", "AtividadesActivity");
+                intent.putExtra("objetivo", "novo relatorio");
+                intent.putExtra("nome",nome);
+                startActivity(intent);
+            }
         }
+
         return true;
     }
+
+    private boolean areWeAuthenticated() {
+        //user, mail, cleareance, timestamp
+        //check if we are on line
+        SharedPreferences sp = getSharedPreferences(SP_SPNAME, MODE_PRIVATE);
+        //'authenticated ' is what we receive from the server
+        if (!sp.getString(SP_AUTHENTICATED, DEFAULT).equals("authenticated")
+                && (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)))) {
+            // we are not authenticated and we are on line, so lets login
+            //call activity for result
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.putExtra("Origem", "AtividadesActivity");
+            startActivityForResult(intent, LOGIN_INTENT);
+            return false;
+        } else return true;
+    }
+
 
     public void achaPublicador(String nome) {
         String idade;

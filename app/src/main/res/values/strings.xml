@@ -14,7 +14,7 @@
     <string name="atualizar_banco_pergunta">Atualização Disponivel!\nAtualizar Banco de Dados?</string>
     <string name="background_jobs_in_progress">Background Jobs in Progress</string>
     <string name="bofete">Congregação Bofete</string>
-    <string name="cartao">Cartão</string>
+    <string name="cartao">Ver Cartão</string>
     <string name="data">Data</string>
     <string name="envia_cartao">Envia Cartão</string>
     <string name="error">Houston, temos um problema</string>
@@ -52,7 +52,7 @@
     <string name="totais">Totais</string>
     <string name="videos">Videos</string>
     <string name="copy">Copiar Banco para Memória</string>
-    <string name="novo_relatorio">Novo Relatório</string>
+    <string name="novo_relatorio">Enviar Relatório</string>
     <string name="corrrigir_relatorio">Corrigir Relatório</string>
     <string name="autenticacao_falhou">A autenticação falhou!</string>
     <string name="ok">OK</string>
@@ -64,11 +64,11 @@
     <string name="servidor_nao_respondeu">Servidor não respondeu NADA</string>
     <string name="autenticacao">AUTENTICAÇÂO</string>
     <string name="autenticacao_instalacao">A autenticação é feita apenas na primeira vez após a instalação do aplicativo.
-        Sem a a autenticação não será possivel enviar relatórios para o servidor.
+        Sem a autenticação não será possivel enviar relatórios para o servidor.
     </string>
     <string name="enviar">Enviar</string>
-    <string name="nao_quero">Mais Tarde</string>
-    <string name="publicador">Publicador</string>
+    <string name="nao_quero">Entendi.\nQuero deixar para depois</string>
+    <string name="publicador">Nome</string>
     <string name="log_off">Log Off</string>
     <string name="deseja_logoff">Deseja fazer logoff do servidor?</string>
     <string name="cancelar">CANCELAR</string>
@@ -96,6 +96,12 @@
     <string name="dialogo_cancelar_envio">Deseja Cancelar o Envio do Relatório?</string>
     <string name="dialogo_relatorio_existe">Este relatório já foi enviado!\nDeseja corrigir o relatório atual?</string>
     <string name="dialogo_escolhe_publicador">Por favor, escolhe um publicador!</string>
+    <string name="dialogo_publicador_nao_existe">Publicador não existe!\nEscolhe um nome da lista.</string>
+    <string name="problema_servidor_verificar">Problema no Servidor. Favor Verificar</string>
+    <string name="CANCEL">CANCELAR</string>
+    <string name="dialogo_servidor_corrigido">O Relatório foi corrigido com sucesso!</string>
+    <string name="dialogo_servidor_gravado">O Relatório foi enviado com sucesso!</string>
+    <string name="fone">015-981...58.27.26</string>
 
 
     <string-array name="sourceDataImport">
@@ -125,5 +131,13 @@
         <item>2017</item>
         <item>2018</item>
     </string-array>
+
+    <string-array name="modalidade">
+        <item>Publicador</item>
+        <item>Pioneiro Regular</item>
+        <item>Pioneiro Auxiliar</item>
+
+    </string-array>
+
 
 </resources>

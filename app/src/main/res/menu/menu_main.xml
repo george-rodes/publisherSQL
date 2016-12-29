@@ -15,11 +15,7 @@
         android:orderInCategory="200"
         android:title="@string/novo_relatorio"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/editar_relatorio"
-        android:orderInCategory="300"
-        android:title="@string/corrrigir_relatorio"
-        app:showAsAction="never" />
+
 
     <!--
     <item

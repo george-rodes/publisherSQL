@@ -23,6 +23,7 @@ import java.util.List;
 
 import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
+import br.com.anagnostou.publisher.utils.L;
 
 public class DBAdapter {
     public DBHelper mydbHelper;
@@ -146,10 +147,21 @@ public class DBAdapter {
         cursor.close();
         return result;
     }
+
+    public String retrieveModalidade(String name) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String[] columns = {DBHelper.PIPU};
+        String[] selectionArgs = {name};
+        Cursor cursor = db.query(DBHelper.TABLE_NAME_PUBLICADOR, columns, DBHelper.NOME + " = ?", selectionArgs, null, null, null);
+        if (cursor.moveToNext()) {
+            return cursor.getString(cursor.getColumnIndex(DBHelper.PIPU));
+        } else return "Publicador";
+    }
+
     public boolean checkIfReportExists(String ano, String mes, String nome) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.NOME};
-        String[] selectionArgs = {ano,mes,nome};
+        String[] selectionArgs = {ano, mes, nome};
         String criteria = " ano = ? AND mes = ? AND nome = ? ";
         Cursor cursor = db.query(DBHelper.TABLE_NAME_RELATORIO, columns, criteria, selectionArgs, null, null, null);
         boolean result = cursor.getCount() > 0;
@@ -302,6 +314,24 @@ public class DBAdapter {
             sb.append("No Records");
             return sb.toString();
         }
+    }
+
+    public Relatorio findRelatorio(String nome, String ano, String mes) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String[] columns = {DBHelper.PUBLICACOES, DBHelper.VIDEOS, DBHelper.HORAS, DBHelper.REVISITAS, DBHelper.ESTUDOS};
+        String[] selectionArgs = {nome, ano, mes};
+        String str = DBHelper.NOME + " = ? AND " + DBHelper.ANO + " = ?  AND " + DBHelper.MES + " = ? ";
+        Cursor cursor = db.query(DBHelper.TABLE_NAME_RELATORIO, columns, str, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            return new Relatorio(Integer.parseInt(ano),
+                    Integer.parseInt(mes), nome, "modalidade",
+                    cursor.getInt(cursor.getColumnIndex(DBHelper.VIDEOS)),
+                    cursor.getInt(cursor.getColumnIndex(DBHelper.HORAS)),
+                    cursor.getInt(cursor.getColumnIndex(DBHelper.PUBLICACOES)),
+                    cursor.getInt(cursor.getColumnIndex(DBHelper.REVISITAS)),
+                    cursor.getInt(cursor.getColumnIndex(DBHelper.ESTUDOS)));
+        } else return null;
     }
 
     public String[] somaHorasMeses(String nome) {
@@ -495,8 +525,6 @@ public class DBAdapter {
         int count = db.update(DBHelper.TABLE_NAME_PUBLICADOR, cv, selection, selectionArgs);
         return count > 0;
     }
-
-
 
 
     /*************************************

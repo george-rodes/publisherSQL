@@ -5,10 +5,33 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+
     </style>
 
     <style name="SplashScreenTheme" parent="AppTheme.NoActionBar">
         <item name="android:windowFullscreen">true</item>
+        <!-- For the resting Spinner style -->
+        <item name="android:spinnerItemStyle">
+            @style/spinnerItemStyle
+        </item>
+
+        <!-- For each individual Spinner list item once clicked on -->
+        <item name="android:spinnerDropDownItemStyle">
+            @style/spinnerDropDownItemStyle
+        </item>
+    </style>
+
+    <style name="spinnerItemStyle">
+        <item name="android:padding">10dp</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="spinnerDropDownItemStyle">
+        <item name="android:padding">20dp</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:textColor">#FFFFFF</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -35,15 +58,12 @@
         <item name="android:layout_marginTop">15dp</item>
         <item name="android:layout_height">45dp</item>
         <item name="android:layout_marginLeft">5dp</item>
-
-
     </style>
 
     <style name="publisherDetails" parent="publisherCommon">
         <item name="android:textSize">18sp</item>
         <item name="android:layout_marginTop">1dp</item>
         <item name="android:layout_marginBottom">1dp</item>
-
         <item name="android:layout_marginLeft">15dp</item>
         <item name="android:layout_marginRight">2dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -64,24 +84,19 @@
         <item name="android:layout_marginTop">5dp</item>
         <item name="android:layout_height">90dp</item>
         <item name="android:layout_marginLeft">10dp</item>
-
-
     </style>
 
     <style name="publisherDetailsLarge" parent="publisherCommonLarge">
         <item name="android:textSize">36sp</item>
         <item name="android:layout_marginTop">0dp</item>
         <item name="android:layout_marginBottom">2dp</item>
-
         <item name="android:layout_marginLeft">30dp</item>
         <item name="android:layout_marginRight">4dp</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-
     <style name="myToolBar" parent="ThemeOverlay.AppCompat.Dark">
         <item name="android:background">@color/colorPrimary</item>
-
     </style>
 
     <style name="relatorio_tela_pequena_cabecalho">
@@ -91,7 +106,6 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">12sp</item>
         <item name="android:gravity">center</item>
-
     </style>
 
     <style name="relatorio_tela_pequena">
@@ -102,8 +116,6 @@
         <item name="android:textSize">13sp</item>
         <item name="android:gravity">center</item>
     </style>
-
-
 
     <style name="relatorio_tela_grande_cabecalho">
         <item name="android:layout_width">0dp</item>
@@ -124,5 +136,27 @@
         <item name="android:textStyle">normal</item>
         <item name="android:gravity">center</item>
     </style>
+
+    <style name="loginLarge">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">20dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">@color/dark_color</item>
+        <item name="android:background">@color/depressed_color</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textStyle">bold</item>
+
+    </style>
+
+
+    <style name="relatorioInputGe">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">@color/dark_color</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:layout_marginTop">5dp</item>
+    </style>
+
 
 </resources>

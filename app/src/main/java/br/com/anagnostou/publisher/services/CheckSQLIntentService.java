@@ -152,7 +152,7 @@ public class CheckSQLIntentService extends IntentService {
 
     public void checkTTrelatorio() {
         getCheckTT();
-        L.m("checkTTrelatorio idRelatorio beginning: " + idRelatorio);
+        //L.m("checkTTrelatorio idRelatorio beginning: " + idRelatorio);
         StringRequest srRelatorio = new StringRequest(checkTTrelatorioUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

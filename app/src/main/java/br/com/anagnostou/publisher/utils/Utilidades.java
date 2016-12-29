@@ -226,7 +226,7 @@ public class Utilidades extends AppCompatActivity {
     }
 
     public static int getSpinnerIndex(Spinner spinner, String myString) {
-        // USE spMes.setSelection(Utilidades.getIndex(spMes, "Março"));
+        // USE spMes.setSelection(Utilidades.getSpinnerIndex(spMes, "Março"));
         int index = 0;
         for (int i = 0; i < spinner.getCount(); i++) {
             if (spinner.getItemAtPosition(i).equals(myString)) {

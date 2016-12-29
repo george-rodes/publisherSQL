@@ -9,6 +9,8 @@
             android:id="@+id/varoesBatizadosListView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:divider="@color/colorPrimaryDark"
+            android:dividerHeight="2dp"
             android:paddingBottom="60dp" />
 
 </FrameLayout>

@@ -14,7 +14,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
+        android:layout_margin="@dimen/marginRelatorioG"
         android:background="@drawable/rounded_border">
 
         <AutoCompleteTextView
@@ -25,14 +25,15 @@
             android:hint="@string/publicador"
             android:inputType="textVisiblePassword"
             android:imeOptions="actionNext"
-            android:textStyle="bold" android:textSize="24sp"/>
+            style="@style/relatorioInputGe"
+            android:textSize="32sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/clearPublicador"
-            android:layout_width="@dimen/clearBig"
-            android:layout_height="@dimen/clearBig"
+            android:layout_width="@dimen/clearBigger2"
+            android:layout_height="@dimen/clearBigger2"
             android:layout_alignParentEnd="true"
-
             android:layout_centerVertical="true"
             android:background="@drawable/clear_text"
             android:focusable="false" />
@@ -41,16 +42,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
+        android:layout_margin="@dimen/marginRelatorioG"
         android:orientation="horizontal">
 
         <Spinner
+
             android:id="@+id/spMes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="3sp"
             android:layout_weight="1"
-            android:background="@drawable/rounded_border" />
+            android:background="@drawable/rounded_border"
+           />
 
         <Spinner
             android:id="@+id/spAno"
@@ -63,20 +66,22 @@
     </LinearLayout>
 
     <Spinner
+
         android:id="@+id/spModalidade"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
+        android:layout_margin="@dimen/marginRelatorioG"
         android:background="@drawable/rounded_border" />
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
+        android:layout_margin="@dimen/marginRelatorioG"
         android:background="@drawable/rounded_border">
 
         <EditText
+            style="@style/relatorioInputGe"
             android:id="@+id/etPublicacoes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -86,9 +91,10 @@
             android:inputType="number" />
 
         <Button
+
             android:id="@+id/clearPublicacoes"
-            android:layout_width="@dimen/clearBig"
-            android:layout_height="@dimen/clearBig"
+            android:layout_width="@dimen/clearBigger2"
+            android:layout_height="@dimen/clearBigger2"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/clear_text"
@@ -98,10 +104,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
+        android:layout_margin="@dimen/marginRelatorioG"
         android:background="@drawable/rounded_border">
 
         <EditText
+            style="@style/relatorioInputGe"
             android:id="@+id/etVideos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -112,8 +119,8 @@
 
         <Button
             android:id="@+id/clearVideos"
-            android:layout_width="@dimen/clearBig"
-            android:layout_height="@dimen/clearBig"
+            android:layout_width="@dimen/clearBigger2"
+            android:layout_height="@dimen/clearBigger2"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/clear_text"
@@ -123,10 +130,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
+        android:layout_margin="@dimen/marginRelatorioG"
         android:background="@drawable/rounded_border">
 
         <EditText
+            style="@style/relatorioInputGe"
             android:id="@+id/etHoras"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -137,8 +145,8 @@
 
         <Button
             android:id="@+id/clearHoras"
-            android:layout_width="@dimen/clearBig"
-            android:layout_height="@dimen/clearBig"
+            android:layout_width="@dimen/clearBigger2"
+            android:layout_height="@dimen/clearBigger2"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/clear_text"
@@ -148,10 +156,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
+        android:layout_margin="@dimen/marginRelatorioG"
         android:background="@drawable/rounded_border">
 
         <EditText
+            style="@style/relatorioInputGe"
             android:id="@+id/etRevisitas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -162,8 +171,8 @@
 
         <Button
             android:id="@+id/clearRevisitas"
-            android:layout_width="@dimen/clearBig"
-            android:layout_height="@dimen/clearBig"
+            android:layout_width="@dimen/clearBigger2"
+            android:layout_height="@dimen/clearBigger2"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/clear_text"
@@ -173,10 +182,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
+        android:layout_margin="@dimen/marginRelatorioG"
         android:background="@drawable/rounded_border">
 
         <EditText
+            style="@style/relatorioInputGe"
             android:id="@+id/etEstudos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -187,15 +197,15 @@
 
         <Button
             android:id="@+id/clearEstudos"
-            android:layout_width="@dimen/clearBig"
-            android:layout_height="@dimen/clearBig"
+            android:layout_width="@dimen/clearBigger2"
+            android:layout_height="@dimen/clearBigger2"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/clear_text"
             android:focusable="false" />
     </RelativeLayout>
     <LinearLayout
-        android:layout_margin="@dimen/marginRelatorio"
+        android:layout_margin="@dimen/marginRelatorioG"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -208,6 +218,7 @@
             android:background="@drawable/btn_bg2"
             android:textColor="@color/btn_color"
             android:layout_margin="10dp"
+            android:textSize="28sp"
             />
         <Button
             android:layout_width="0dp"
@@ -217,7 +228,8 @@
             android:id="@+id/btnRelatorioSend"
             android:background="@drawable/btn_bg2"
             android:textColor="@color/btn_color"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:textSize="28sp"/>
     </LinearLayout>
 
 </LinearLayout>

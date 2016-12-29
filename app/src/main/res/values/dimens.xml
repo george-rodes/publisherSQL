@@ -12,10 +12,11 @@
     <dimen name="relatorio_cabecalho_norma">12sp</dimen>
     <dimen name="relatorio_cabecalho_grande">14sp</dimen>
     <dimen name="settings_text">14sp</dimen>
-    <dimen name="marginRelatorio">4sp</dimen>
+    <dimen name="marginRelatorio">2sp</dimen>
+    <dimen name="marginRelatorioG">10sp</dimen>
 
-    <dimen name="clearBig">30dp</dimen>
-    <dimen name="clearBigger">50dp</dimen>
-    <dimen name="clearBigger2">70dp</dimen>
+    <dimen name="clearBig">20dp</dimen>
+    <dimen name="clearBigger">40dp</dimen>
+    <dimen name="clearBigger2">60dp</dimen>
 
 </resources>

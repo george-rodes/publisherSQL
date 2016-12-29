@@ -6,10 +6,11 @@
     tools:context="br.com.anagnostou.publisher.telas.Adriano">
 
         <ListView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/adrianoListView"
-
+            android:divider="@color/colorPrimaryDark"
+            android:dividerHeight="2dp"
             android:paddingBottom="60dp"
             />
 

@@ -374,13 +374,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 intent.putExtra("objetivo", "novo relatorio");
                 startActivity(intent);
             }
-        } else if (id == R.id.editar_relatorio) {
-            if (areWeAuthenticated()) {
-                Intent intent = new Intent(this, RelatorioActivity.class);
-                intent.putExtra("origem", "MainActivity");
-                intent.putExtra("objetivo", "editar relatorio");
-                startActivity(intent);
-            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -413,7 +406,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -577,7 +569,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
-
 
     public void copyDataBaseSdCard() {
         try {
