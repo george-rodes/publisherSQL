@@ -1,7 +1,11 @@
 package br.com.anagnostou.publisher.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,25 +17,31 @@ import java.util.List;
 
 import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.objetos.Relatorio;
+import br.com.anagnostou.publisher.telas.AtividadesActivity;
+import br.com.anagnostou.publisher.telas.LoginActivity;
 import br.com.anagnostou.publisher.telas.RelatorioActivity;
 import br.com.anagnostou.publisher.utils.L;
+import br.com.anagnostou.publisher.utils.Utilidades;
 
-/**
- * Created by George on 04/09/2016.
- */
+import static android.content.Context.MODE_PRIVATE;
+import static br.com.anagnostou.publisher.MainActivity.DEFAULT;
+import static br.com.anagnostou.publisher.MainActivity.SP_AUTHENTICATED;
+import static br.com.anagnostou.publisher.MainActivity.SP_SPNAME;
+
 public class CartaoAdapter extends RecyclerView.Adapter<CartaoAdapter.ItemViewHolder> {
-    List<Relatorio> relatorios;
-    Context context;
+    private List<Relatorio> relatorios;
+    private Context context;
 
     public CartaoAdapter(List<Relatorio> relatorios, Context context) {
         this.relatorios = relatorios;
         this.context = context;
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder {
+    class ItemViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
-        TextView data,publicacoes,horas,videos,revisitas,estudos;
-        public ItemViewHolder(View iv) {
+        TextView data, publicacoes, horas, videos, revisitas, estudos;
+
+        ItemViewHolder(View iv) {
             super(iv);
             cardView = (CardView) iv.findViewById(R.id.cvRelatorios);
             data = (TextView) iv.findViewById(R.id.data);
@@ -46,8 +56,7 @@ public class CartaoAdapter extends RecyclerView.Adapter<CartaoAdapter.ItemViewHo
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_cartao, viewGroup, false);
-        ItemViewHolder pvh = new ItemViewHolder(v);
-        return pvh;
+        return new ItemViewHolder(v);
     }
 
     @Override
@@ -64,14 +73,16 @@ public class CartaoAdapter extends RecyclerView.Adapter<CartaoAdapter.ItemViewHo
         h.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //L.m(nome+"/"+ano+"/"+mes);
-                Intent intent = new Intent(context, RelatorioActivity.class);
-                intent.putExtra("Origem", "CartaoAdapter");
-                intent.putExtra("nome", nome );
-                intent.putExtra("ano", ano );
-                intent.putExtra("mes", mes );
-                context.startActivity(intent);
-
+                if (Utilidades.isOnline((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE))) {
+                    if (areWeAuthenticated()) {
+                        Intent intent = new Intent(context, RelatorioActivity.class);
+                        intent.putExtra("Origem", "CartaoAdapter");
+                        intent.putExtra("nome", nome);
+                        intent.putExtra("ano", ano);
+                        intent.putExtra("mes", mes);
+                        context.startActivity(intent);
+                    }
+                } else dialogoNoInternet();
             }
         });
     }
@@ -81,9 +92,32 @@ public class CartaoAdapter extends RecyclerView.Adapter<CartaoAdapter.ItemViewHo
         return relatorios.size();
     }
 
-    private String naoMostraZero (int i){
-        if (i == 0) return ""; else return String.valueOf(i);
-   }
+    private String naoMostraZero(int i) {
+        if (i == 0) return "";
+        else return String.valueOf(i);
+    }
+
+    private boolean areWeAuthenticated() {
+        SharedPreferences sp = context.getSharedPreferences(SP_SPNAME, MODE_PRIVATE);
+        if (!sp.getString(SP_AUTHENTICATED, DEFAULT).equals("authenticated")
+                && (Utilidades.isOnline((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)))) {
+            Intent intent = new Intent(context, LoginActivity.class);
+            context.startActivity(intent);
+            return false;
+        } else return true;
+    }
+
+    private void dialogoNoInternet() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(R.string.sem_conexao_internet);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
 
 }

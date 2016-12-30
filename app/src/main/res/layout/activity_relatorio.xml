@@ -11,6 +11,15 @@
         android:id="@+id/relatorio_toolbar"
         layout="@layout/app_bar" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +44,8 @@
 
             android:layout_centerVertical="true"
             android:background="@drawable/clear_text"
-            android:focusable="false" />
+            android:focusable="false"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
     <LinearLayout
@@ -50,7 +60,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="3sp"
             android:layout_weight="1"
-            android:background="@drawable/rounded_border" />
+            android:background="@drawable/rounded_border"
+            android:layout_marginRight="3sp" />
 
         <Spinner
             android:id="@+id/spAno"
@@ -58,7 +69,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="3sp"
             android:layout_weight="1"
-            android:background="@drawable/rounded_border" />
+            android:background="@drawable/rounded_border"
+            android:layout_marginLeft="3sp" />
 
     </LinearLayout>
 
@@ -68,7 +80,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/marginRelatorio"
         android:background="@drawable/rounded_border" />
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -92,7 +103,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/clear_text"
-            android:focusable="false" />
+            android:focusable="false"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -117,7 +129,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/clear_text"
-            android:focusable="false" />
+            android:focusable="false"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -142,7 +155,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/clear_text"
-            android:focusable="false" />
+            android:focusable="false"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -156,7 +170,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:digits="0123456789"
-            android:hint="@string/videos"
+            android:hint="@string/revisitas"
             android:imeOptions="actionNext"
             android:inputType="number" />
 
@@ -167,7 +181,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/clear_text"
-            android:focusable="false" />
+            android:focusable="false"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -192,7 +207,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/clear_text"
-            android:focusable="false" />
+            android:focusable="false"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
     <LinearLayout
         android:layout_margin="@dimen/marginRelatorio"
@@ -220,4 +236,6 @@
             android:layout_margin="10dp"/>
     </LinearLayout>
 
+</LinearLayout>
+    </ScrollView>
 </LinearLayout>

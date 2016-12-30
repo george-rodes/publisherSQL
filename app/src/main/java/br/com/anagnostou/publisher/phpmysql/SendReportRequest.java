@@ -11,6 +11,11 @@ public class SendReportRequest extends StringRequest {
     //public static String REGISTER_REQUEST_URL = "http://www.anagnostou.com.br/phptut/report_signin_app.php";
     private Map<String, String> params;
 
+    /** Problema com os acentos
+     $nome = utf8_decode($nome );
+
+     */
+
     public SendReportRequest(String email, String url, String nome, String ano, String mes, String modalidade,
                              String publicacoes, String videos,
                              String horas, String revisitas, String estudos, Response.Listener<String> listener) {
@@ -26,7 +31,6 @@ public class SendReportRequest extends StringRequest {
         params.put("horas", horas);
         params.put("revisitas", revisitas);
         params.put("estudos", estudos);
-
 
     }
 

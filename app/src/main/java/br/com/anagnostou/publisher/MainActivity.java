@@ -226,10 +226,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public boolean tablesExist() {
-        if (Utilidades.existeTabela("relatorio", MainActivity.this)
+        return Utilidades.existeTabela("relatorio", MainActivity.this)
                 && Utilidades.existeTabela("publicador", MainActivity.this)
-                && Utilidades.existeTabela("versao", MainActivity.this)) return true;
-        else return false;
+                && Utilidades.existeTabela("versao", MainActivity.this);
     }
 
     public void getPHPJsonPublisherData() {
@@ -316,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else L.t(getApplicationContext(), getString(R.string.background_jobs_in_progress));
             return true;
         } else {
-            L.t(getApplicationContext(), getString(R.string.sem_conexao_internet));
+            dialogoNoInternet();
             return false;
         }
     }
@@ -368,12 +367,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.novo_relatorio) {
-            if (areWeAuthenticated()) {
-                Intent intent = new Intent(this, RelatorioActivity.class);
-                intent.putExtra("origem", "MainActivity");
-                intent.putExtra("objetivo", "novo relatorio");
-                startActivity(intent);
-            }
+            if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
+                if (areWeAuthenticated()) {
+                    Intent intent = new Intent(this, RelatorioActivity.class);
+                    intent.putExtra("origem", "MainActivity");
+                    intent.putExtra("objetivo", "novo relatorio");
+                    startActivity(intent);
+                }
+
+            } else  dialogoNoInternet();
+
+
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -590,6 +595,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } catch (Exception e) {
             L.m(e.toString());
         }
+    }
+
+    private void dialogoNoInternet() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage(R.string.sem_conexao_internet);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

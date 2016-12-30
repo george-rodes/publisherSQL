@@ -11,16 +11,18 @@
     tools:context="br.com.anagnostou.publisher.telas.LoginActivity">
 
     <TextView
+        android:layout_marginTop="10dp"
         android:id="@+id/tvLoginRequest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/autenticacao"
-        android:textColor="@color/depressed_color"
-        android:textAlignment="center"
-        style="@style/publisherDetailsTitle"
-        android:background="@drawable/rounded_button"/>
-
-
+        android:textColor="@color/colorPrimary"
+        style="@style/loginLarge"
+        android:background="@drawable/rounded_button_transparent"
+        android:textSize="30sp"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:textAlignment="center" />
 
     <EditText
         android:layout_below="@+id/tvLoginRequest"
@@ -55,7 +57,7 @@
 
     <TextView
         android:id="@+id/tvLoginRequestExplicacao"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:layout_below="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +65,7 @@
         android:text="@string/autenticacao_instalacao"
         android:textColor="@color/black"
         style="@style/publisherDetailsTitle"
-        android:textSize="12sp"
+        android:textSize="16sp"
         android:background="@drawable/rounded_border"/>
 
     <Button
@@ -74,7 +76,7 @@
         android:layout_below="@+id/tvLoginRequestExplicacao"
         android:textColor="@color/btn_color"
         android:text="@string/nao_quero"
-        android:textSize="12sp"
+        android:textSize="16sp"
 
         android:background="@drawable/btn_bg" />
 

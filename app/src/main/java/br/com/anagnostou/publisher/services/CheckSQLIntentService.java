@@ -135,7 +135,7 @@ public class CheckSQLIntentService extends IntentService {
                             spEditor = sp.edit();
                             spEditor.putString("ttcadastro_id", idRegistroProcessadoCadastro.toString());
                             spEditor.commit();
-                        }; //else L.m("checkTTcadastro idRegistroProcessado is null ");
+                        }//else L.m("checkTTcadastro idRegistroProcessado is null ");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

@@ -33,5 +33,5 @@
         android:right="1dp"
         android:bottom="1dp"
         />
-
+    <solid android:color="#fff" />
 </shape>

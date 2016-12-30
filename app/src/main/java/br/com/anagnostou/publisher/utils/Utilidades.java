@@ -109,9 +109,8 @@ public class Utilidades extends AppCompatActivity {
 
         // nextInt is normally exclusive of the top value,
         // so add 1 to make it inclusive
-        int randomNum = rand.nextInt((max - min) + 1) + min;
 
-        return randomNum;
+        return rand.nextInt((max - min) + 1) + min;
     }
 
     public static boolean isOnline(ConnectivityManager connMgr) {
@@ -173,19 +172,13 @@ public class Utilidades extends AppCompatActivity {
         if (dbAdapter.findFirstRelatorio().contentEquals("No Records")) {
             //L.m("No Records in RELATORIOS");
             return false;
-        } else if (dbAdapter.findFirstPublicador().contentEquals("No Records")) {
-            //L.m("No Records in PUBLICADORES");
-            return false;
-        } else {
-            return true;
-        }
+        } else return !dbAdapter.findFirstPublicador().contentEquals("No Records");
     }
 
     public static boolean findLocalFiles(String name) {
         File sdcard = Environment.getExternalStorageDirectory();
         File file = new File(sdcard, name);
-        if (file.exists()) return true;
-        else return false;
+        return file.exists();
     }
 
     public static void checkPreferencesIntLimitReached(Context context) {

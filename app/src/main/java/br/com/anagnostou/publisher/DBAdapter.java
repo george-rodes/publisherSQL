@@ -8,22 +8,14 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
-import android.os.Environment;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
-import br.com.anagnostou.publisher.utils.L;
+
 
 public class DBAdapter {
     public DBHelper mydbHelper;
@@ -58,7 +50,7 @@ public class DBAdapter {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setProjectionMap(mAliasMap);
         queryBuilder.setTables(DBHelper.TABLE_NAME_PUBLICADOR);
-        Cursor c = queryBuilder.query(mydbHelper.getReadableDatabase(),
+        return queryBuilder.query(mydbHelper.getReadableDatabase(),
                 new String[]{"_ID",
                         SearchManager.SUGGEST_COLUMN_TEXT_1,
                         SearchManager.SUGGEST_COLUMN_ICON_1,
@@ -69,7 +61,6 @@ public class DBAdapter {
                 null,
                 DBHelper.NOME + " asc ", "10"
         );
-        return c;
     }
 
     /**
@@ -78,11 +69,10 @@ public class DBAdapter {
     public Cursor getPublicador(String id) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(DBHelper.TABLE_NAME_PUBLICADOR);
-        Cursor c = queryBuilder.query(mydbHelper.getReadableDatabase(),
+        return queryBuilder.query(mydbHelper.getReadableDatabase(),
                 new String[]{"_id", "name", "familia", "grupo"},
                 "_id = ?", new String[]{id}, null, null, null, "1"
         );
-        return c;
     }
 
     /**
@@ -91,11 +81,10 @@ public class DBAdapter {
     public Cursor getOnePublicador(String id) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(DBHelper.TABLE_NAME_PUBLICADOR);
-        Cursor c = queryBuilder.query(mydbHelper.getReadableDatabase(),
+        return queryBuilder.query(mydbHelper.getReadableDatabase(),
                 new String[]{"nome"},
                 "_id = ?", new String[]{id}, null, null, null, "1"
         );
-        return c;
     }
 
     /*************************
@@ -442,10 +431,9 @@ public class DBAdapter {
         cv.put(DBHelper.SEXO, p.getSexo());
 
         //id of the column or -1 when insert failed
-        long id = db.insert(DBHelper.TABLE_NAME_PUBLICADOR, null, cv);
 
         //  db.close();
-        return id;
+        return db.insert(DBHelper.TABLE_NAME_PUBLICADOR, null, cv);
     }
 
     public long insertDataVersao(String versao) {
@@ -453,9 +441,8 @@ public class DBAdapter {
         ContentValues cv = new ContentValues();
         cv.put(DBHelper.ULTIMA_ATUALIZACAO, versao);
         //id of the column or -1 when insert failed
-        long id = db.insert(DBHelper.TABLE_NAME_VERSAO, null, cv);
         //db.close();
-        return id;
+        return db.insert(DBHelper.TABLE_NAME_VERSAO, null, cv);
     }
 
     public long insertDataRelatorio(Relatorio r) {
@@ -473,9 +460,8 @@ public class DBAdapter {
         cv.put(DBHelper.ESTUDOS, r.getEstudos());
 
         //id of the column or -1 when insert failed
-        long id = db.insert(DBHelper.TABLE_NAME_RELATORIO, null, cv);
         //db.close();
-        return id;
+        return db.insert(DBHelper.TABLE_NAME_RELATORIO, null, cv);
     }
 
     /****************

@@ -1,17 +1,16 @@
 package br.com.anagnostou.publisher.telas;
 
-import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -27,35 +26,38 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
 
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.objetos.Relatorio;
-import br.com.anagnostou.publisher.phpmysql.LoginRequest;
 import br.com.anagnostou.publisher.phpmysql.SendReportRequest;
 import br.com.anagnostou.publisher.utils.L;
 import br.com.anagnostou.publisher.utils.Utilidades;
 
+import static br.com.anagnostou.publisher.MainActivity.DEFAULT;
 import static br.com.anagnostou.publisher.MainActivity.SP_AUTHENTICATED;
 import static br.com.anagnostou.publisher.MainActivity.SP_SPNAME;
 
 public class RelatorioActivity extends AppCompatActivity implements View.OnClickListener {
-    DBAdapter dbAdapter;
-    SQLiteDatabase sqLiteDatabase;
-    AutoCompleteTextView etPublicador;
-    ArrayAdapter aPub, aAno, aMes, aModalidade;
-    Spinner spAno, spMes, spModalidade;
-    EditText etPublicacoes, etVideos, etHoras, etRevisitas, etEstudos;
-    Button clearPublicador, clearPublicacoes, clearVideos, clearHoras, clearRevisitas, clearEstudos, btCancel, btSend;
-    SharedPreferences sp, mySp;
-    String url, email;
+    private static final int LOGIN_INTENT = 276;
+    private DBAdapter dbAdapter;
+    private SQLiteDatabase sqLiteDatabase;
+    private AutoCompleteTextView etPublicador;
+    private Spinner spAno;
+    private Spinner spMes;
+    private Spinner spModalidade;
+    private EditText etPublicacoes;
+    private EditText etVideos;
+    private EditText etHoras;
+    private EditText etRevisitas;
+    private EditText etEstudos;
+    private SharedPreferences sp;
+    private SharedPreferences mySp;
+    private String url;
+    private String email;
 
 
     @Override
@@ -64,11 +66,12 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_relatorio);
         Toolbar toolbar = (Toolbar) findViewById(R.id.relatorio_toolbar);
         setSupportActionBar(toolbar);
+        //noinspection ConstantConditions
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.relatorio);
         dbAdapter = new DBAdapter(getApplicationContext());
-        sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
+        //sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
         etPublicador = (AutoCompleteTextView) findViewById(R.id.etPublicador);
         spAno = (Spinner) findViewById(R.id.spAno);
         spMes = (Spinner) findViewById(R.id.spMes);
@@ -78,14 +81,14 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         etHoras = (EditText) findViewById(R.id.etHoras);
         etRevisitas = (EditText) findViewById(R.id.etRevisitas);
         etEstudos = (EditText) findViewById(R.id.etEstudos);
-        clearPublicador = (Button) findViewById(R.id.clearPublicador);
-        clearPublicacoes = (Button) findViewById(R.id.clearPublicacoes);
-        clearVideos = (Button) findViewById(R.id.clearVideos);
-        clearHoras = (Button) findViewById(R.id.clearHoras);
-        clearRevisitas = (Button) findViewById(R.id.clearRevisitas);
-        clearEstudos = (Button) findViewById(R.id.clearEstudos);
-        btCancel = (Button) findViewById(R.id.btnRelatorioCancel);
-        btSend = (Button) findViewById(R.id.btnRelatorioSend);
+        Button clearPublicador = (Button) findViewById(R.id.clearPublicador);
+        Button clearPublicacoes = (Button) findViewById(R.id.clearPublicacoes);
+        Button clearVideos = (Button) findViewById(R.id.clearVideos);
+        Button clearHoras = (Button) findViewById(R.id.clearHoras);
+        Button clearRevisitas = (Button) findViewById(R.id.clearRevisitas);
+        Button clearEstudos = (Button) findViewById(R.id.clearEstudos);
+        Button btCancel = (Button) findViewById(R.id.btnRelatorioCancel);
+        Button btSend = (Button) findViewById(R.id.btnRelatorioSend);
 
         clearPublicador.setOnClickListener(this);
         clearPublicacoes.setOnClickListener(this);
@@ -95,11 +98,10 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         clearEstudos.setOnClickListener(this);
         btSend.setOnClickListener(this);
         btCancel.setOnClickListener(this);
-        aPub = new ArrayAdapter<>(this, R.layout.item_height, dbAdapter.retrieveAllPublicadores());
-        aAno = new ArrayAdapter<>(this, R.layout.spinner, getResources().getStringArray(R.array.ano));
-        aMes = new ArrayAdapter<>(this, R.layout.spinner, getResources().getStringArray(R.array.mesesNomes));
-        //aModalidade = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.modalidade));
-        aModalidade = new ArrayAdapter<>(this, R.layout.spinner, getResources().getStringArray(R.array.modalidade));
+        ArrayAdapter aPub = new ArrayAdapter<>(this, R.layout.item_height, dbAdapter.retrieveAllPublicadores());
+        ArrayAdapter aAno = new ArrayAdapter<>(this, R.layout.spinner, getResources().getStringArray(R.array.ano));
+        ArrayAdapter aMes = new ArrayAdapter<>(this, R.layout.spinner, getResources().getStringArray(R.array.mesesNomes));
+        ArrayAdapter aModalidade = new ArrayAdapter<>(this, R.layout.spinner, getResources().getStringArray(R.array.modalidade));
 
         etPublicador.setAdapter(aPub);
         spAno.setAdapter(aAno);
@@ -122,6 +124,8 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
             }
         }
         if (intent.hasExtra("Origem") && intent.getStringExtra("Origem").contentEquals("CartaoAdapter")) {
+
+
             String nome = intent.getStringExtra("nome");
             int ano = intent.getIntExtra("ano", 0);
             int mes = intent.getIntExtra("mes", 0);
@@ -132,6 +136,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
             spAno.setSelection(Utilidades.getSpinnerIndex(spAno, "" + ano));
             spMes.setSelection(mes - 1);
             buscaRelatorio(nome, ano, mes);
+
 
         }
         editTextListener(etPublicacoes);
@@ -144,11 +149,11 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
     private void buscaRelatorio(String nome, int ano, int mes) {
         Relatorio r = dbAdapter.findRelatorio(nome, "" + ano, "" + mes);
         if (r != null) {
-            String pub = ""+r.getPublicacoes();
-            String vid = ""+r.getVideos();
-            String hor = ""+r.getHoras();
-            String rev = ""+r.getRevisitas();
-            String est = ""+r.getEstudos();
+            String pub = "" + r.getPublicacoes();
+            String vid = "" + r.getVideos();
+            String hor = "" + r.getHoras();
+            String rev = "" + r.getRevisitas();
+            String est = "" + r.getEstudos();
             etPublicacoes.setText(pub);
             etVideos.setText(vid);
             etHoras.setText(hor);
@@ -157,7 +162,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    public void impedirPublicadorPassarPorPioneiro() {
+    private void impedirPublicadorPassarPorPioneiro() {
         String nome = etPublicador.getText().toString();
         String mod = spModalidade.getSelectedItem().toString();
         if (dbAdapter.retrieveModalidade(nome).contentEquals("Publicador") && mod.contentEquals("Pioneiro Regular")) {
@@ -190,7 +195,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    public void verificaSeExistePublicador() {
+    private void verificaSeExistePublicador() {
         if (!dbAdapter.checkIfPublisherExists(etPublicador.getText().toString())) {
             dialogoPublicadorNaoExiste();
         } else {
@@ -202,7 +207,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    public void checkBeforeSend() {
+    private void checkBeforeSend() {
         final String nome = etPublicador.getText().toString();
         final String ano = spAno.getSelectedItem().toString();
         final String mes = "" + (Utilidades.getSpinnerIndex(spMes, spMes.getSelectedItem().toString()) + 1);
@@ -264,7 +269,6 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void enviarRelatorio(String nome, String ano, String mes, String modalidade, String publicacoes, String videos, String horas, String revisitas, String estudos) {
-
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -345,7 +349,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         else return s;
     }
 
-    public int mesNumero() {
+    private int mesNumero() {
         int mes;
         Calendar now = Calendar.getInstance();
         mes = now.get(Calendar.MONTH) + 1;
@@ -356,7 +360,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    public int anoNumero() {
+    private int anoNumero() {
         int ano, mes;
         Calendar now = Calendar.getInstance();
         ano = now.get(Calendar.YEAR);
@@ -418,7 +422,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         dialog.show();
     }
 
-    public void editTextListener(EditText editText) {
+    private void editTextListener(EditText editText) {
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -429,4 +433,6 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         });
 
     }
+
+
 }

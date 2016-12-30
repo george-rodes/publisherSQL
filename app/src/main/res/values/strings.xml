@@ -102,6 +102,8 @@
     <string name="dialogo_servidor_corrigido">O Relatório foi corrigido com sucesso!</string>
     <string name="dialogo_servidor_gravado">O Relatório foi enviado com sucesso!</string>
     <string name="fone">015-981...58.27.26</string>
+    <string name="_regular">" Regular"</string>
+    <string name="dados_ano_servico">Dados do Ano de Serviço</string>
 
 
     <string-array name="sourceDataImport">

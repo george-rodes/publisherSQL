@@ -44,7 +44,7 @@ public class Pioneiros extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 view.setSelected(true);
                 cursor.moveToPosition(position);
-                Intent intent = new Intent(view.getContext(), AtividadesActivity.class);
+                Intent intent = new Intent(view.getContext(), PioneirosActivity.class);
                 intent.putExtra("nome", cursor.getString(cursor.getColumnIndex("nome")));
                 startActivity(intent);
             }

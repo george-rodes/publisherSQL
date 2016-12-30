@@ -3,19 +3,25 @@
     android:id="@+id/cvRelatorios"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+
     android:elevation="2dp"
-    card_view:cardPreventCornerOverlap="false">
+
+    card_view:cardPreventCornerOverlap="false"
+    card_view:cardBackgroundColor="@color/colorPrimary">
 
     <LinearLayout
+        android:layout_marginBottom="1dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:background="@color/depressed_color"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+
+        android:layout_height="25dp"
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/data"
             style="@style/relatorio_tela_pequena"
-            android:text="Data" />
+            android:text="@string/data" />
 
         <TextView
             android:id="@+id/publicacoes"

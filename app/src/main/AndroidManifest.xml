@@ -84,8 +84,8 @@
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".telas.SearchResults" />
-
         </activity>
+        <activity android:name=".telas.PioneirosActivity"></activity>
     </application>
 
 </manifest>

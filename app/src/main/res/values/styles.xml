@@ -95,6 +95,59 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="pioneerCommon">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">@color/dark_color</item>
+        <item name="android:background">@color/depressed_color</item>
+    </style>
+
+    <style name="pioneerDetailsTitle" parent="pioneerCommon">
+        <item name="android:padding">2dp</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+    </style>
+
+    <style name="pioneerDetails" parent="pioneerCommon">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginBottom">1dp</item>
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginRight">2dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="pioneerCommonLarge">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">2dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">@color/dark_color</item>
+        <item name="android:background">@color/depressed_color</item>
+    </style>
+
+    <style name="pioneerDetailsTitleLarge" parent="pioneerCommonLarge">
+        <item name="android:padding">2dp</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_height">90dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+    </style>
+
+    <style name="pioneerDetailsLarge" parent="pioneerCommonLarge">
+        <item name="android:textSize">36sp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:layout_marginLeft">30dp</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+
     <style name="myToolBar" parent="ThemeOverlay.AppCompat.Dark">
         <item name="android:background">@color/colorPrimary</item>
     </style>

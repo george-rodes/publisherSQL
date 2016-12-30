@@ -25,12 +25,8 @@ import br.com.anagnostou.publisher.objetos.Relatorio;
 
 public class CartaoActivity extends AppCompatActivity {
     private DBAdapter dbAdapter;
-    private SQLiteDatabase sqLiteDatabase;
-    private String nome, totais[];
-    private RecyclerView rv;
-    private Cursor c;
+     private String nome;
     private ArrayList<Relatorio> relatorios;
-    private RecyclerView.Adapter adapter;
     private TextView mesesTotal, publicacoesTotal, videosTotal, horasTotal, revisitasTotal, estudosTotal;
 
     @Override
@@ -47,11 +43,11 @@ public class CartaoActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.cartao_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if(getSupportActionBar() != null) getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         /** RV START **/
-        rv = (RecyclerView) findViewById(R.id.rv);
+        RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
         rv.setHasFixedSize(true);
@@ -59,18 +55,17 @@ public class CartaoActivity extends AppCompatActivity {
         /** RV END **/
 
         dbAdapter = new DBAdapter(getApplicationContext());
-        sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
 
         nome = getIntent().getExtras().getString("nome", "George");
         getSupportActionBar().setTitle(nome);
 
         carregarCartao(nome);
-        adapter = new CartaoAdapter(relatorios, this);
+        RecyclerView.Adapter adapter = new CartaoAdapter(relatorios, this);
         rv.setAdapter(adapter);
     }
 
     public void carregarCartao(String nome) {
-        c = dbAdapter.retrieveRelatorios(nome);
+        Cursor c = dbAdapter.retrieveRelatorios(nome);
         //relatorios.clear();
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
@@ -78,7 +73,7 @@ public class CartaoActivity extends AppCompatActivity {
             }
         }
 
-        totais = dbAdapter.retrieveTotais(nome);
+        String[] totais = dbAdapter.retrieveTotais(nome);
         mesesTotal.setText(totais[0]);
         publicacoesTotal.setText(totais[1]);
         videosTotal.setText(totais[2]);
@@ -125,7 +120,7 @@ public class CartaoActivity extends AppCompatActivity {
                         + "\n\n");
             }
 
-            intent = new Intent(intent.ACTION_SEND);
+            intent = new Intent(Intent.ACTION_SEND);
             intent.setData(Uri.parse("mailto:"));
             intent.putExtra(Intent.EXTRA_SUBJECT, cabecalho);
             intent.putExtra(Intent.EXTRA_TEXT, sb.toString());
