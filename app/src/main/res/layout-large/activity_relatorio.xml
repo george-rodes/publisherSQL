@@ -92,8 +92,16 @@
             android:imeOptions="actionNext"
             android:inputType="number" />
 
-        <Button
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/relatorioInputGe"
+            android:layout_toLeftOf="@+id/clearPublicacoes"
+            android:layout_toStartOf="@+id/clearPublicacoes"
+            android:text="@string/publicacoes"
+           />
 
+        <Button
             android:id="@+id/clearPublicacoes"
             android:layout_width="@dimen/clearBigger2"
             android:layout_height="@dimen/clearBigger2"
@@ -120,6 +128,14 @@
             android:imeOptions="actionNext"
             android:inputType="number" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/relatorioInputGe"
+            android:layout_toLeftOf="@+id/clearVideos"
+            android:layout_toStartOf="@+id/clearVideos"
+            android:text="@string/videos"
+            />
         <Button
             android:id="@+id/clearVideos"
             android:layout_width="@dimen/clearBigger2"
@@ -146,6 +162,13 @@
             android:hint="@string/horas"
             android:imeOptions="actionNext"
             android:inputType="number" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/relatorioInputGe"
+            android:layout_toLeftOf="@+id/clearHoras"
+            android:layout_toStartOf="@+id/clearHoras"
+            android:text="@string/horas"     />
 
         <Button
             android:id="@+id/clearHoras"
@@ -173,6 +196,13 @@
             android:hint="@string/revisitas"
             android:imeOptions="actionNext"
             android:inputType="number" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/relatorioInputGe"
+            android:layout_toLeftOf="@+id/clearRevisitas"
+            android:layout_toStartOf="@+id/clearRevisitas"
+            android:text="@string/revisitas"     />
 
         <Button
             android:id="@+id/clearRevisitas"
@@ -200,6 +230,14 @@
             android:hint="@string/estudos"
             android:imeOptions="actionNext"
             android:inputType="number" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/relatorioInputGe"
+            android:layout_toLeftOf="@+id/clearEstudos"
+            android:layout_toStartOf="@+id/clearEstudos"
+            android:text="@string/estudos"     />
+
 
         <Button
             android:id="@+id/clearEstudos"
@@ -226,7 +264,7 @@
             android:textColor="@color/btn_color"
             android:layout_margin="10dp"
             android:textSize="28sp"
-            />
+            tools:ignore="ButtonStyle" />
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -236,7 +274,8 @@
             android:background="@drawable/btn_bg2"
             android:textColor="@color/btn_color"
             android:layout_margin="10dp"
-            android:textSize="28sp"/>
+            android:textSize="28sp"
+            tools:ignore="ButtonStyle" />
     </LinearLayout>
 
 </LinearLayout>

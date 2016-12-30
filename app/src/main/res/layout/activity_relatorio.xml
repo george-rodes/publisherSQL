@@ -14,228 +14,275 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
 
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
-        android:background="@drawable/rounded_border">
-
-        <AutoCompleteTextView
-            android:id="@+id/etPublicador"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
-            android:hint="@string/publicador"
-            android:inputType="textVisiblePassword"
-            android:imeOptions="actionNext"
-            android:textStyle="bold" android:textSize="24sp"/>
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/clearPublicador"
-            android:layout_width="@dimen/clearBig"
-            android:layout_height="@dimen/clearBig"
-            android:layout_alignParentEnd="true"
 
-            android:layout_centerVertical="true"
-            android:background="@drawable/clear_text"
-            android:focusable="false"
-            android:layout_alignParentRight="true" />
-    </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/marginRelatorio"
+                android:background="@drawable/rounded_border">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
-        android:orientation="horizontal">
+                <AutoCompleteTextView
+                    android:id="@+id/etPublicador"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:completionThreshold="1"
+                    android:hint="@string/publicador"
+                    android:imeOptions="actionNext"
+                    android:inputType="textVisiblePassword"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/spMes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="3sp"
-            android:layout_weight="1"
-            android:background="@drawable/rounded_border"
-            android:layout_marginRight="3sp" />
+                <Button
+                    android:id="@+id/clearPublicador"
+                    android:layout_width="@dimen/clearBig"
+                    android:layout_height="@dimen/clearBig"
+                    android:layout_alignParentEnd="true"
 
-        <Spinner
-            android:id="@+id/spAno"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3sp"
-            android:layout_weight="1"
-            android:background="@drawable/rounded_border"
-            android:layout_marginLeft="3sp" />
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/clear_text"
+                    android:focusable="false" />
+            </RelativeLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/marginRelatorio"
+                android:orientation="horizontal">
 
-    <Spinner
-        android:id="@+id/spModalidade"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
-        android:background="@drawable/rounded_border" />
+                <Spinner
+                    android:id="@+id/spMes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="3sp"
+                    android:layout_marginRight="3sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_border" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
-        android:background="@drawable/rounded_border">
+                <Spinner
+                    android:id="@+id/spAno"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3sp"
+                    android:layout_marginStart="3sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_border" />
 
-        <EditText
-            android:id="@+id/etPublicacoes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:digits="0123456789"
-            android:hint="@string/publicacoes"
-            android:imeOptions="actionNext"
-            android:inputType="number" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/clearPublicacoes"
-            android:layout_width="@dimen/clearBig"
-            android:layout_height="@dimen/clearBig"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/clear_text"
-            android:focusable="false"
-            android:layout_alignParentRight="true" />
-    </RelativeLayout>
+            <Spinner
+                android:id="@+id/spModalidade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/marginRelatorio"
+                android:background="@drawable/rounded_border" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
-        android:background="@drawable/rounded_border">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/marginRelatorio"
+                android:background="@drawable/rounded_border">
 
-        <EditText
-            android:id="@+id/etVideos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:digits="0123456789"
-            android:hint="@string/videos"
-            android:imeOptions="actionNext"
-            android:inputType="number" />
+                <EditText
+                    android:id="@+id/etPublicacoes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="0123456789"
+                    android:hint="@string/publicacoes"
+                    android:imeOptions="actionNext"
+                    android:inputType="number" />
 
-        <Button
-            android:id="@+id/clearVideos"
-            android:layout_width="@dimen/clearBig"
-            android:layout_height="@dimen/clearBig"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/clear_text"
-            android:focusable="false"
-            android:layout_alignParentRight="true" />
-    </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/clearPublicacoes"
+                    android:layout_toStartOf="@+id/clearPublicacoes"
+                    android:text="@string/publicacoes" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
-        android:background="@drawable/rounded_border">
+                <Button
+                    android:id="@+id/clearPublicacoes"
+                    android:layout_width="@dimen/clearBig"
+                    android:layout_height="@dimen/clearBig"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/clear_text"
+                    android:focusable="false" />
 
-        <EditText
-            android:id="@+id/etHoras"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:digits="0123456789"
-            android:hint="@string/horas"
-            android:imeOptions="actionNext"
-            android:inputType="number" />
 
-        <Button
-            android:id="@+id/clearHoras"
-            android:layout_width="@dimen/clearBig"
-            android:layout_height="@dimen/clearBig"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/clear_text"
-            android:focusable="false"
-            android:layout_alignParentRight="true" />
-    </RelativeLayout>
+            </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
-        android:background="@drawable/rounded_border">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/marginRelatorio"
+                android:background="@drawable/rounded_border">
 
-        <EditText
-            android:id="@+id/etRevisitas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:digits="0123456789"
-            android:hint="@string/revisitas"
-            android:imeOptions="actionNext"
-            android:inputType="number" />
+                <EditText
+                    android:id="@+id/etVideos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="0123456789"
+                    android:hint="@string/videos"
+                    android:imeOptions="actionNext"
+                    android:inputType="number" />
 
-        <Button
-            android:id="@+id/clearRevisitas"
-            android:layout_width="@dimen/clearBig"
-            android:layout_height="@dimen/clearBig"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/clear_text"
-            android:focusable="false"
-            android:layout_alignParentRight="true" />
-    </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/clearVideos"
+                    android:layout_toStartOf="@+id/clearVideos"
+                    android:text="@string/videos" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginRelatorio"
-        android:background="@drawable/rounded_border">
+                <Button
+                    android:id="@+id/clearVideos"
+                    android:layout_width="@dimen/clearBig"
+                    android:layout_height="@dimen/clearBig"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/clear_text"
+                    android:focusable="false" />
+            </RelativeLayout>
 
-        <EditText
-            android:id="@+id/etEstudos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:digits="0123456789"
-            android:hint="@string/estudos"
-            android:imeOptions="actionNext"
-            android:inputType="number" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/marginRelatorio"
+                android:background="@drawable/rounded_border">
 
-        <Button
-            android:id="@+id/clearEstudos"
-            android:layout_width="@dimen/clearBig"
-            android:layout_height="@dimen/clearBig"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/clear_text"
-            android:focusable="false"
-            android:layout_alignParentRight="true" />
-    </RelativeLayout>
-    <LinearLayout
-        android:layout_margin="@dimen/marginRelatorio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="@string/cancelar"
-            android:id="@+id/btnRelatorioCancel"
-            android:background="@drawable/btn_bg2"
-            android:textColor="@color/btn_color"
-            android:layout_margin="10dp"
-            />
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="@string/enviarM"
-            android:id="@+id/btnRelatorioSend"
-            android:background="@drawable/btn_bg2"
-            android:textColor="@color/btn_color"
-            android:layout_margin="10dp"/>
-    </LinearLayout>
+                <EditText
+                    android:id="@+id/etHoras"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="0123456789"
+                    android:hint="@string/horas"
+                    android:imeOptions="actionNext"
+                    android:inputType="number" />
 
-</LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/clearHoras"
+                    android:layout_toStartOf="@+id/clearHoras"
+                    android:text="@string/horas" />
+
+
+                <Button
+                    android:id="@+id/clearHoras"
+                    android:layout_width="@dimen/clearBig"
+                    android:layout_height="@dimen/clearBig"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/clear_text"
+                    android:focusable="false" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/marginRelatorio"
+                android:background="@drawable/rounded_border">
+
+                <EditText
+                    android:id="@+id/etRevisitas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="0123456789"
+                    android:hint="@string/revisitas"
+                    android:imeOptions="actionNext"
+                    android:inputType="number" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/clearRevisitas"
+                    android:layout_toStartOf="@+id/clearRevisitas"
+                    android:text="@string/revisitas" />
+
+                <Button
+                    android:id="@+id/clearRevisitas"
+                    android:layout_width="@dimen/clearBig"
+                    android:layout_height="@dimen/clearBig"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/clear_text"
+                    android:focusable="false" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/marginRelatorio"
+                android:background="@drawable/rounded_border">
+
+                <EditText
+                    android:id="@+id/etEstudos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="0123456789"
+                    android:hint="@string/estudos"
+                    android:imeOptions="actionNext"
+                    android:inputType="number" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/clearEstudos"
+                    android:layout_toStartOf="@+id/clearEstudos"
+                    android:text="@string/estudos" />
+
+                <Button
+                    android:id="@+id/clearEstudos"
+                    android:layout_width="@dimen/clearBig"
+                    android:layout_height="@dimen/clearBig"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/clear_text"
+                    android:focusable="false" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/marginRelatorio"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnRelatorioCancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_bg2"
+                    android:text="@string/cancelar"
+                    android:textColor="@color/btn_color" />
+
+                <Button
+                    android:id="@+id/btnRelatorioSend"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_bg2"
+                    android:text="@string/enviarM"
+                    android:textColor="@color/btn_color" />
+            </LinearLayout>
+
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>

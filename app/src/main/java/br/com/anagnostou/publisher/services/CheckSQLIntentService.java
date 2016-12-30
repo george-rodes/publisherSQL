@@ -52,7 +52,7 @@ public class CheckSQLIntentService extends IntentService {
 
     private void checkUpdates() {
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-        L.m("checkUpdates every ms: " + checkIntervall);
+        //L.m("checkUpdates every ms: " + checkIntervall);
         while (!dataBaseOperationInProgress) {
             try {
                 //createNotification();
@@ -186,12 +186,12 @@ public class CheckSQLIntentService extends IntentService {
                             spEditor = sp.edit();
                             spEditor.putString("ttrelatorio_id", idRegistroProcessadoRelatorio.toString());
                             spEditor.commit();
-                        } else L.m("checkTTrelatorio idRegistroProcessado is null ");
+                        } //else L.m("checkTTrelatorio idRegistroProcessado is null ");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     dataBaseOperationInProgress = false;
-                    L.m("checkTTrelatorio DatabaseOperation Completed! with ID: " + idRegistroProcessadoRelatorio);
+                   // L.m("checkTTrelatorio DatabaseOperation Completed! with ID: " + idRegistroProcessadoRelatorio);
                 }
             }
         }, null);

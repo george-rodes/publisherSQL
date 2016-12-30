@@ -16,6 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.utils.L;
 import br.com.anagnostou.publisher.R;
@@ -30,9 +33,10 @@ public class PioneirosActivity extends AppCompatActivity {
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     TextView tvPub1, tvPub2, tvPub3, tvPub4, tvPub5, tvPub6, tvPub7, tvPub8, tvPub9,
-              tvPub13, tvPub14, tvPubTitle, tvPubFone, tvPubDados;
+            tvPub13, tvPub14, tvPubTitle, tvPubFone, tvPubDados;
     String nome;
     private static final int LOGIN_INTENT = 275;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +44,7 @@ public class PioneirosActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.atividades_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         dbAdapter = new DBAdapter(getApplicationContext());
@@ -65,7 +69,28 @@ public class PioneirosActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(nome);
         //tvNomePublicador.setText(nome);
         achaPublicador(nome);
+
+
     }
+
+    public float mediasRequisito(int mes, int soma){
+        int mesesrestantes = 12-mes;
+        return (float) (840-soma)/mesesrestantes;
+    }
+
+
+    private int anoDeServico() {
+        int ano;
+        int mes;
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(Calendar.getInstance().getTime());
+        mes = cal.get(Calendar.MONTH) + 1;
+        ano = cal.get(Calendar.YEAR);
+        //comecar a considerar o novo ano de servico depois do segundo relatorio entre em novembro
+        if (mes > 11) return ano + 1;
+        else return ano;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,7 +113,7 @@ public class PioneirosActivity extends AppCompatActivity {
             return true;
         }
         if (item.getItemId() == R.id.action_relatorio) {
-            Intent intent = new Intent(this,CartaoActivity.class );
+            Intent intent = new Intent(this, CartaoActivity.class);
             intent.putExtra("nome", nome);
             startActivity(intent);
 
@@ -98,7 +123,7 @@ public class PioneirosActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, RelatorioActivity.class);
                 intent.putExtra("origem", "AtividadesActivity");
                 intent.putExtra("objetivo", "novo relatorio");
-                intent.putExtra("nome",nome);
+                intent.putExtra("nome", nome);
                 startActivity(intent);
             }
         }
@@ -131,8 +156,6 @@ public class PioneirosActivity extends AppCompatActivity {
         Double mediaestudos;
         Double mediasvideos;
         Double mediapublicacoes;
-
-
         Publicador p;
         p = dbAdapter.retrievePublisherData(nome);
 
@@ -146,34 +169,51 @@ public class PioneirosActivity extends AppCompatActivity {
                 batismo = Utilidades.calculaTempoBatismo(p.getBatismo());
             } else batismo = "";
 
-            //Verificar se existe data de batismo
-            //
+
             String pio;
             if (p.getSexo().equals("M")) pio = "Pioneiro";
             else pio = "Pioneira";
 
+            tvPubDados.setText(pio + getString(R.string._regular));
+            tvPub1.setText("Familia " + p.getFamilia());
+            tvPub2.setText("Grupo " + p.getGrupo());
+            tvPub5.setText("Idade: " + idade);
+            tvPub6.setText("Tempo de Batismo: " + batismo);
+            tvPub3.setText(p.getRua());
+            tvPub4.setText("Bairro " + p.getBairro());
+
+            String anoini = "" +(anoDeServico()-1);
+            String anofim = "" +anoDeServico();
+            String str = String.format("%.1f", mediasRequisito(Integer.parseInt(dbAdapter.mediasPioneiro(p.getNome(),anoini,anofim)[0]) ,
+                    Integer.parseInt(dbAdapter.mediasPioneiro(p.getNome(),anoini,anofim)[1])));
+
+            /** stat pioneer
+             * COUNT(horas)
+             * SUM(horas)
+             * AVG(horas)
+             * AVG(REVISITAS)
+             * AVG(ESTUDOS)
+             * AVG(videos)
+             * AVG(publicacoes)
+             */
+
+            L.m("Medias para completar o Requisto anual " + str);
             String[] resultado = dbAdapter.somaHorasMeses(p.getNome());
+            String[] statPion = dbAdapter.mediasPioneiro(p.getNome(),anoini,anofim);
             mediahoras = (double) Integer.parseInt(resultado[0]) / Integer.parseInt(resultado[1]);
             mediarevisitas = Double.parseDouble(resultado[2]);
             mediaestudos = Double.parseDouble(resultado[3]);
             mediasvideos = Double.parseDouble(resultado[4]);
             mediapublicacoes = Double.parseDouble(resultado[5]);
 
-
-            tvPubDados.setText(pio + getString(R.string._regular));
-
-            tvPub1.setText("Familia " + p.getFamilia());
-            tvPub2.setText("Grupo " + p.getGrupo());
-            tvPub5.setText("Idade: " + idade);
-            tvPub6.setText("Tempo de Batismo: " + batismo);
             tvPubTitle.setText(R.string.dados_ano_servico);
-            tvPub7.setText("Média de " + String.format("%.1f", mediahoras) + " Horas");
+            String str7 = "Média de " + String.format("%.1f", mediahoras) + " Horas";
+            tvPub7.setText(str7);
             tvPub8.setText("Média de " + String.format("%.1f", mediarevisitas) + " Revisitas");
             tvPub9.setText("Média de " + String.format("%.1f", mediaestudos) + " Estudos");
             tvPub13.setText("Média de " + String.format("%.1f", mediasvideos) + " Videos");
             tvPub14.setText("Média de " + String.format("%.1f", mediapublicacoes) + " Publicações");
-            tvPub3.setText(p.getRua());
-            tvPub4.setText("Bairro " + p.getBairro());
+
             tvPubFone.setText(p.getCelular());
 
         } else {

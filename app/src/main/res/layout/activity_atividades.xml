@@ -126,7 +126,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="false"
         android:layout_alignParentTop="false"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_alignParentRight="false">
 
         <TextView
             android:id="@+id/tvPubFone"

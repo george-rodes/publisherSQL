@@ -18,7 +18,7 @@ public class SendReportRequest extends StringRequest {
 
     public SendReportRequest(String email, String url, String nome, String ano, String mes, String modalidade,
                              String publicacoes, String videos,
-                             String horas, String revisitas, String estudos, Response.Listener<String> listener) {
+                             String horas, String revisitas, String estudos, String entregue, Response.Listener<String> listener) {
         super(Method.POST, url, listener, null);
         params = new HashMap<>();
         params.put("email", email);
@@ -31,6 +31,7 @@ public class SendReportRequest extends StringRequest {
         params.put("horas", horas);
         params.put("revisitas", revisitas);
         params.put("estudos", estudos);
+        params.put("entregue",entregue);
 
     }
 

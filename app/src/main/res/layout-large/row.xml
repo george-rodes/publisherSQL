@@ -35,7 +35,8 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="10dp"
                 android:text="@string/familia"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+                android:paddingLeft="10dp" />
 
         </LinearLayout>
     </LinearLayout>

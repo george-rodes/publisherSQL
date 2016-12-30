@@ -323,6 +323,38 @@ public class DBAdapter {
         } else return null;
     }
 
+    //SELECT COUNT(horas), SUM(horas), AVG(horas), AVG(REVISITAS),AVG(ESTUDOS),AVG(videos),AVG(publicacoes) FROM relatorio
+    // WHERE modalidade = 'Pioneiro Regular' AND ((Ano = 2015 and mes >= 9) OR (ano = 2016 and mes<=8)) GROUP BY nome
+    public String[] mediasPioneiro(String nome, String anoini, String anofim) {
+        String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String[] selectionArgs = {nome, anoini,anofim};
+        Cursor c = db.rawQuery("SELECT COUNT(horas), SUM(horas), AVG(horas), AVG(REVISITAS),AVG(ESTUDOS)," +
+                " AVG(videos),AVG(publicacoes) FROM RELATORIO WHERE NOME = ? AND " +
+                " ((Ano = ? and mes >= 9) OR (ano = ? and mes<=8)) GROUP BY nome " , selectionArgs);
+        if (c.moveToFirst()) {
+            resultado[0] = String.valueOf(c.getInt(0));
+            resultado[1] = String.valueOf(c.getInt(1));
+            resultado[2] = String.valueOf(c.getDouble(2));
+            resultado[3] = String.valueOf(c.getDouble(3));
+            resultado[4] = String.valueOf(c.getDouble(4));
+            resultado[5] = String.valueOf(c.getDouble(5));
+            resultado[6] = String.valueOf(c.getDouble(6));
+            c.close();
+            return resultado;
+        } else {
+            resultado[0] = "0";
+            resultado[1] = "1";
+            resultado[2] = "0";
+            resultado[3] = "0";
+            resultado[4] = "0";
+            resultado[5] = "0";
+            resultado[6] = "0";
+            c.close();
+            return resultado;
+        }
+    }
+
     public String[] somaHorasMeses(String nome) {
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
@@ -413,10 +445,8 @@ public class DBAdapter {
      * INSERT
      ****************************************/
     public long insertDataPublicador(Publicador p) {
-
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
-
         cv.put(DBHelper.NOME, p.getNome());
         cv.put(DBHelper.FAMILIA, p.getFamilia());
         cv.put(DBHelper.GRUPO, p.getGrupo());
@@ -429,9 +459,7 @@ public class DBAdapter {
         cv.put(DBHelper.ANSEPU, p.getAnsepu());
         cv.put(DBHelper.PIPU, p.getPipu());
         cv.put(DBHelper.SEXO, p.getSexo());
-
         //id of the column or -1 when insert failed
-
         //  db.close();
         return db.insert(DBHelper.TABLE_NAME_PUBLICADOR, null, cv);
     }
@@ -464,9 +492,6 @@ public class DBAdapter {
         return db.insert(DBHelper.TABLE_NAME_RELATORIO, null, cv);
     }
 
-    /****************
-     * UPDATE
-     */
     public boolean updateDataRelatorio(Relatorio r) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();

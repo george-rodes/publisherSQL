@@ -55,6 +55,7 @@
             android:summary="ID do último registro dos Cadastros atualizados"
             android:title="ID Cadastros " />
 
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/importacao_de_dados">

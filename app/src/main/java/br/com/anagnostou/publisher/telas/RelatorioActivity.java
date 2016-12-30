@@ -29,6 +29,8 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
@@ -136,8 +138,6 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
             spAno.setSelection(Utilidades.getSpinnerIndex(spAno, "" + ano));
             spMes.setSelection(mes - 1);
             buscaRelatorio(nome, ano, mes);
-
-
         }
         editTextListener(etPublicacoes);
         editTextListener(etVideos);
@@ -218,19 +218,19 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         final String horas = notEmpty(etHoras.getText().toString());
         final String revisitas = notEmpty(etRevisitas.getText().toString());
         final String estudos = notEmpty(etEstudos.getText().toString());
-
+        final String entregue = buscaDataEntregue(mes);
 
         if (!nome.isEmpty()) {
             if (dbAdapter.checkIfPublisherExists(etPublicador.getText().toString())) {
                 if (!dbAdapter.checkIfReportExists(ano, mes, nome)) {
-                    confirmarRelatorio(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos);
+                    confirmarRelatorio(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(RelatorioActivity.this);
                     builder.setMessage(R.string.dialogo_relatorio_existe);
                     builder.setCancelable(true);
                     builder.setPositiveButton(R.string.SIM, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            confirmarRelatorio(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos);
+                            confirmarRelatorio(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
                             dialog.cancel();
                         }
                     });
@@ -246,8 +246,47 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         } else dialogoPublicadorNaoInformado();
     }
 
+    private String buscaDataEntregue(String mes) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(Calendar.getInstance().getTime());
+        int mesRelatorio = Integer.parseInt(mes);
+        int mesEnvio = cal.get(Calendar.MONTH) + 1;
+        int anoEnvio = cal.get(Calendar.YEAR);
+        int mesEntregue = 0, anoEntregue = 0;
+
+        if (mesEnvio == mesRelatorio) {
+            anoEntregue = viradaAno(mesEnvio, anoEnvio);
+            mesEntregue = virada(mesEnvio) + 1;
+                  // 1                 12,0
+        } else if (mesEnvio == virada(mesRelatorio ) + 1) {
+            if (cal.get(Calendar.DAY_OF_MONTH) <= 16) {
+                // ?dentro do prazo ate o dia 16? normal
+                anoEntregue = anoEnvio;
+                mesEntregue = mesEnvio; //
+            } else {
+                anoEntregue = viradaAno(mesEnvio, anoEnvio);
+                mesEntregue = virada(mesEnvio) + 1;
+            }
+        } else {
+            anoEntregue = anoEnvio;
+            mesEntregue = mesEnvio;
+        }
+        return "" + anoEntregue + "-" + mesEntregue + "-01" ;
+    }
+
+    private int virada(int mes) {
+        if (mes == 12) return 0;
+        else return mes;
+    }
+
+    private int viradaAno(int mes, int ano) {
+        if (mes == 12) return ano + 1;
+        else return ano;
+    }
+
     private void confirmarRelatorio(final String nome, final String ano, final String mes, final String modalidade,
-                                    final String publicacoes, final String videos, final String horas, final String revisitas, final String estudos) {
+                                    final String publicacoes, final String videos, final String horas,
+                                    final String revisitas, final String estudos, final String entregue) {
         String msg = "Confirmar Envio:" + "\nNome: " + nome + "\nMes: " + mes + "/" + ano
                 + "\nModalidade: " + modalidade + "\nPublicações: " + publicacoes + "\nVideos: " + videos
                 + "\nHoras: " + horas + "\nRevisitas: " + revisitas + "\nEstudos: " + estudos;
@@ -255,7 +294,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         builder.setMessage(msg);
         builder.setPositiveButton(R.string.SIM, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                enviarRelatorio(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos);
+                enviarRelatorio(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
                 dialog.cancel();
             }
         });
@@ -268,7 +307,8 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         dialog.show();
     }
 
-    private void enviarRelatorio(String nome, String ano, String mes, String modalidade, String publicacoes, String videos, String horas, String revisitas, String estudos) {
+    private void enviarRelatorio(String nome, String ano, String mes, String modalidade, String publicacoes,
+                                 String videos, String horas, String revisitas, String estudos, String entregue) {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -292,8 +332,10 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
                 }
             }
         };
+
+
         RequestQueue queue = Volley.newRequestQueue(RelatorioActivity.this);
-        queue.add(new SendReportRequest(email, url, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, responseListener));
+        queue.add(new SendReportRequest(email, url, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue, responseListener));
     }
 
     private void dialogoServidorSucessoUpdate() {
