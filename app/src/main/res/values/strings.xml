@@ -104,6 +104,21 @@
     <string name="fone">015-981...58.27.26</string>
     <string name="_regular">" Regular"</string>
     <string name="dados_ano_servico">Dados do Ano de Serviço</string>
+    <string name="familia_">"Familia "</string>
+    <string name="grupo_">"Grupo "</string>
+    <string name="idade_">"Idade "</string>
+    <string name="batismo_">"Tempo de Batismo "</string>
+    <string name="bairro_">"Bairro "</string>
+    <string name="pio_total_horas">Total de Horas até o momento</string>
+    <string name="zero">00,0</string>
+    <string name="pio_media_mensal">Média Mensal até o momento</string>
+    <string name="pio_requsito_anual">Media Mensal para cumprir\no Requisito anual</string>
+    <string name="media_de_revisitas">Média de Revisitas</string>
+    <string name="media_de_estudos">Média de Estudos</string>
+    <string name="relatou">Relatou todos os meses</string>
+    <string name="inativa">Inativa</string>
+    <string name="inativo">Inativo</string>
+    <string name="nao_relatou">"Deixou de relatar "</string>
 
 
     <string-array name="sourceDataImport">

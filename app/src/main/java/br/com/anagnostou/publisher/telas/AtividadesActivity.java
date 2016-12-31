@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.MainActivity;
 import br.com.anagnostou.publisher.utils.L;
@@ -181,16 +183,16 @@ public class AtividadesActivity extends AppCompatActivity {
             pioneiroauxiliar = dbAdapter.contaPioneiroAuxiliar(p.getNome());
             irregular = dbAdapter.deixouDeRelatar(p.getNome());
 
-            tvPub1.setText("Familia " + p.getFamilia());
-            tvPub2.setText("Grupo " + p.getGrupo());
-            tvPub5.setText("Idade: " + idade);
-            tvPub6.setText("Tempo de Batismo: " + batismo);
+            tvPub1.setText(getString(R.string.familia_) + p.getFamilia());
+            tvPub2.setText(getString(R.string.grupo_) + p.getGrupo());
+            tvPub5.setText(getString(R.string.idade_) + idade);
+            tvPub6.setText(getString(R.string.batismo_) + batismo);
             tvPubTitle.setText("Médias dos últimos " + resultado[1] + " meses ");
-            tvPub7.setText("Média de " + String.format("%.1f", mediahoras) + " Horas");
-            tvPub8.setText("Média de " + String.format("%.1f", mediarevisitas) + " Revisitas");
-            tvPub9.setText("Média de " + String.format("%.1f", mediaestudos) + " Estudos");
-            tvPub13.setText("Média de " + String.format("%.1f", mediasvideos) + " Videos");
-            tvPub14.setText("Média de " + String.format("%.1f", mediapublicacoes) + " Publicações");
+            tvPub7.setText("Média de " + String.format(Locale.getDefault(), "%.1f", mediahoras) + " Horas");
+            tvPub8.setText("Média de " + String.format(Locale.getDefault(),"%.1f", mediarevisitas) + " Revisitas");
+            tvPub9.setText("Média de " + String.format(Locale.getDefault(),"%.1f", mediaestudos) + " Estudos");
+            tvPub13.setText("Média de " + String.format(Locale.getDefault(),"%.1f", mediasvideos) + " Videos");
+            tvPub14.setText("Média de " + String.format(Locale.getDefault(),"%.1f", mediapublicacoes) + " Publicações");
 
             //Verificar se existe data de batismo
             //
@@ -208,21 +210,21 @@ public class AtividadesActivity extends AppCompatActivity {
             if (p.getBatismo().isEmpty()) tvPub10.setText("");
 
             if (p.getPipu().equals("Pioneiro")) {
-                tvPub10.setText(pio + " Regular");
+                tvPub10.setText(pio + getString(R.string._regular));
             }
 
             if (Integer.parseInt(irregular) > 1) {
                 tvPub11.setText("Deixou de relatar " + irregular + " meses");
             } else if (Integer.parseInt(irregular) == 0) {
-                tvPub11.setText("Relatou todos os meses");
-            } else tvPub11.setText("Deixou de relatar " + irregular + " mês");
+                tvPub11.setText(getString(R.string.relatou));
+            } else tvPub11.setText(getString(R.string.nao_relatou) + irregular + " mês");
             if (mediahoras.isNaN()) {
-                if (p.getSexo().equals("M")) tvPub11.setText("Inativo");
-                else tvPub11.setText("Inativa");
+                if (p.getSexo().equals("M")) tvPub11.setText(getString(R.string.inativo));
+                else tvPub11.setText(getString(R.string.inativa));
             }
 
             tvPub3.setText(p.getRua());
-            tvPub4.setText("Bairro " + p.getBairro());
+            tvPub4.setText(getString(R.string.bairro_) + p.getBairro());
             tvPub12.setText(p.getFone());
             tvPubFone.setText(p.getCelular());
 

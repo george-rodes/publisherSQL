@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.utils.L;
@@ -32,8 +33,8 @@ import static br.com.anagnostou.publisher.MainActivity.SP_SPNAME;
 public class PioneirosActivity extends AppCompatActivity {
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
-    TextView tvPub1, tvPub2, tvPub3, tvPub4, tvPub5, tvPub6, tvPub7, tvPub8, tvPub9,
-            tvPub13, tvPub14, tvPubTitle, tvPubFone, tvPubDados;
+    TextView tvPub1, tvPub2, tvPub3, tvPub4, tvPub5, tvPub6, tvPub7,tvPub71, tvPub81, tvPub91,
+            tvPub131, tvPub141, tvPubTitle, tvPubFone, tvPubDados;
     String nome;
     private static final int LOGIN_INTENT = 275;
 
@@ -57,11 +58,12 @@ public class PioneirosActivity extends AppCompatActivity {
         tvPub5 = (TextView) findViewById(R.id.tvPub5);
         tvPub6 = (TextView) findViewById(R.id.tvPub6);
         tvPub7 = (TextView) findViewById(R.id.tvPub7);
-        tvPub8 = (TextView) findViewById(R.id.tvPub8);
-        tvPub9 = (TextView) findViewById(R.id.tvPub9);
+        tvPub71 = (TextView) findViewById(R.id.tvPub71);
+        tvPub81 = (TextView) findViewById(R.id.tvPub81);
+        tvPub91 = (TextView) findViewById(R.id.tvPub91);
 
-        tvPub13 = (TextView) findViewById(R.id.tvPub13);
-        tvPub14 = (TextView) findViewById(R.id.tvPub14);
+        tvPub131 = (TextView) findViewById(R.id.tvPub131);
+        tvPub141 = (TextView) findViewById(R.id.tvPub141);
         tvPubTitle = (TextView) findViewById(R.id.tvPubTitle);
         tvPubFone = (TextView) findViewById(R.id.tvPubFone);
         //tvNomePublicador = (TextView) findViewById(R.id.tvNomePublicador);
@@ -151,71 +153,60 @@ public class PioneirosActivity extends AppCompatActivity {
     public void achaPublicador(String nome) {
         String idade;
         String batismo;
-        Double mediahoras;
-        Double mediarevisitas;
-        Double mediaestudos;
-        Double mediasvideos;
-        Double mediapublicacoes;
         Publicador p;
         p = dbAdapter.retrievePublisherData(nome);
 
         if (p != null) {
-
             if (!p.getNascimento().isEmpty()) {
                 idade = Utilidades.calculaTempoAnos(p.getNascimento()) + " Anos";
             } else idade = "Não Informada";
-
             if (!p.getBatismo().isEmpty()) {
                 batismo = Utilidades.calculaTempoBatismo(p.getBatismo());
             } else batismo = "";
-
 
             String pio;
             if (p.getSexo().equals("M")) pio = "Pioneiro";
             else pio = "Pioneira";
 
             tvPubDados.setText(pio + getString(R.string._regular));
-            tvPub1.setText("Familia " + p.getFamilia());
-            tvPub2.setText("Grupo " + p.getGrupo());
-            tvPub5.setText("Idade: " + idade);
-            tvPub6.setText("Tempo de Batismo: " + batismo);
+            tvPub1.setText(getString(R.string.familia_) + p.getFamilia());
+            tvPub2.setText(getString(R.string.grupo_) + p.getGrupo());
+            tvPub5.setText(getString(R.string.idade_) + idade);
+            tvPub6.setText(getString(R.string.batismo_) + batismo);
             tvPub3.setText(p.getRua());
-            tvPub4.setText("Bairro " + p.getBairro());
+            tvPub4.setText(getString(R.string.bairro_) + p.getBairro());
+            tvPubFone.setText(p.getCelular());
+            tvPubTitle.setText(getString(R.string.dados_ano_servico));
 
             String anoini = "" +(anoDeServico()-1);
             String anofim = "" +anoDeServico();
-            String str = String.format("%.1f", mediasRequisito(Integer.parseInt(dbAdapter.mediasPioneiro(p.getNome(),anoini,anofim)[0]) ,
-                    Integer.parseInt(dbAdapter.mediasPioneiro(p.getNome(),anoini,anofim)[1])));
 
             /** stat pioneer
-             * COUNT(horas)
-             * SUM(horas)
-             * AVG(horas)
-             * AVG(REVISITAS)
-             * AVG(ESTUDOS)
+             * COUNT(horas) 0
+             * SUM(horas)   1
+             * AVG(horas)   2
+             * AVG(REVISITAS) 3
+             * AVG(ESTUDOS) 4
              * AVG(videos)
              * AVG(publicacoes)
              */
 
-            L.m("Medias para completar o Requisto anual " + str);
-            String[] resultado = dbAdapter.somaHorasMeses(p.getNome());
             String[] statPion = dbAdapter.mediasPioneiro(p.getNome(),anoini,anofim);
-            mediahoras = (double) Integer.parseInt(resultado[0]) / Integer.parseInt(resultado[1]);
-            mediarevisitas = Double.parseDouble(resultado[2]);
-            mediaestudos = Double.parseDouble(resultado[3]);
-            mediasvideos = Double.parseDouble(resultado[4]);
-            mediapublicacoes = Double.parseDouble(resultado[5]);
-
-            tvPubTitle.setText(R.string.dados_ano_servico);
-            String str7 = "Média de " + String.format("%.1f", mediahoras) + " Horas";
+            /** Total de Horas */
+            String str7 = "Total de Horas em " + statPion[0] + " meses";
             tvPub7.setText(str7);
-            tvPub8.setText("Média de " + String.format("%.1f", mediarevisitas) + " Revisitas");
-            tvPub9.setText("Média de " + String.format("%.1f", mediaestudos) + " Estudos");
-            tvPub13.setText("Média de " + String.format("%.1f", mediasvideos) + " Videos");
-            tvPub14.setText("Média de " + String.format("%.1f", mediapublicacoes) + " Publicações");
-
-            tvPubFone.setText(p.getCelular());
-
+            String str71 = statPion[1] ;
+            tvPub71.setText(str71);
+            /** Media Mensal até o momento  */
+            String str131 = String.format(Locale.getDefault(),"%.1f", Double.parseDouble(statPion[2])) ;
+            tvPub131.setText(str131);
+            /** Média para cumprir o requisito Mensal */
+            String str141 = String.format(Locale.getDefault(), "%.1f",
+                    mediasRequisito(Integer.parseInt(dbAdapter.mediasPioneiro(p.getNome(),anoini,anofim)[0]) ,
+                            Integer.parseInt(dbAdapter.mediasPioneiro(p.getNome(),anoini,anofim)[1]))); ;
+            tvPub141.setText(str141);
+            tvPub81.setText(String.format(Locale.getDefault(), "%.1f", Double.parseDouble(statPion[3])));
+            tvPub91.setText(String.format(Locale.getDefault(), "%.1f", Double.parseDouble(statPion[4])));
         } else {
             L.m("No data");
         }

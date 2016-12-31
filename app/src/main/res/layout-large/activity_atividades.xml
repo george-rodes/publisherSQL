@@ -136,10 +136,10 @@
             android:layout_weight="1"
             android:background="@color/colorPrimary"
             android:gravity="center_vertical|center_horizontal"
-            android:text="015-981...58.27.26"
+            android:text="@string/fone"
             android:textAlignment="center"
             android:textColor="#FFF"
-            android:textSize="24sp" />
+            android:textSize="44sp" />
 
         <ImageButton
             android:id="@+id/button"

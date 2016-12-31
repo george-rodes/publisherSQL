@@ -26,42 +26,42 @@
 
             <TextView
                 android:id="@+id/tvPubDados"
-                style="@style/pioneerDetailsTitle"
+                style="@style/pioneerDetailsTitleLarge"
                 android:text="@string/label_dados_pessoais" />
 
             <TextView
                 android:id="@+id/tvPub5"
-                style="@style/pioneerDetails"
+                style="@style/pioneerDetailsLarge"
                 android:text="@string/label_idade" />
 
             <TextView
                 android:id="@+id/tvPub6"
-                style="@style/pioneerDetails"
+                style="@style/pioneerDetailsLarge"
                 android:text="@string/label_tempo_de_batismo" />
 
             <TextView
                 android:id="@+id/tvPub1"
-                style="@style/pioneerDetails"
+                style="@style/pioneerDetailsLarge"
                 android:text="@string/Label_familia" />
 
             <TextView
                 android:id="@+id/tvPub2"
-                style="@style/pioneerDetails"
+                style="@style/pioneerDetailsLarge"
                 android:text="@string/label_grupo" />
 
             <TextView
                 android:id="@+id/tvPub3"
-                style="@style/pioneerDetails"
+                style="@style/pioneerDetailsLarge"
                 android:text="@string/rua" />
 
             <TextView
                 android:id="@+id/tvPub4"
-                style="@style/pioneerDetails"
+                style="@style/pioneerDetailsLarge"
                 android:text="@string/bairro" />
 
             <TextView
                 android:id="@+id/tvPubTitle"
-                style="@style/pioneerDetailsTitle"
+                style="@style/pioneerDetailsTitleLarge"
                 android:text="@string/dados_ano_servico" />
 
             <TableLayout
@@ -74,13 +74,13 @@
 
                     <TextView
                         android:id="@+id/tvPub7"
-                        style="@style/pioneerDetails"
+                        style="@style/pioneerDetailsLarge"
                         android:layout_column="1"
                         android:text="@string/pio_total_horas" />
 
                     <TextView
                         android:id="@+id/tvPub71"
-                        style="@style/pioneerDetails"
+                        style="@style/pioneerDetailsLarge"
                         android:layout_column="2"
                         android:text="@string/zero" />
 
@@ -103,13 +103,13 @@
 
                     <TextView
                         android:id="@+id/tvPub13"
-                        style="@style/pioneerDetails"
+                        style="@style/pioneerDetailsLarge"
                         android:layout_column="1"
                         android:text="@string/pio_media_mensal" />
 
                     <TextView
                         android:id="@+id/tvPub131"
-                        style="@style/pioneerDetails"
+                        style="@style/pioneerDetailsLarge"
                         android:layout_column="2"
                         android:text="@string/zero" />
                 </TableRow>
@@ -132,14 +132,14 @@
 
                     <TextView
                         android:id="@+id/tvPub14"
-                        style="@style/pioneerDetails"
+                        style="@style/pioneerDetailsLarge"
                         android:layout_width="wrap_content"
                         android:layout_column="1"
                         android:text="@string/pio_requsito_anual" />
 
                     <TextView
                         android:id="@+id/tvPub141"
-                        style="@style/pioneerDetails"
+                        style="@style/pioneerDetailsLarge"
                         android:layout_column="2"
                         android:text="@string/zero" />
 
@@ -162,13 +162,13 @@
 
                     <TextView
                         android:id="@+id/tvPub8"
-                        style="@style/pioneerDetails"
+                        style="@style/pioneerDetailsLarge"
                         android:layout_column="1"
                         android:text="@string/media_de_revisitas" />
 
                     <TextView
                         android:id="@+id/tvPub81"
-                        style="@style/pioneerDetails"
+                        style="@style/pioneerDetailsLarge"
                         android:layout_column="2"
                         android:text="@string/zero" />
 
@@ -192,13 +192,13 @@
 
                     <TextView
                         android:id="@+id/tvPub9"
-                        style="@style/pioneerDetails"
+                        style="@style/pioneerDetailsLarge"
                         android:layout_column="1"
                         android:text="@string/media_de_estudos" />
 
                     <TextView
                         android:id="@+id/tvPub91"
-                        style="@style/pioneerDetails"
+                        style="@style/pioneerDetailsLarge"
                         android:layout_column="2"
                         android:text="@string/zero" />
                 </TableRow>
@@ -226,9 +226,9 @@
                 </TableRow>
             </TableLayout>
 
-            <TextView style="@style/pioneerDetails" />
+            <TextView style="@style/pioneerDetailsLarge" />
 
-            <TextView style="@style/pioneerDetails" />
+            <TextView style="@style/pioneerDetailsLarge" />
         </LinearLayout>
     </ScrollView>
 
@@ -253,7 +253,7 @@
             android:text="@string/fone"
             android:textAlignment="center"
             android:textColor="#FFF"
-            android:textSize="24sp" />
+            android:textSize="44sp" />
 
         <ImageButton
             android:id="@+id/button"
