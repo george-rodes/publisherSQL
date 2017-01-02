@@ -15,6 +15,7 @@ import java.util.List;
 
 import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
+import br.com.anagnostou.publisher.utils.L;
 
 
 public class DBAdapter {
@@ -305,6 +306,7 @@ public class DBAdapter {
         }
     }
 
+
     public Relatorio findRelatorio(String nome, String ano, String mes) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.PUBLICACOES, DBHelper.VIDEOS, DBHelper.HORAS, DBHelper.REVISITAS, DBHelper.ESTUDOS};
@@ -328,10 +330,10 @@ public class DBAdapter {
     public String[] mediasPioneiro(String nome, String anoini, String anofim) {
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
-        String[] selectionArgs = {nome, anoini,anofim};
+        String[] selectionArgs = {nome, anoini, anofim};
         Cursor c = db.rawQuery("SELECT COUNT(horas), SUM(horas), AVG(horas), AVG(REVISITAS),AVG(ESTUDOS)," +
                 " AVG(videos),AVG(publicacoes) FROM RELATORIO WHERE NOME = ? AND " +
-                " ((Ano = ? and mes >= 9) OR (ano = ? and mes<=8)) GROUP BY nome " , selectionArgs);
+                " ((Ano = ? and mes >= 9) OR (ano = ? and mes<=8)) GROUP BY nome ", selectionArgs);
         if (c.moveToFirst()) {
             resultado[0] = String.valueOf(c.getInt(0));
             resultado[1] = String.valueOf(c.getInt(1));
@@ -492,6 +494,51 @@ public class DBAdapter {
         return db.insert(DBHelper.TABLE_NAME_RELATORIO, null, cv);
     }
 
+    /**
+     * TT RELATORIO
+     */
+    //String nome, String ano, String mes, String modalidade, String publicacoes, String videos, String horas, String revisitas, String estudos, String entregue
+    public long insertTTRelatorio(String email, String nome, String ano, String mes, String modalidade,
+                                  String publicacoes, String videos, String horas, String revisitas,
+                                  String estudos, String entregue) {
+
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DBHelper.EMAIL, email);
+        cv.put(DBHelper.NOME, nome);
+        cv.put(DBHelper.ANO, ano);
+        cv.put(DBHelper.MES, mes);
+        cv.put(DBHelper.MODALIDADE, modalidade);
+        cv.put(DBHelper.VIDEOS, videos);
+        cv.put(DBHelper.HORAS, horas);
+        cv.put(DBHelper.PUBLICACOES, publicacoes);
+        cv.put(DBHelper.REVISITAS, revisitas);
+        cv.put(DBHelper.ESTUDOS, estudos);
+        cv.put(DBHelper.ENTREGUE, entregue);
+        //id of the column or -1 when insert failed
+        //db.close();
+        return db.insert(DBHelper.TN_TT_RELATORIO, null, cv);
+    }
+
+    public Cursor findFirstTTRelatorio() {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String[] columns = {DBHelper.UID, DBHelper.EMAIL, DBHelper.ANO, DBHelper.MES, DBHelper.NOME,
+                DBHelper.MODALIDADE, DBHelper.PUBLICACOES,
+                DBHelper.VIDEOS, DBHelper.HORAS, DBHelper.REVISITAS, DBHelper.ESTUDOS, DBHelper.ENTREGUE};
+        return db.query(DBHelper.TN_TT_RELATORIO, columns, null, null, null, null, null, "1");
+
+    }
+
+    public boolean deleteTTRelatorio(String id) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        String selection = DBHelper.UID + " = ? ";
+        String[] selectionArgs = {id};
+        int count = db.delete(DBHelper.TN_TT_RELATORIO, selection, selectionArgs);
+        return count > 0;
+    }
+
+
     public boolean updateDataRelatorio(Relatorio r) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -618,6 +665,8 @@ public class DBAdapter {
         private static final String PUBLICACOES = "publicacoes";
         private static final String REVISITAS = "revisitas";
         private static final String ESTUDOS = "estudos";
+        private static final String ENTREGUE = "entregue";
+        private static final String EMAIL = "email";
 
 
         private static final String CREATE_TABLE_RELATORIO = "CREATE TABLE "
@@ -637,6 +686,21 @@ public class DBAdapter {
 
         private static final String DROP_TABLE_RELATORIO = "DROP TABLE IF EXISTS " + TABLE_NAME_RELATORIO;
 
+        /**
+         * TABLE LOCAL TEMPORARY RELATORIO used by Service
+         **/
+        private static final String TN_TT_RELATORIO = "ttrelatorio";
+        private static final String CREATE_TABLE_TT_RELATORIO = "CREATE TABLE ttrelatorio  " +
+                " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, "
+                + NOME + " TEXT, " + ANO + " TEXT, " + MES + " TEXT, "
+                + MODALIDADE + " TEXT, " + PUBLICACOES + " TEXT, "
+                + VIDEOS + " TEXT, " + HORAS + " TEXT, "
+                + REVISITAS + " TEXT, " + ESTUDOS + " TEXT, entregue TEXT );";
+
+        //String nome, String ano, String mes, String modalidade, String publicacoes, String videos, String horas, String revisitas, String estudos, String entregue
+        private static final String DROP_TABLE_TTRELATORIO = "DROP TABLE IF EXISTS " + TN_TT_RELATORIO;
+
+
         @Override
         public void onCreate(SQLiteDatabase db) {
             try {
@@ -653,9 +717,10 @@ public class DBAdapter {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             try {
-                // L.m("on Upgrade called" + db.getVersion());
+                //L.m("on Upgrade called" + db.getVersion());
                 db.execSQL(DROP_TABLE_PUBLICADOR);
                 db.execSQL(DROP_TABLE_RELATORIO);
+                db.execSQL(DROP_TABLE_TTRELATORIO);
                 db.execSQL(DROP_TABLE_VERSAO);
                 onCreate(db);
             } catch (SQLException e) {
@@ -668,7 +733,7 @@ public class DBAdapter {
                 db.execSQL(DROP_TABLE_PUBLICADOR);
                 db.execSQL(CREATE_TABLE_PUBLICADOR);
                 onCreate(db);
-            } catch (SQLException e) {
+            } catch (SQLException ignored) {
             }
         }
 
@@ -688,7 +753,18 @@ public class DBAdapter {
                 db.execSQL(DROP_TABLE_RELATORIO);
                 db.execSQL(CREATE_TABLE_RELATORIO);
                 onCreate(db);
+            } catch (SQLException ignored) {
+            }
+        }
+
+        public void dropTableTTRelatorio(SQLiteDatabase db) {
+            try {
+                L.m(" dropTableTTRelatorio" + db.getVersion());
+                db.execSQL(DROP_TABLE_TTRELATORIO);
+                db.execSQL(CREATE_TABLE_TT_RELATORIO);
+                onCreate(db);
             } catch (SQLException e) {
+                L.m(e.toString());
             }
         }
     }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
+
 import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
@@ -26,27 +26,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
+
 import java.util.Calendar;
-import java.util.Date;
+
 import java.util.GregorianCalendar;
 
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.objetos.Relatorio;
 import br.com.anagnostou.publisher.phpmysql.SendReportRequest;
-import br.com.anagnostou.publisher.utils.L;
+
 import br.com.anagnostou.publisher.utils.Utilidades;
 
-import static br.com.anagnostou.publisher.MainActivity.DEFAULT;
-import static br.com.anagnostou.publisher.MainActivity.SP_AUTHENTICATED;
+
 import static br.com.anagnostou.publisher.MainActivity.SP_SPNAME;
 
 public class RelatorioActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final int LOGIN_INTENT = 276;
     private DBAdapter dbAdapter;
-    private SQLiteDatabase sqLiteDatabase;
     private AutoCompleteTextView etPublicador;
     private Spinner spAno;
     private Spinner spMes;
@@ -56,8 +52,6 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
     private EditText etHoras;
     private EditText etRevisitas;
     private EditText etEstudos;
-    private SharedPreferences sp;
-    private SharedPreferences mySp;
     private String url;
     private String email;
 
@@ -112,9 +106,9 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         spAno.setSelection(anoNumero());
         spMes.setSelection(mesNumero() - 1);
 
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         url = sp.getString("php_report_send", "");
-        mySp = getSharedPreferences(SP_SPNAME, MODE_PRIVATE);
+        SharedPreferences mySp = getSharedPreferences(SP_SPNAME, MODE_PRIVATE);
         email = mySp.getString("email", "");
 
         Intent intent = getIntent();
@@ -252,13 +246,13 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         int mesRelatorio = Integer.parseInt(mes);
         int mesEnvio = cal.get(Calendar.MONTH) + 1;
         int anoEnvio = cal.get(Calendar.YEAR);
-        int mesEntregue = 0, anoEntregue = 0;
+        int mesEntregue, anoEntregue;
 
         if (mesEnvio == mesRelatorio) {
             anoEntregue = viradaAno(mesEnvio, anoEnvio);
             mesEntregue = virada(mesEnvio) + 1;
-                  // 1                 12,0
-        } else if (mesEnvio == virada(mesRelatorio ) + 1) {
+            // 1                 12,0
+        } else if (mesEnvio == virada(mesRelatorio) + 1) {
             if (cal.get(Calendar.DAY_OF_MONTH) <= 16) {
                 // ?dentro do prazo ate o dia 16? normal
                 anoEntregue = anoEnvio;
@@ -271,7 +265,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
             anoEntregue = anoEnvio;
             mesEntregue = mesEnvio;
         }
-        return "" + anoEntregue + "-" + mesEntregue + "-01" ;
+        return "" + anoEntregue + "-" + mesEntregue + "-01";
     }
 
     private int virada(int mes) {
@@ -294,7 +288,14 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         builder.setMessage(msg);
         builder.setPositiveButton(R.string.SIM, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                enviarRelatorio(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
+                if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
+                    //modo online
+                    enviarRelatorio(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
+                } else {
+                    //modo off line
+                    dbAdapter.insertTTRelatorio(email,nome,ano,mes,modalidade,publicacoes,videos,horas,revisitas,estudos,entregue);
+
+                }
                 dialog.cancel();
             }
         });
@@ -307,12 +308,13 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         dialog.show();
     }
 
-    private void enviarRelatorio(String nome, String ano, String mes, String modalidade, String publicacoes,
+
+    public void enviarRelatorio(String nome, String ano, String mes, String modalidade, String publicacoes,
                                  String videos, String horas, String revisitas, String estudos, String entregue) {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                L.m(response);
+                //L.m(response);
                 try {
                     JSONArray arrayJSON = new JSONArray(response);
                     if (arrayJSON.length() > 0) {
@@ -475,6 +477,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         });
 
     }
+
 
 
 }

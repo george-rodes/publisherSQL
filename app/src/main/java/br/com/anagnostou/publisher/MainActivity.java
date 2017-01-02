@@ -12,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -95,8 +96,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public ViewPager mViewPager;
 
     public static final String SP_SPNAME = "mySharedPreferences";
-    public static final String SP_USER = "user";
-    public static final String SP_EMAIL = "email";
     public static final String SP_AUTHENTICATED = "authenticated";
     public static final String DEFAULT = "N/A";
     private static final int LOGIN_INTENT = 572;
@@ -126,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        getSupportActionBar().setTitle(R.string.por_grupo);
+        if(getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.por_grupo);
         getSupportActionBar().setSubtitle(getString(R.string.atividades_da_congregacao));
 
         dbAdapter = new DBAdapter(getApplicationContext());
@@ -242,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        L.t(MainActivity.this, error.getMessage().toString());
+                        L.t(MainActivity.this, error.getMessage());
                     }
                 });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -304,6 +303,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     dbAdapter.mydbHelper.dropTablePublicador(sqLiteDatabase);
                     dbAdapter.mydbHelper.dropTableRelatorio(sqLiteDatabase);
                     dbAdapter.mydbHelper.dropTableVersao(sqLiteDatabase);
+                    dbAdapter.mydbHelper.dropTableTTRelatorio(sqLiteDatabase);
                     Utilidades.resetPreferencesCounter(this);
                     getPHPJsonPublisherData();//onPostExecute chama a outra
                 } else {
@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERM_EXT_STORAGE) {
             // Request for camera permission.
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -367,16 +367,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.novo_relatorio) {
-            if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
-                if (areWeAuthenticated()) {
-                    Intent intent = new Intent(this, RelatorioActivity.class);
-                    intent.putExtra("origem", "MainActivity");
-                    intent.putExtra("objetivo", "novo relatorio");
-                    startActivity(intent);
-                }
+            //Adicionando modo offline
 
-            } else  dialogoNoInternet();
-
+            if (areWeAuthenticated()) {
+                Intent intent = new Intent(this, RelatorioActivity.class);
+                intent.putExtra("origem", "MainActivity");
+                intent.putExtra("objetivo", "novo relatorio");
+                startActivity(intent);
+            }
 
 
         }
@@ -390,13 +388,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.publicadores) {
             mViewPager.setAdapter(mSectionsPagerAdapter);
-            getSupportActionBar().setTitle(getString(R.string.por_grupo));
+            if(getSupportActionBar() != null) getSupportActionBar().setTitle(getString(R.string.por_grupo));
         } else if (id == R.id.porPrivilegio) {
             mViewPager.setAdapter(secondSectionsPagerAdapter);
-            getSupportActionBar().setTitle(getString(R.string.por_privilegio));
+            if(getSupportActionBar() != null) getSupportActionBar().setTitle(getString(R.string.por_privilegio));
         } else if (id == R.id.pesquisasEspeciais) {
             mViewPager.setAdapter(specialPagerAdapter);
-            getSupportActionBar().setTitle(getString(R.string.pesquisas_especiais));
+            if(getSupportActionBar() != null) getSupportActionBar().setTitle(getString(R.string.pesquisas_especiais));
         } else if (id == R.id.atualizar) {
             atualizarBancoDeDados();
         } else if (id == R.id.preferencias) {

@@ -102,15 +102,15 @@ public class AtividadesActivity extends AppCompatActivity {
 
             return true;
         } else if (item.getItemId() == R.id.enviarRelatorio) {
-            if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
-                if (areWeAuthenticated()) {
-                    Intent intent = new Intent(this, RelatorioActivity.class);
-                    intent.putExtra("origem", "AtividadesActivity");
-                    intent.putExtra("objetivo", "novo relatorio");
-                    intent.putExtra("nome", nome);
-                    startActivity(intent);
-                }
-            } else dialogoNoInternet();
+            //Modo OFFLINE adicionado
+            if (areWeAuthenticated()) {
+                Intent intent = new Intent(this, RelatorioActivity.class);
+                intent.putExtra("origem", "AtividadesActivity");
+                intent.putExtra("objetivo", "novo relatorio");
+                intent.putExtra("nome", nome);
+                startActivity(intent);
+            }
+
         }
 
         return true;
@@ -189,10 +189,10 @@ public class AtividadesActivity extends AppCompatActivity {
             tvPub6.setText(getString(R.string.batismo_) + batismo);
             tvPubTitle.setText("Médias dos últimos " + resultado[1] + " meses ");
             tvPub7.setText("Média de " + String.format(Locale.getDefault(), "%.1f", mediahoras) + " Horas");
-            tvPub8.setText("Média de " + String.format(Locale.getDefault(),"%.1f", mediarevisitas) + " Revisitas");
-            tvPub9.setText("Média de " + String.format(Locale.getDefault(),"%.1f", mediaestudos) + " Estudos");
-            tvPub13.setText("Média de " + String.format(Locale.getDefault(),"%.1f", mediasvideos) + " Videos");
-            tvPub14.setText("Média de " + String.format(Locale.getDefault(),"%.1f", mediapublicacoes) + " Publicações");
+            tvPub8.setText("Média de " + String.format(Locale.getDefault(), "%.1f", mediarevisitas) + " Revisitas");
+            tvPub9.setText("Média de " + String.format(Locale.getDefault(), "%.1f", mediaestudos) + " Estudos");
+            tvPub13.setText("Média de " + String.format(Locale.getDefault(), "%.1f", mediasvideos) + " Videos");
+            tvPub14.setText("Média de " + String.format(Locale.getDefault(), "%.1f", mediapublicacoes) + " Publicações");
 
             //Verificar se existe data de batismo
             //

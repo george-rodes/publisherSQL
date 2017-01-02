@@ -119,6 +119,7 @@
     <string name="inativa">Inativa</string>
     <string name="inativo">Inativo</string>
     <string name="nao_relatou">"Deixou de relatar "</string>
+    <string name="mais_tarde">Está sem Internet. O Relatório será enviado automaticamente assim que tiver conexão com a Internet</string>
 
 
     <string-array name="sourceDataImport">

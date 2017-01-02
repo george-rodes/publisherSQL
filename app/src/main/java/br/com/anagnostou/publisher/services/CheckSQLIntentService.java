@@ -1,9 +1,12 @@
 package br.com.anagnostou.publisher.services;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 
 import com.android.volley.RequestQueue;
@@ -18,6 +21,8 @@ import org.json.JSONObject;
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
+import br.com.anagnostou.publisher.phpmysql.SendReportRequest;
+import br.com.anagnostou.publisher.telas.RelatorioActivity;
 import br.com.anagnostou.publisher.utils.L;
 import br.com.anagnostou.publisher.utils.Utilidades;
 
@@ -57,12 +62,14 @@ public class CheckSQLIntentService extends IntentService {
             try {
                 //createNotification();
                 //L.m("Thread ID " + Thread.currentThread().getId());
-                Thread.sleep(5000);
+                Thread.sleep(3000);
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTrelatorio();
-                Thread.sleep(5000);
+                Thread.sleep(3000);
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTcadastro();
+                Thread.sleep(2158);
+                if (sp.getString("sourceDataImport", "").contentEquals("SQL"))
+                    checkLocalRelatorio();
                 Thread.sleep(checkIntervall);
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -87,6 +94,71 @@ public class CheckSQLIntentService extends IntentService {
         }
     }
 
+    private void checkLocalRelatorio() {
+        Cursor c = dbAdapter.findFirstTTRelatorio();
+        if (c.moveToNext()) {
+            int id = c.getInt(c.getColumnIndex("_id"));
+            String email = c.getString(c.getColumnIndex("email"));
+            String nome = c.getString(c.getColumnIndex("nome"));
+            String ano = c.getString(c.getColumnIndex("ano"));
+            String mes = (c.getString(c.getColumnIndex("mes")));
+            String modalidade = c.getString(c.getColumnIndex("modalidade"));
+            String publicacoes = c.getString(c.getColumnIndex("publicacoes"));
+            String videos = c.getString(c.getColumnIndex("videos"));
+            String horas = c.getString(c.getColumnIndex("horas"));
+            String revisitas = c.getString(c.getColumnIndex("revisitas"));
+            String estudos = c.getString(c.getColumnIndex("estudos"));
+            String entregue = c.getString(c.getColumnIndex("entregue"));
+
+            /**
+            L.m("" + c.getInt(c.getColumnIndex("_id")));
+            L.m(c.getString(c.getColumnIndex("email")));
+            L.m(c.getString(c.getColumnIndex("nome")));
+            L.m(c.getString(c.getColumnIndex("ano")));
+            L.m(c.getString(c.getColumnIndex("mes")));
+            L.m(c.getString(c.getColumnIndex("modalidade")));
+            L.m(c.getString(c.getColumnIndex("publicacoes")));
+            L.m(c.getString(c.getColumnIndex("videos")));
+            L.m(c.getString(c.getColumnIndex("horas")));
+            L.m(c.getString(c.getColumnIndex("revisitas")));
+            L.m(c.getString(c.getColumnIndex("estudos")));
+            L.m(c.getString(c.getColumnIndex("entregue")));
+            */
+            if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
+                //L.m("We are online, sending...");
+                enviarRelatorio(id, email,nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
+            } //else L.m("We are offline ");
+        }
+    }
+
+
+    public void enviarRelatorio(final int id, String email, String nome, String ano, String mes, String modalidade, String publicacoes,
+                                String videos, String horas, String revisitas, String estudos, String entregue) {
+        String url = sp.getString("php_report_send", "");
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                L.m(response);
+                try {
+                    JSONArray arrayJSON = new JSONArray(response);
+                    if (arrayJSON.length() > 0) {
+                        JSONObject jsonObject = arrayJSON.getJSONObject(0);
+                        if (!jsonObject.getString("result").isEmpty()) {
+                            if (jsonObject.getString("result").contentEquals("SUCCESS")) {
+                                dbAdapter.deleteTTRelatorio(""+id);
+                                // L.m("deleted: " + dbAdapter.deleteTTRelatorio(""+id));
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        RequestQueue queue = Volley.newRequestQueue(CheckSQLIntentService.this);
+        queue.add(new SendReportRequest(email, url, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue, responseListener));
+    }
 
     private void checkTTcadastro() {
         getCheckTT();
@@ -140,7 +212,7 @@ public class CheckSQLIntentService extends IntentService {
                         e.printStackTrace();
                     }
                     dataBaseOperationInProgress = false;
-                   // L.m("checkTTcadastro DatabaseOperation Completed! with ID: " + idRegistroProcessadoCadastro);
+                    // L.m("checkTTcadastro DatabaseOperation Completed! with ID: " + idRegistroProcessadoCadastro);
                 }
             }
         }, null);
@@ -191,12 +263,13 @@ public class CheckSQLIntentService extends IntentService {
                         e.printStackTrace();
                     }
                     dataBaseOperationInProgress = false;
-                   // L.m("checkTTrelatorio DatabaseOperation Completed! with ID: " + idRegistroProcessadoRelatorio);
+                    // L.m("checkTTrelatorio DatabaseOperation Completed! with ID: " + idRegistroProcessadoRelatorio);
                 }
             }
         }, null);
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(srRelatorio);
     }
+
 
 }

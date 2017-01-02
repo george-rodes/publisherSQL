@@ -73,16 +73,16 @@ public class CartaoAdapter extends RecyclerView.Adapter<CartaoAdapter.ItemViewHo
         h.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Utilidades.isOnline((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE))) {
-                    if (areWeAuthenticated()) {
-                        Intent intent = new Intent(context, RelatorioActivity.class);
-                        intent.putExtra("Origem", "CartaoAdapter");
-                        intent.putExtra("nome", nome);
-                        intent.putExtra("ano", ano);
-                        intent.putExtra("mes", mes);
-                        context.startActivity(intent);
-                    }
-                } else dialogoNoInternet();
+                //Modo OFFLINE adicionado
+                if (areWeAuthenticated()) {
+                    Intent intent = new Intent(context, RelatorioActivity.class);
+                    intent.putExtra("Origem", "CartaoAdapter");
+                    intent.putExtra("nome", nome);
+                    intent.putExtra("ano", ano);
+                    intent.putExtra("mes", mes);
+                    context.startActivity(intent);
+                }
+
             }
         });
     }
