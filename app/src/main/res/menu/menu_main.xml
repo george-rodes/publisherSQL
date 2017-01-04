@@ -16,27 +16,34 @@
         android:title="@string/novo_relatorio"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/naorelatou"
+
+        android:orderInCategory="300"
+        android:title="@string/relat_rios_em_falta"
+        app:showAsAction="never" />
 
     <!--
-    <item
-        android:id="@+id/action_updateDatabase"
-        android:orderInCategory="100"
-        android:title="@string/action_update_database"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="200"
-        android:title="@string/action_preferences"
-        app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_clear"
-        android:icon="@drawable/ic_action_clear"
-        android:title="Copiar Banco"
-        android:orderInCategory="300"
-        app:showAsAction="never" />
+                <item
+                    android:id="@+id/action_updateDatabase"
+                    android:orderInCategory="100"
+                    android:title="@string/action_update_database"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/action_settings"
+                    android:orderInCategory="200"
+                    android:title="@string/action_preferences"
+                    app:showAsAction="never" />
 
--->
+                <item
+                    android:id="@+id/action_clear"
+                    android:icon="@drawable/ic_action_clear"
+                    android:title="Copiar Banco"
+                    android:orderInCategory="300"
+                    app:showAsAction="never" />
+
+            -->
 
 
 </menu><!--android:title="@string/limpar_historico" -->

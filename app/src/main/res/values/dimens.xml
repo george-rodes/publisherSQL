@@ -15,7 +15,7 @@
     <dimen name="marginRelatorio">2sp</dimen>
     <dimen name="marginRelatorioG">10sp</dimen>
 
-    <dimen name="clearBig">20dp</dimen>
+    <dimen name="clearBig">29dp</dimen>
     <dimen name="clearBigger">40dp</dimen>
     <dimen name="clearBigger2">60dp</dimen>
 

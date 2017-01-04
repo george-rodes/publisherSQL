@@ -1,5 +1,6 @@
 package br.com.anagnostou.publisher.telas;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,7 +8,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,6 +19,7 @@ import android.widget.ListView;
 
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
+import br.com.anagnostou.publisher.utils.L;
 
 public class Adriano extends Fragment {
     View rootView;
@@ -42,8 +47,6 @@ public class Adriano extends Fragment {
             adrianoListView.setAdapter(listAdapter);
         }
 
-
-
         adrianoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -58,8 +61,10 @@ public class Adriano extends Fragment {
             }
         });
 
+
         return rootView;
     }
+
 
 
 }

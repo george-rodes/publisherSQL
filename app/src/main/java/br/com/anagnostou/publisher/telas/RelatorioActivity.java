@@ -1,5 +1,6 @@
 package br.com.anagnostou.publisher.telas;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +11,10 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -139,6 +143,31 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         editTextListener(etRevisitas);
         editTextListener(etEstudos);
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_relatorio, menu);
+
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.clearReport) {
+            limpaCampos();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void limpaCampos() {
+        etPublicador.setText("");
+        etPublicacoes.setText("");
+        etEstudos.setText("");
+        etRevisitas.setText("");
+        etHoras.setText("");
+        etVideos.setText("");
+        spModalidade.setSelection(Utilidades.getSpinnerIndex(spModalidade, "Publicador"));
+    }
+
 
     private void buscaRelatorio(String nome, int ano, int mes) {
         Relatorio r = dbAdapter.findRelatorio(nome, "" + ano, "" + mes);

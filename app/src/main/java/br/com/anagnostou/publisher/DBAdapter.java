@@ -443,6 +443,30 @@ public class DBAdapter {
         }
     }
 
+    public List<String> naoRelatouPorGrupo(String ano, String mes, String grupo) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String[] selectionArgs = {ano, mes, grupo};
+        List<String> nomes = new ArrayList<>();
+        Cursor c = db.rawQuery(
+                " SELECT publicador.nome, relatorio.horas " +
+                        "FROM publicador " +
+                        "LEFT  JOIN relatorio ON publicador.nome = relatorio.nome " +
+                        "AND  relatorio.ano = ? AND relatorio.mes = ? " +
+                        "WHERE publicador.grupo = ? " +
+                        "ORDER BY relatorio.horas, publicador.nome "
+                , selectionArgs);
+
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                if (c.getInt(1) < 1) {
+                    nomes.add(c.getString(0));
+                }
+            }
+        } else nomes.add("Todos Relataram");
+        c.close();
+        return nomes;
+    }
+
     /*****************************************
      * INSERT
      ****************************************/
@@ -520,12 +544,12 @@ public class DBAdapter {
         return db.insert(DBHelper.TN_TT_RELATORIO, null, cv);
     }
 
-    public Cursor findFirstTTRelatorio() {
+    public Cursor retrieveTTRelatorio() {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.UID, DBHelper.EMAIL, DBHelper.ANO, DBHelper.MES, DBHelper.NOME,
                 DBHelper.MODALIDADE, DBHelper.PUBLICACOES,
                 DBHelper.VIDEOS, DBHelper.HORAS, DBHelper.REVISITAS, DBHelper.ESTUDOS, DBHelper.ENTREGUE};
-        return db.query(DBHelper.TN_TT_RELATORIO, columns, null, null, null, null, null, "1");
+        return db.query(DBHelper.TN_TT_RELATORIO, columns, null, null, null, null, null);
 
     }
 

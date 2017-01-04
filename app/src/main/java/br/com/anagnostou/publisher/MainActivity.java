@@ -44,6 +44,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import java.util.Calendar;
+import java.util.List;
 
 import br.com.anagnostou.publisher.asynctasks.CheckUpdateAvailable;
 import br.com.anagnostou.publisher.asynctasks.DownloadTaskUpdate;
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        if(getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.por_grupo);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.por_grupo);
         getSupportActionBar().setSubtitle(getString(R.string.atividades_da_congregacao));
 
         dbAdapter = new DBAdapter(getApplicationContext());
@@ -365,6 +367,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        String grupo = "";
         int id = item.getItemId();
         if (id == R.id.novo_relatorio) {
             //Adicionando modo offline
@@ -377,24 +380,66 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
 
+        } else if (id == R.id.naorelatou) {
+            int i = mViewPager.getCurrentItem();
+            // L.m("" + mViewPager.getAdapter().getClass().getCanonicalName() + " " + mViewPager.getCurrentItem());
+            //br.com.anagnostou.publisher.MainActivity.SectionsPagerAdapter 2
+            switch (i) {
+                case 0:
+                    grupo = "Adriano";
+                    break;
+                case 1:
+                    grupo = "Salão do Reino";
+                    break;
+                case 2:
+                    grupo = "Vila Nova";
+                    break;
+                case 3:
+                    grupo = "Centro";
+                    break;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            for (String n : dbAdapter.naoRelatouPorGrupo(""+anoNumero(), ""+mesNumero(), grupo)) {
+                sb.append(n);
+                sb.append("\n");
+            }
+            dialogoNaoRelatou(sb.toString());
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void dialogoNaoRelatou(String sb) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage(sb);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
     @Override
     /***DrawerLayout **/
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.publicadores) {
             mViewPager.setAdapter(mSectionsPagerAdapter);
-            if(getSupportActionBar() != null) getSupportActionBar().setTitle(getString(R.string.por_grupo));
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(getString(R.string.por_grupo));
         } else if (id == R.id.porPrivilegio) {
             mViewPager.setAdapter(secondSectionsPagerAdapter);
-            if(getSupportActionBar() != null) getSupportActionBar().setTitle(getString(R.string.por_privilegio));
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(getString(R.string.por_privilegio));
         } else if (id == R.id.pesquisasEspeciais) {
             mViewPager.setAdapter(specialPagerAdapter);
-            if(getSupportActionBar() != null) getSupportActionBar().setTitle(getString(R.string.pesquisas_especiais));
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(getString(R.string.pesquisas_especiais));
         } else if (id == R.id.atualizar) {
             atualizarBancoDeDados();
         } else if (id == R.id.preferencias) {
@@ -418,9 +463,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public Fragment getItem(int position) {
             if (position == 0 && bancoTemDados) {
+                //L.m("Adraino");
                 return new Adriano();
             }
             if (position == 1 && bancoTemDados) {
+                //L.m("SalaoDoReino");
                 return new SalaoDoReino();
             }
             if (position == 2 && bancoTemDados) {
@@ -574,6 +621,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void copyDataBaseSdCard() {
+
         try {
             File sd = Environment.getExternalStorageDirectory();
             if (sd.canWrite()) {
@@ -606,5 +654,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    private int mesNumero() {
+        int mes;
+        Calendar now = Calendar.getInstance();
+        mes = now.get(Calendar.MONTH) + 1;
+        if ((mes - 1) == 0) {
+            return 12;
+        } else {
+            return mes - 1;
+        }
+    }
+
+    private int anoNumero() {
+        int ano, mes;
+        Calendar now = Calendar.getInstance();
+        ano = now.get(Calendar.YEAR);
+        mes = now.get(Calendar.MONTH);
+        if (mes == 0) {
+            ano = ano - 1;
+        }
+
+        return ano;
+    }
+
 
 }

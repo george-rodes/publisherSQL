@@ -120,6 +120,10 @@
     <string name="inativo">Inativo</string>
     <string name="nao_relatou">"Deixou de relatar "</string>
     <string name="mais_tarde">Está sem Internet. O Relatório será enviado automaticamente assim que tiver conexão com a Internet</string>
+    <string name="limpa_tudo">Limpa Tudo</string>
+    <string name="test">test</string>
+    <string name="tela_inicical">Tela Inicical</string>
+    <string name="relat_rios_em_falta">Relatórios em Falta</string>
 
 
     <string-array name="sourceDataImport">

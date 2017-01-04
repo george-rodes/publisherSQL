@@ -95,39 +95,42 @@ public class CheckSQLIntentService extends IntentService {
     }
 
     private void checkLocalRelatorio() {
-        Cursor c = dbAdapter.findFirstTTRelatorio();
-        if (c.moveToNext()) {
-            int id = c.getInt(c.getColumnIndex("_id"));
-            String email = c.getString(c.getColumnIndex("email"));
-            String nome = c.getString(c.getColumnIndex("nome"));
-            String ano = c.getString(c.getColumnIndex("ano"));
-            String mes = (c.getString(c.getColumnIndex("mes")));
-            String modalidade = c.getString(c.getColumnIndex("modalidade"));
-            String publicacoes = c.getString(c.getColumnIndex("publicacoes"));
-            String videos = c.getString(c.getColumnIndex("videos"));
-            String horas = c.getString(c.getColumnIndex("horas"));
-            String revisitas = c.getString(c.getColumnIndex("revisitas"));
-            String estudos = c.getString(c.getColumnIndex("estudos"));
-            String entregue = c.getString(c.getColumnIndex("entregue"));
+        Cursor c = dbAdapter.retrieveTTRelatorio();
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                int id = c.getInt(c.getColumnIndex("_id"));
+                String email = c.getString(c.getColumnIndex("email"));
+                String nome = c.getString(c.getColumnIndex("nome"));
+                String ano = c.getString(c.getColumnIndex("ano"));
+                String mes = (c.getString(c.getColumnIndex("mes")));
+                String modalidade = c.getString(c.getColumnIndex("modalidade"));
+                String publicacoes = c.getString(c.getColumnIndex("publicacoes"));
+                String videos = c.getString(c.getColumnIndex("videos"));
+                String horas = c.getString(c.getColumnIndex("horas"));
+                String revisitas = c.getString(c.getColumnIndex("revisitas"));
+                String estudos = c.getString(c.getColumnIndex("estudos"));
+                String entregue = c.getString(c.getColumnIndex("entregue"));
 
-            /**
-            L.m("" + c.getInt(c.getColumnIndex("_id")));
-            L.m(c.getString(c.getColumnIndex("email")));
-            L.m(c.getString(c.getColumnIndex("nome")));
-            L.m(c.getString(c.getColumnIndex("ano")));
-            L.m(c.getString(c.getColumnIndex("mes")));
-            L.m(c.getString(c.getColumnIndex("modalidade")));
-            L.m(c.getString(c.getColumnIndex("publicacoes")));
-            L.m(c.getString(c.getColumnIndex("videos")));
-            L.m(c.getString(c.getColumnIndex("horas")));
-            L.m(c.getString(c.getColumnIndex("revisitas")));
-            L.m(c.getString(c.getColumnIndex("estudos")));
-            L.m(c.getString(c.getColumnIndex("entregue")));
-            */
-            if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
-                //L.m("We are online, sending...");
-                enviarRelatorio(id, email,nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
-            } //else L.m("We are offline ");
+
+                 L.m("" + c.getInt(c.getColumnIndex("_id")));
+                 L.m(c.getString(c.getColumnIndex("email")));
+                 L.m(c.getString(c.getColumnIndex("nome")));
+                 L.m(c.getString(c.getColumnIndex("ano")));
+                 L.m(c.getString(c.getColumnIndex("mes")));
+                 L.m(c.getString(c.getColumnIndex("modalidade")));
+                 L.m(c.getString(c.getColumnIndex("publicacoes")));
+                 L.m(c.getString(c.getColumnIndex("videos")));
+                 L.m(c.getString(c.getColumnIndex("horas")));
+                 L.m(c.getString(c.getColumnIndex("revisitas")));
+                 L.m(c.getString(c.getColumnIndex("estudos")));
+                 L.m(c.getString(c.getColumnIndex("entregue")));
+
+                if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
+                    //L.m("We are online, sending...");
+                    enviarRelatorio(id, email, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
+                } //else L.m("We are offline ");
+
+            }
         }
     }
 
@@ -145,7 +148,7 @@ public class CheckSQLIntentService extends IntentService {
                         JSONObject jsonObject = arrayJSON.getJSONObject(0);
                         if (!jsonObject.getString("result").isEmpty()) {
                             if (jsonObject.getString("result").contentEquals("SUCCESS")) {
-                                dbAdapter.deleteTTRelatorio(""+id);
+                                dbAdapter.deleteTTRelatorio("" + id);
                                 // L.m("deleted: " + dbAdapter.deleteTTRelatorio(""+id));
                             }
                         }
