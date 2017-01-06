@@ -6,9 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -45,10 +48,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 import java.util.Calendar;
-import java.util.List;
 
 import br.com.anagnostou.publisher.asynctasks.CheckUpdateAvailable;
 import br.com.anagnostou.publisher.asynctasks.DownloadTaskUpdate;
+import br.com.anagnostou.publisher.objetos.Relatorio;
 import br.com.anagnostou.publisher.phpmysql.JsonTaskPublicador;
 import br.com.anagnostou.publisher.phpmysql.JsonTaskRelatorio;
 import br.com.anagnostou.publisher.services.*;
@@ -59,6 +62,7 @@ import br.com.anagnostou.publisher.telas.Centro;
 import br.com.anagnostou.publisher.telas.Irregulares;
 import br.com.anagnostou.publisher.telas.LoginActivity;
 import br.com.anagnostou.publisher.telas.NaoBatizados;
+import br.com.anagnostou.publisher.telas.NaoRelataram;
 import br.com.anagnostou.publisher.telas.Pioneiros;
 import br.com.anagnostou.publisher.telas.Pregadores;
 import br.com.anagnostou.publisher.telas.RelatorioActivity;
@@ -400,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             StringBuilder sb = new StringBuilder();
-            for (String n : dbAdapter.naoRelatouPorGrupo(""+anoNumero(), ""+mesNumero(), grupo)) {
+            for (String n : dbAdapter.naoRelatouPorGrupo("" + anoNumero(), "" + mesNumero(), grupo)) {
                 sb.append(n);
                 sb.append("\n");
             }
@@ -448,11 +452,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             copyDataBaseSdCard();
         } else if (id == R.id.logoff) {
             clearAuthenticationKey();
+        } else if (id == R.id.enviaNaoRelataram) {
+            enviaNaoRelataram();
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void enviaNaoRelataram() {
+        Cursor c = dbAdapter.naoRelatouMesPassado("" + anoNumero(), "" + mesNumero());
+        StringBuilder sb = new StringBuilder();
+        sb.append("Não relataram até o momento:\n");
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                sb.append(c.getString(1));
+                sb.append("\n");
+            }
+        }
+        L.m(sb.toString());
+        PackageManager pm = getPackageManager();
+
+        try {
+
+            Intent waIntent = new Intent(Intent.ACTION_SEND);
+            waIntent.setType("text/plain");
+            String text = sb.toString();
+
+            PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+            //Check if package exists or not. If not then code
+            //in catch block will be called
+            waIntent.setPackage("com.whatsapp");
+
+            waIntent.putExtra(Intent.EXTRA_TEXT, text);
+            startActivity(Intent.createChooser(waIntent, "Share with"));
+
+        } catch (PackageManager.NameNotFoundException e) {
+            L.t(this, "WhatsApp not Installed");
+
+        }
+
     }
 
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
@@ -579,41 +618,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public Fragment getItem(int position) {
-            //IRREGULARES
             if (position == 0 && bancoTemDados) {
+                return new NaoRelataram();
+            } else if (position == 1 && bancoTemDados) {
                 return new Irregulares();
-            }
-            //VARÕES BATIZADOS
-            if (position == 1 && bancoTemDados) {
+            } else if (position == 2 && bancoTemDados) {
                 return new VaroesBatizados();
-            }
-            if (position == 2 && bancoTemDados) {
+            } else if (position == 3 && bancoTemDados) {
                 return new AnoBatismo();
-            }
-            //NÃO BATIZADOS
-            if (position == 3 && bancoTemDados) {
+            } else if (position == 4 && bancoTemDados) {
                 return new NaoBatizados();
             }
-
             return new Vazio();
         }
 
         @Override // Show x total pages.
         public int getCount() {
-            return 4;
+            return 5;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "IRREGULARES";
+                    return "NÃO RELATARAM";
                 case 1:
-                    return "VARÕES BATIZADOS";
+                    return "IRREGULARES";
                 case 2:
-                    return "MENOS DE UM ANO DE BATISMO";
+                    return "VARÕES BATIZADOS";
                 case 3:
+                    return "MENOS DE UM ANO DE BATISMO";
+                case 4:
                     return "NÃO BATIZADOS";
+
             }
             return null;
         }
@@ -680,3 +717,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 }
+
+/**
+ Intent intent = null, chooser = null;
+ String cabecalho = "Não Relataram até agora";
+ intent = new Intent(Intent.ACTION_SEND);
+ intent.setData(Uri.parse("mailto:"));
+ intent.putExtra(Intent.EXTRA_SUBJECT, cabecalho);
+ intent.putExtra(Intent.EXTRA_TEXT, sb.toString());
+ intent.setType("message/rfc822");
+ chooser = Intent.createChooser(intent, "Enviar Email");
+ startActivity(chooser);
+
+
+ */

@@ -108,16 +108,13 @@ public class CartaoActivity extends AppCompatActivity {
             String cabecalho = "Registros de: " + nome;
             StringBuilder sb = new StringBuilder();
 
-            sb.append("Seguem os Relatorios de Campo de " + nome + ":\n\n");
+            sb.append("Seguem os Relatorios de Campo de ").append(nome).append(":\n\n");
             for (Relatorio r : relatorios) {
-
-                sb.append("Data: " + r.getAno() + "/" + r.getMes()
-                        + ", Publicações: " + r.getPublicacoes()
-                        + ", Videos: " + r.getVideos()
-                        + ", Horas: " + r.getHoras()
-                        + ", Revisitas: " + r.getRevisitas()
-                        + ", Estudos: " + r.getEstudos()
-                        + "\n\n");
+                sb.append("Data: ").append(r.getAno()).append("/").append(r.getMes()).
+                        append(", Publicações: ").append(r.getPublicacoes()).append(", Videos: ").
+                        append(r.getVideos()).append(", Horas: ").append(r.getHoras()).
+                        append(", Revisitas: ").append(r.getRevisitas()).append(", Estudos: ").
+                        append(r.getEstudos()).append("\n\n");
             }
 
             intent = new Intent(Intent.ACTION_SEND);

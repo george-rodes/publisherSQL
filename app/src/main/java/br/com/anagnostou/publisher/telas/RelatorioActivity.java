@@ -40,6 +40,7 @@ import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.objetos.Relatorio;
 import br.com.anagnostou.publisher.phpmysql.SendReportRequest;
 
+import br.com.anagnostou.publisher.utils.L;
 import br.com.anagnostou.publisher.utils.Utilidades;
 
 
@@ -143,12 +144,14 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         editTextListener(etRevisitas);
         editTextListener(etEstudos);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_relatorio, menu);
 
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -322,7 +325,7 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
                     enviarRelatorio(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
                 } else {
                     //modo off line
-                    dbAdapter.insertTTRelatorio(email,nome,ano,mes,modalidade,publicacoes,videos,horas,revisitas,estudos,entregue);
+                    enviarRelatorioOffline(nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
 
                 }
                 dialog.cancel();
@@ -337,9 +340,25 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         dialog.show();
     }
 
+    public void enviarRelatorioOffline(String nome, String ano, String mes, String modalidade, String publicacoes,
+                                       String videos, String horas, String revisitas, String estudos, String entregue) {
+        if (dbAdapter.insertTTRelatorio(email, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue) > 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(RelatorioActivity.this);
+            builder.setMessage("O Relatório foi gravado no modo OFFLINE. O Relatório será enviado automaticamente assim que o sistema estiver ONLINE.");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else L.t(this, "Gravação Local Falhou. Avise o George");
+
+    }
+
 
     public void enviarRelatorio(String nome, String ano, String mes, String modalidade, String publicacoes,
-                                 String videos, String horas, String revisitas, String estudos, String entregue) {
+                                String videos, String horas, String revisitas, String estudos, String entregue) {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -506,7 +525,6 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         });
 
     }
-
 
 
 }

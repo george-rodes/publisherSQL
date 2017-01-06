@@ -35,6 +35,12 @@
                 android:id="@+id/copy"
                 android:icon="@drawable/ic_sd_card_black_36dp"
                 android:title="@string/copy" />
+
+            <item
+                android:id="@+id/enviaNaoRelataram"
+                android:icon="@drawable/social_share"
+                android:title="@string/nao_relataram" />
+
             <item
                 android:id="@+id/logoff"
                 android:icon="@drawable/logoff"

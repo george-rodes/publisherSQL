@@ -467,6 +467,19 @@ public class DBAdapter {
         return nomes;
     }
 
+    public Cursor naoRelatouMesPassado(String ano, String mes) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String[] selectionArgs = {ano, mes};
+        return db.rawQuery(
+                " SELECT publicador._id, publicador.nome, publicador.familia, relatorio.horas " +
+                        "FROM publicador " +
+                        "LEFT  JOIN relatorio ON publicador.nome = relatorio.nome " +
+                        "AND  relatorio.ano = ? AND relatorio.mes = ? " +
+                        "WHERE relatorio.horas is NULL " +
+                        "ORDER BY publicador.nome "
+                , selectionArgs);
+    }
+
     /*****************************************
      * INSERT
      ****************************************/
@@ -518,10 +531,6 @@ public class DBAdapter {
         return db.insert(DBHelper.TABLE_NAME_RELATORIO, null, cv);
     }
 
-    /**
-     * TT RELATORIO
-     */
-    //String nome, String ano, String mes, String modalidade, String publicacoes, String videos, String horas, String revisitas, String estudos, String entregue
     public long insertTTRelatorio(String email, String nome, String ano, String mes, String modalidade,
                                   String publicacoes, String videos, String horas, String revisitas,
                                   String estudos, String entregue) {
@@ -566,25 +575,20 @@ public class DBAdapter {
     public boolean updateDataRelatorio(Relatorio r) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
-
         String ano = String.valueOf(r.getAno());
         String mes = String.valueOf(r.getMes());
         String nome = String.valueOf(r.getNome());
-
         String selection = DBHelper.ANO + " = ? AND " + DBHelper.MES + " = ? AND " + DBHelper.NOME + " = ? ";
         String[] selectionArgs = {ano, mes, nome};
-
         cv.put(DBHelper.MODALIDADE, r.getModalidade());
         cv.put(DBHelper.VIDEOS, r.getVideos());
         cv.put(DBHelper.HORAS, r.getHoras());
         cv.put(DBHelper.PUBLICACOES, r.getPublicacoes());
         cv.put(DBHelper.REVISITAS, r.getRevisitas());
         cv.put(DBHelper.ESTUDOS, r.getEstudos());
-
         int count = db.update(DBHelper.TABLE_NAME_RELATORIO, cv, selection, selectionArgs);
         // db.close();
         return count > 0;
-
     }
 
     public boolean updateDataPublicador(Publicador p) {

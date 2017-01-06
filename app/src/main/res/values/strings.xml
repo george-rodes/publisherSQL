@@ -124,6 +124,7 @@
     <string name="test">test</string>
     <string name="tela_inicical">Tela Inicical</string>
     <string name="relat_rios_em_falta">Relatórios em Falta</string>
+    <string name="nao_relataram">Não Relataram</string>
 
 
     <string-array name="sourceDataImport">
