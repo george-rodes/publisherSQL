@@ -34,7 +34,7 @@ public class Utilidades extends AppCompatActivity {
         Date last = Calendar.getInstance().getTime();
 
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             first = sdf.parse(t);
             Calendar startCalendar = new GregorianCalendar();
             startCalendar.setTime(first);
@@ -56,13 +56,13 @@ public class Utilidades extends AppCompatActivity {
 
     public static String trocaFormatoData(String s) {
         Date date;
-        SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         try {
             date = ymd.parse(s);
             if (s.contentEquals("0000-00-00")) {
                 return "";
             } else {
-                return new SimpleDateFormat("dd/MM/yyyy").format(date);
+                return new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date);
             }
 
         } catch (ParseException e) {
@@ -76,7 +76,7 @@ public class Utilidades extends AppCompatActivity {
         Date first;
         Date last = Calendar.getInstance().getTime();
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             first = sdf.parse(t);
             return String.valueOf(getDiffYears(first, last));
         } catch (ParseException ex) {
@@ -168,11 +168,8 @@ public class Utilidades extends AppCompatActivity {
     public static boolean temDadosNoBanco(Context context) {
         DBAdapter dbAdapter;
         dbAdapter = new DBAdapter(context);
-
-        if (dbAdapter.findFirstRelatorio().contentEquals("No Records")) {
-            //L.m("No Records in RELATORIOS");
-            return false;
-        } else return !dbAdapter.findFirstPublicador().contentEquals("No Records");
+        //L.m("No Records in RELATORIOS");
+        return !dbAdapter.findFirstRelatorio().contentEquals("No Records") && !dbAdapter.findFirstPublicador().contentEquals("No Records");
     }
 
     public static boolean findLocalFiles(String name) {
