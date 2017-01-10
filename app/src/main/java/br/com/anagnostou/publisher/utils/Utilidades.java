@@ -123,10 +123,10 @@ public class Utilidades extends AppCompatActivity {
         //calcular a diferenca e retorna anos
         Date dataLocal;
         Date dataBaixada;
-        Date agora = Calendar.getInstance().getTime();
+
 
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             dataLocal = sdf.parse(local);
             dataBaixada = sdf.parse(baixada);
             Calendar localCalendar = new GregorianCalendar();

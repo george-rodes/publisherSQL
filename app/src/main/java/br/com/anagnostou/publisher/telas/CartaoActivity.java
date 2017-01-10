@@ -104,7 +104,7 @@ public class CartaoActivity extends AppCompatActivity {
         }
 
         if (item.getItemId() == R.id.enviarCartao) {
-            Intent intent = null, chooser = null;
+            Intent intent, chooser;
             String cabecalho = "Registros de: " + nome;
             StringBuilder sb = new StringBuilder();
 

@@ -168,15 +168,22 @@ public class PioneirosActivity extends AppCompatActivity {
             if (p.getSexo().equals("M")) pio = "Pioneiro";
             else pio = "Pioneira";
 
-            tvPubDados.setText(pio + getString(R.string._regular));
-            tvPub1.setText(getString(R.string.familia_) + p.getFamilia());
-            tvPub2.setText(getString(R.string.grupo_) + p.getGrupo());
-            tvPub5.setText(getString(R.string.idade_) + idade);
-            tvPub6.setText(getString(R.string.batismo_) + batismo);
+            String str1 = pio + getString(R.string._regular);
+            tvPubDados.setText(str1);
+            String str2 = getString(R.string.familia_) + p.getFamilia();
+            tvPub1.setText(str2);
+            String str3 = getString(R.string.grupo_) + p.getGrupo();
+            tvPub2.setText(str3);
+            String str4 = getString(R.string.idade_) + idade;
+            tvPub5.setText(str4);
+            String str5 = getString(R.string.batismo_) + batismo;
+            tvPub6.setText(str5);
             tvPub3.setText(p.getRua());
-            tvPub4.setText(getString(R.string.bairro_) + p.getBairro());
+            String str6 = getString(R.string.bairro_) + p.getBairro();
+            tvPub4.setText(str6);
             tvPubFone.setText(p.getCelular());
-            tvPubTitle.setText(getString(R.string.dados_ano_servico));
+            String str61 = getString(R.string.dados_ano_servico);
+            tvPubTitle.setText(str61);
 
             String anoini = "" +(anoDeServico()-1);
             String anofim = "" +anoDeServico();
@@ -203,7 +210,7 @@ public class PioneirosActivity extends AppCompatActivity {
             /** Média para cumprir o requisito Mensal */
             String str141 = String.format(Locale.getDefault(), "%.1f",
                     mediasRequisito(Integer.parseInt(dbAdapter.mediasPioneiro(p.getNome(),anoini,anofim)[0]) ,
-                            Integer.parseInt(dbAdapter.mediasPioneiro(p.getNome(),anoini,anofim)[1]))); ;
+                            Integer.parseInt(dbAdapter.mediasPioneiro(p.getNome(),anoini,anofim)[1])));
             tvPub141.setText(str141);
             tvPub81.setText(String.format(Locale.getDefault(), "%.1f", Double.parseDouble(statPion[3])));
             tvPub91.setText(String.format(Locale.getDefault(), "%.1f", Double.parseDouble(statPion[4])));

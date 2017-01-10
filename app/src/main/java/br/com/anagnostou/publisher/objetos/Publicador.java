@@ -4,19 +4,19 @@ package br.com.anagnostou.publisher.objetos;
  * Created by George on 26/07/2016.
  */
 public class Publicador  {
-    static int ativos;
-    String nome;
-    String familia;
-    String grupo;
-    String batismo;
-    String nascimento;
-    String fone;
-    String celular;
-    String rua;
-    String bairro;
-    String ansepu;
-    String pipu;
-    String sexo;
+    private static int ativos;
+    private String nome;
+    private String familia;
+    private String grupo;
+    private String batismo;
+    private String nascimento;
+    private String fone;
+    private String celular;
+    private String rua;
+    private String bairro;
+    private String ansepu;
+    private String pipu;
+    private String sexo;
 
     public Publicador() {
         ativos++;

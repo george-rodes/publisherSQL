@@ -25,9 +25,6 @@ import br.com.anagnostou.publisher.objetos.Relatorio;
 
 import static android.content.Context.MODE_PRIVATE;
 
-/**
- * Created by George on 20/12/2016.
- */
 
 public class TaskRelatorio extends AsyncTask<String, Integer, String> {
     private Context context;
@@ -76,12 +73,10 @@ public class TaskRelatorio extends AsyncTask<String, Integer, String> {
         BufferedReader in = null;
         try {
             in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
+        } catch (UnsupportedEncodingException | FileNotFoundException e) {
             e.printStackTrace();
         }
-        List<String> myStringList = new ArrayList<String>();
+        List<String> myStringList = new ArrayList<>();
         String str;
         try {
             while ((str = in.readLine()) != null) {
@@ -116,9 +111,7 @@ public class TaskRelatorio extends AsyncTask<String, Integer, String> {
         BufferedReader inU = null;
         try {
             inU = new BufferedReader(new InputStreamReader(new FileInputStream(fileU), "UTF8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
+        } catch (UnsupportedEncodingException | FileNotFoundException e) {
             e.printStackTrace();
         }
         String strU;

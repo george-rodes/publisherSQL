@@ -25,7 +25,7 @@
         app:actionViewClass="android.support.v7.widget.SearchView"/>
 
     <item
-        android:id="@+id/home"
+        android:id="@+id/casa"
         android:orderInCategory="110"
         android:icon="@drawable/home"
         android:title="@string/tela_inicical"

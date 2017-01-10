@@ -73,6 +73,7 @@ import br.com.anagnostou.publisher.telas.Vazio;
 import br.com.anagnostou.publisher.telas.VilaNova;
 import br.com.anagnostou.publisher.utils.L;
 import br.com.anagnostou.publisher.utils.Utilidades;
+import br.com.anagnostou.publisher.providers.CustomSuggestions;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     int PERM_EXT_STORAGE = 99;
@@ -329,6 +330,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void checkPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
+                L.t(this, "shouldShowRequestPermissionRationale");
             } else {
                 int PERM_PHONE = 77;
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, PERM_PHONE);
@@ -339,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 != PackageManager.PERMISSION_GRANTED) {
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                // Show an explanation to the user *asynchronously* -- don't block
+                L.t(this, "Show an explanation to the user *asynchronously* -- don't block");
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERM_EXT_STORAGE);
@@ -352,9 +354,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (requestCode == PERM_EXT_STORAGE) {
             // Request for camera permission.
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission has been granted. Start something
+                L.t(this,"Permission has been granted. Start something");
             } else {
-                // Permission request was denied.
+                L.t(this,"Permission request was denied.");
             }
         }
     }
@@ -404,6 +406,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             StringBuilder sb = new StringBuilder();
+            sb.append("Grupo: ").append(grupo).append("\n");
             for (String n : dbAdapter.naoRelatouPorGrupo("" + anoNumero(), "" + mesNumero(), grupo)) {
                 sb.append(n);
                 sb.append("\n");
@@ -479,7 +482,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             waIntent.setType("text/plain");
             String text = sb.toString();
 
-            PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+            pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
             //Check if package exists or not. If not then code
             //in catch block will be called
             waIntent.setPackage("com.whatsapp");
@@ -719,15 +722,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 }
 
 /**
- Intent intent = null, chooser = null;
- String cabecalho = "Não Relataram até agora";
- intent = new Intent(Intent.ACTION_SEND);
- intent.setData(Uri.parse("mailto:"));
- intent.putExtra(Intent.EXTRA_SUBJECT, cabecalho);
- intent.putExtra(Intent.EXTRA_TEXT, sb.toString());
- intent.setType("message/rfc822");
- chooser = Intent.createChooser(intent, "Enviar Email");
- startActivity(chooser);
-
-
+ * Intent intent = null, chooser = null;
+ * String cabecalho = "Não Relataram até agora";
+ * intent = new Intent(Intent.ACTION_SEND);
+ * intent.setData(Uri.parse("mailto:"));
+ * intent.putExtra(Intent.EXTRA_SUBJECT, cabecalho);
+ * intent.putExtra(Intent.EXTRA_TEXT, sb.toString());
+ * intent.setType("message/rfc822");
+ * chooser = Intent.createChooser(intent, "Enviar Email");
+ * startActivity(chooser);
  */

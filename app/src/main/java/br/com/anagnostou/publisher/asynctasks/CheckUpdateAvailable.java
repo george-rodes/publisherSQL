@@ -24,9 +24,7 @@ import br.com.anagnostou.publisher.MainActivity;
 import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.utils.Utilidades;
 
-/**
- * Created by George on 20/12/2016.
- */
+
 
 public class CheckUpdateAvailable extends AsyncTask<String, Integer, String> {
     private Context context;
@@ -83,9 +81,7 @@ public class CheckUpdateAvailable extends AsyncTask<String, Integer, String> {
         BufferedReader in = null;
         try {
             in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
+        } catch (UnsupportedEncodingException | FileNotFoundException e) {
             e.printStackTrace();
         }
         String str;
@@ -108,8 +104,8 @@ public class CheckUpdateAvailable extends AsyncTask<String, Integer, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        if (result != null) {
-        } else {
+        if (result == null) {
+
             if (!Utilidades.comparaData(dbAdapter.selectVersao(), sDataServidor).contentEquals("mesma data")) {
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
                 builder1.setMessage(R.string.atualizar_banco_pergunta);

@@ -51,7 +51,7 @@ public class JsonTaskPublicador extends AsyncTask<JSONArray, Integer, Boolean> {
             sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
         int counter = jsonArrays[0].length();
         for (int i = 0; i < jsonArrays[0].length(); i++) {
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             try {
                jsonObject = jsonArrays[0].getJSONObject(i);
                 dbAdapter.insertDataPublicador(new Publicador(

@@ -46,7 +46,7 @@ public class AtividadesActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.atividades_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         dbAdapter = new DBAdapter(getApplicationContext());
@@ -94,8 +94,7 @@ public class AtividadesActivity extends AppCompatActivity {
             setResult(RESULT_OK, returnIntent);
             finish();
             return true;
-        }
-        if (item.getItemId() == R.id.action_relatorio) {
+        } else if (item.getItemId() == R.id.action_relatorio) {
             Intent intent = new Intent(this, CartaoActivity.class);
             intent.putExtra("nome", nome);
             startActivity(intent);
@@ -111,6 +110,9 @@ public class AtividadesActivity extends AppCompatActivity {
                 startActivity(intent);
             }
 
+        } else if (item.getItemId() == R.id.casa) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
 
         return true;
@@ -183,16 +185,26 @@ public class AtividadesActivity extends AppCompatActivity {
             pioneiroauxiliar = dbAdapter.contaPioneiroAuxiliar(p.getNome());
             irregular = dbAdapter.deixouDeRelatar(p.getNome());
 
-            tvPub1.setText(getString(R.string.familia_) + p.getFamilia());
-            tvPub2.setText(getString(R.string.grupo_) + p.getGrupo());
-            tvPub5.setText(getString(R.string.idade_) + idade);
-            tvPub6.setText(getString(R.string.batismo_) + batismo);
-            tvPubTitle.setText("Médias dos últimos " + resultado[1] + " meses ");
-            tvPub7.setText("Média de " + String.format(Locale.getDefault(), "%.1f", mediahoras) + " Horas");
-            tvPub8.setText("Média de " + String.format(Locale.getDefault(), "%.1f", mediarevisitas) + " Revisitas");
-            tvPub9.setText("Média de " + String.format(Locale.getDefault(), "%.1f", mediaestudos) + " Estudos");
-            tvPub13.setText("Média de " + String.format(Locale.getDefault(), "%.1f", mediasvideos) + " Videos");
-            tvPub14.setText("Média de " + String.format(Locale.getDefault(), "%.1f", mediapublicacoes) + " Publicações");
+            String s1 = getString(R.string.familia_) + p.getFamilia();
+            tvPub1.setText(s1);
+            String s2 = getString(R.string.grupo_) + p.getGrupo();
+            tvPub2.setText(s2);
+            String s3 = getString(R.string.idade_) + idade;
+            tvPub5.setText(s3);
+            String s4 = getString(R.string.batismo_) + batismo;
+            tvPub6.setText(s4);
+            String s5 = "Médias dos últimos " + resultado[1] + " meses ";
+            tvPubTitle.setText(s5);
+            String s6 = "Média de " + String.format(Locale.getDefault(), "%.1f", mediahoras) + " Horas";
+            tvPub7.setText(s6);
+            String s7 = "Média de " + String.format(Locale.getDefault(), "%.1f", mediarevisitas) + " Revisitas";
+            tvPub8.setText(s7);
+            String s8 = "Média de " + String.format(Locale.getDefault(), "%.1f", mediaestudos) + " Estudos";
+            tvPub9.setText(s8);
+            String s9 = "Média de " + String.format(Locale.getDefault(), "%.1f", mediasvideos) + " Videos";
+            tvPub13.setText(s9);
+            String s10 = "Média de " + String.format(Locale.getDefault(), "%.1f", mediapublicacoes) + " Publicações";
+            tvPub14.setText(s10);
 
             //Verificar se existe data de batismo
             //
@@ -200,31 +212,40 @@ public class AtividadesActivity extends AppCompatActivity {
             if (p.getSexo().equals("M")) pio = "Pioneiro";
             else pio = "Pioneira";
 
+            String s11;
             if (Integer.parseInt(pioneiroauxiliar) > 1) {
-                tvPub10.setText("Saiu de " + pio + " Auxiliar " + pioneiroauxiliar + " vezes");
-
+                s11 = "Saiu de " + pio + " Auxiliar " + pioneiroauxiliar + " vezes";
             } else if (Integer.parseInt(pioneiroauxiliar) == 0) {
-                tvPub10.setText("Não saiu de " + pio + " Auxiliar");
-            } else tvPub10.setText("Saiu de " + pio + " Auxiliar " + pioneiroauxiliar + " vez");
+                s11 = "Não saiu de " + pio + " Auxiliar";
+            } else s11 = "Saiu de " + pio + " Auxiliar " + pioneiroauxiliar + " vez";
+
+            tvPub10.setText(s11);
+
 
             if (p.getBatismo().isEmpty()) tvPub10.setText("");
 
             if (p.getPipu().equals("Pioneiro")) {
-                tvPub10.setText(pio + getString(R.string._regular));
+                String s = pio + getString(R.string._regular);
+                tvPub10.setText(s);
             }
 
+            String s12;
             if (Integer.parseInt(irregular) > 1) {
-                tvPub11.setText("Deixou de relatar " + irregular + " meses");
+                s12 = "Deixou de relatar " + irregular + " meses";
             } else if (Integer.parseInt(irregular) == 0) {
-                tvPub11.setText(getString(R.string.relatou));
-            } else tvPub11.setText(getString(R.string.nao_relatou) + irregular + " mês");
+                s12 = getString(R.string.relatou);
+            } else s12 =  getString(R.string.nao_relatou) + irregular + " mês";
+            tvPub11.setText(s12);
+
             if (mediahoras.isNaN()) {
                 if (p.getSexo().equals("M")) tvPub11.setText(getString(R.string.inativo));
                 else tvPub11.setText(getString(R.string.inativa));
             }
 
             tvPub3.setText(p.getRua());
-            tvPub4.setText(getString(R.string.bairro_) + p.getBairro());
+
+            String s13 = getString(R.string.bairro_) + p.getBairro();
+            tvPub4.setText(s13);
             tvPub12.setText(p.getFone());
             tvPubFone.setText(p.getCelular());
 

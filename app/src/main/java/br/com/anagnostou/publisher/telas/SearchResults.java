@@ -16,6 +16,8 @@ import android.widget.ListView;
 
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
+import br.com.anagnostou.publisher.utils.L;
+
 
 public class SearchResults extends AppCompatActivity {
     ListView resultadosListView;
@@ -33,13 +35,13 @@ public class SearchResults extends AppCompatActivity {
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
         Toolbar toolbar = (Toolbar) findViewById(R.id.search_results_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() !=null) getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         /**SEARCH*/
         Intent searchIntent = getIntent();
         if(searchIntent.getAction().equals(Intent.ACTION_VIEW)) {
-            //L.m(searchIntent.getData().getLastPathSegment());
+            L.m(searchIntent.getData().getLastPathSegment());
             cursor = dbAdapter.getOnePublicador(searchIntent.getData().getLastPathSegment());
             if (cursor.moveToNext()) {
                 Intent intent = new Intent(this, AtividadesActivity.class);

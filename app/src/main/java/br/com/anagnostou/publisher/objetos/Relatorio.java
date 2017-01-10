@@ -2,21 +2,20 @@ package br.com.anagnostou.publisher.objetos;
 
 import android.text.TextUtils;
 
-/**
- * Created by George on 26/07/2016.
- */
+
+
 public class Relatorio {
-    static int registros;
+    private static int registros;
     //ano, mes,nome,modalidade,videos,horas,publicacoes,revisitas,estudos
-    int ano;
-    int mes;
-    String nome;
-    String modalidade;
-    int videos;
-    int horas;
-    int publicacoes;
-    int revisitas;
-    int estudos;
+    private int ano;
+    private int mes;
+    private String nome;
+    private String modalidade;
+    private int videos;
+    private int horas;
+    private int publicacoes;
+    private int revisitas;
+    private int estudos;
 
     public Relatorio(int ano, int mes, String nome, String modalidade, int videos, int horas, int publicacoes, int revisitas, int estudos) {
         this.ano = ano;
@@ -31,15 +30,15 @@ public class Relatorio {
     }
 
     public Relatorio (String what){
-        String iano="";
-        String imes="";
-        String snome="";
-        String smodalidade="";
-        String ivideos="";
-        String ihoras="";
-        String ipublicacoes="";
-        String irevisitas="";
-        String iestudos="";
+        String iano;
+        String imes;
+        String snome;
+        String smodalidade;
+        String ivideos;
+        String ihoras;
+        String ipublicacoes;
+        String irevisitas;
+        String iestudos;
 
         //'\uFEFF' 65279
         // Remove the leading BOM characters.
@@ -95,7 +94,7 @@ public class Relatorio {
     }
 
 
-    public String getRidOfUTF(String str){
+    private String getRidOfUTF(String str){
         char[] charArray = str.toCharArray();
         StringBuilder sb = new StringBuilder();
         for (char c : charArray){

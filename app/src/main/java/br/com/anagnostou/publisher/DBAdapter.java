@@ -16,6 +16,7 @@ import java.util.List;
 import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
 import br.com.anagnostou.publisher.utils.L;
+import br.com.anagnostou.publisher.providers.CustomSuggestions;
 
 
 public class DBAdapter {
@@ -27,7 +28,7 @@ public class DBAdapter {
 
         /******************IMPORTANT FOR SEARCH ********************/
         // This HashMap is used to map table fields to Custom Suggestion fields
-        mAliasMap = new HashMap<String, String>();
+        mAliasMap = new HashMap<>();
         // Unique id for the each Suggestions ( Mandatory )
         mAliasMap.put("_ID", "_id as _id");
         // Text for Suggestions ( Mandatory )
@@ -40,9 +41,6 @@ public class DBAdapter {
     }
 
     /************************ SEARCH ****************************************/
-    /**
-     * Returns Countries
-     */
     public Cursor getPublicadores(String[] selectionArgs) {
         String selection = DBHelper.NOME + " like ? ";
         if (selectionArgs != null) {
@@ -60,13 +58,11 @@ public class DBAdapter {
                 selectionArgs,
                 null,
                 null,
-                DBHelper.NOME + " asc ", "10"
+                DBHelper.NOME + " asc ", "15"
         );
     }
 
-    /**
-     * Return Publisher corresponding to the id, not used
-     */
+
     public Cursor getPublicador(String id) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(DBHelper.TABLE_NAME_PUBLICADOR);
@@ -76,9 +72,7 @@ public class DBAdapter {
         );
     }
 
-    /**
-     * Return Publisher corresponding to the id
-     */
+
     public Cursor getOnePublicador(String id) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(DBHelper.TABLE_NAME_PUBLICADOR);
@@ -121,7 +115,7 @@ public class DBAdapter {
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String nome = cursor.getString(cursor.getColumnIndex(DBHelper.NOME));//1
-                sb.append(nome + "\n");
+                sb.append(nome).append("\n");
             }
         } else sb.append("No Records");
         cursor.close();
@@ -146,6 +140,7 @@ public class DBAdapter {
         if (cursor.moveToNext()) {
             return cursor.getString(cursor.getColumnIndex(DBHelper.PIPU));
         } else return "Publicador";
+
     }
 
     public boolean checkIfReportExists(String ano, String mes, String nome) {
@@ -294,7 +289,7 @@ public class DBAdapter {
                     int mes = cursor.getInt(cursor.getColumnIndex(DBHelper.MES));
                     int horas = cursor.getInt(cursor.getColumnIndex(DBHelper.HORAS));
                     String nome = cursor.getString(cursor.getColumnIndex(DBHelper.NOME));
-                    sb.append(ano + " " + mes + " " + nome + " " + horas + "\n");
+                    sb.append(ano).append(" ").append(mes).append(" ").append(nome).append(" ").append(horas).append("\n");
                 }
             } else sb.append("No Records");
             cursor.close();
@@ -453,6 +448,31 @@ public class DBAdapter {
                         "LEFT  JOIN relatorio ON publicador.nome = relatorio.nome " +
                         "AND  relatorio.ano = ? AND relatorio.mes = ? " +
                         "WHERE publicador.grupo = ? " +
+                        "AND  relatorio.horas is NULL " +
+                        "ORDER BY relatorio.horas, publicador.nome "
+                , selectionArgs);
+
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+
+                nomes.add(c.getString(0));
+
+            }
+        } else nomes.add("Todos Relataram");
+        c.close();
+        return nomes;
+    }
+/*
+   public List<String> naoRelatouPorGrupo(String ano, String mes, String grupo) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String[] selectionArgs = {ano, mes, grupo};
+        List<String> nomes = new ArrayList<>();
+        Cursor c = db.rawQuery(
+                " SELECT publicador.nome, relatorio.horas " +
+                        "FROM publicador " +
+                        "LEFT  JOIN relatorio ON publicador.nome = relatorio.nome " +
+                        "AND  relatorio.ano = ? AND relatorio.mes = ? " +
+                        "WHERE publicador.grupo = ? " +
                         "ORDER BY relatorio.horas, publicador.nome "
                 , selectionArgs);
 
@@ -466,6 +486,11 @@ public class DBAdapter {
         c.close();
         return nomes;
     }
+
+
+
+ */
+
 
     public Cursor naoRelatouMesPassado(String ano, String mes) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
@@ -564,7 +589,6 @@ public class DBAdapter {
 
     public boolean deleteTTRelatorio(String id) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
-        ContentValues cv = new ContentValues();
         String selection = DBHelper.UID + " = ? ";
         String[] selectionArgs = {id};
         int count = db.delete(DBHelper.TN_TT_RELATORIO, selection, selectionArgs);
@@ -616,7 +640,9 @@ public class DBAdapter {
     /*************************************
      * SQLiteOpenHelper
      ************************************/
+    //public not workingge
     public static class DBHelper extends SQLiteOpenHelper {
+
         private static DBHelper sInstance;
 
         static synchronized DBHelper getInstance(Context context) {
@@ -625,7 +651,7 @@ public class DBAdapter {
             }
             return sInstance;
         }
-
+        //first step fpr a singleton is to make the constructor private
         private DBHelper(Context context) {
             super(context, DB_NAME, null, DB_VERSION);
         }
@@ -732,7 +758,7 @@ public class DBAdapter {
         @Override
         public void onCreate(SQLiteDatabase db) {
             try {
-                //L.m("on Create called. Nao tem nada aqui");
+                L.m("on Create called. Nao tem nada aqui");
                 //db.execSQL(CREATE_TABLE_PUBLICADOR);
                 //db.execSQL(CREATE_TABLE_RELATORIO);
                 // db.execSQL(CREATE_TABLE_VERSAO);

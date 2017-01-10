@@ -50,6 +50,9 @@ public class CartaoAdapter extends RecyclerView.Adapter<CartaoAdapter.ItemViewHo
             videos = (TextView) iv.findViewById(R.id.videos);
             revisitas = (TextView) iv.findViewById(R.id.revisitas);
             estudos = (TextView) iv.findViewById(R.id.estudos);
+
+
+
         }
     }
 
