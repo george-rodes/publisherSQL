@@ -210,6 +210,8 @@ public class DBAdapter {
                 "GROUP BY relatorio.nome HAVING count(publicador._id) < 6 ", selectionArgs);
     }
 
+
+
     public Cursor menosDeUmAnoDeBatismo(String anoini, String mesini, String anofim) {
         SQLiteDatabase db = mydbHelper.getReadableDatabase();
         String[] selectionArgs = {anoini, mesini, anofim};
@@ -240,6 +242,8 @@ public class DBAdapter {
         String[] selectionArgs = {pipu};
         return db.query(DBHelper.TABLE_NAME_PUBLICADOR, columns, DBHelper.PIPU + " = ?", selectionArgs, null, null, DBHelper.NOME);
     }
+
+
 
 
     /********
@@ -323,6 +327,9 @@ public class DBAdapter {
     //SELECT COUNT(horas), SUM(horas), AVG(horas), AVG(REVISITAS),AVG(ESTUDOS),AVG(videos),AVG(publicacoes) FROM relatorio
     // WHERE modalidade = 'Pioneiro Regular' AND ((Ano = 2015 and mes >= 9) OR (ano = 2016 and mes<=8)) GROUP BY nome
     public String[] mediasPioneiro(String nome, String anoini, String anofim) {
+
+
+
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome, anoini, anofim};
@@ -351,6 +358,18 @@ public class DBAdapter {
             return resultado;
         }
     }
+
+    public Cursor cursorPioneiros(String anoini, String anofim) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String[] selectionArgs = {anoini, anofim};
+        return db.rawQuery("SELECT publicador._id , publicador.nome ,  COUNT(relatorio.horas) as meses, SUM(relatorio.horas) as horas, " +
+                "AVG(relatorio.horas) as mediahoras, AVG(relatorio.REVISITAS) as mediarevisitas, AVG(relatorio.ESTUDOS) as mediaestudos " +
+                "FROM relatorio  JOIN publicador  ON publicador.nome = relatorio.nome  AND publicador.pipu = 'Pioneiro' " +
+                "AND ((Ano = ? and mes >= 9) OR (ano = ? and mes<=8))  GROUP BY relatorio.nome ", selectionArgs);
+    }
+
+// SELECT publicador._id, publicador.nome,  COUNT(relatorio.horas), SUM(relatorio.horas), AVG(relatorio.horas), AVG (relatorio.REVISITAS), AVG(relatorio.ESTUDOS) FROM relatorio JOIN publicador ON publicador.nome = relatorio.nome  AND publicador.pipu = 'Pioneiro' AND ((ano = ? and mes >= 9) OR (ano = ? and mes<=8))  GROUP BY relatorio.nome
+    //public
 
     public String[] somaHorasMeses(String nome) {
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};

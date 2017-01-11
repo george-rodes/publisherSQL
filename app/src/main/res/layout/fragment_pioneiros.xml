@@ -1,20 +1,16 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context=".telas.Pioneiros">
+    tools:context=".telas.Pioneiros" >
 
-
-
-        <ListView
-            android:id="@+id/pioneirosListView"
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvFragmentPioneiros"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@color/colorPrimaryDark"
-            android:dividerHeight="2dp"
+            android:layout_marginBottom="60dp"
+            />
 
-            android:paddingBottom="58dp"
-             />
 
-</FrameLayout>
+</RelativeLayout>

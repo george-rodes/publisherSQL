@@ -125,7 +125,14 @@
     <string name="tela_inicical">Tela Inicical</string>
     <string name="relat_rios_em_falta">Relatórios em Falta Por Grupo</string>
     <string name="nao_relataram">Não Relataram</string>
-
+    <string name="media_estudos">Media Estudos</string>
+    <string name="media_revisitas">Media Revisitas</string>
+    <string name="media_horas">Media Horas</string>
+    <string name="meses">Meses</string>
+    <string name="requisito">Requisito</string>
+    <string name="media_requsito">"Média para Cumprir o Requisito Anual "</string>
+    <string name="media_requsito_ponto">"Média para Cumprir o Requisito Anual: "</string>
+    <string name="media_momento">"Média Mensal até o momento: "</string>
 
     <string-array name="sourceDataImport">
         <item>Servidor SQL</item>
