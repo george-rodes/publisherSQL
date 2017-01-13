@@ -141,7 +141,7 @@ public class CheckSQLIntentService extends IntentService {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                L.m(response);
+                //L.m(response);
                 try {
                     JSONArray arrayJSON = new JSONArray(response);
                     if (arrayJSON.length() > 0) {

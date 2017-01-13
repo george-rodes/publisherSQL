@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import br.com.anagnostou.publisher.DBAdapter;
-import br.com.anagnostou.publisher.utils.L;
 
 /**
  * Created by George on 21/08/2016.
@@ -35,10 +34,10 @@ public class CustomSuggestions extends ContentProvider {
         // This URI is invoked, when user presses "Go" in the Keyboard of Search Dialog
         // Listview items of SearchableActivity is provided by this uri
         // See android:searchSuggestIntentData="content://in.wptrafficanalyzer.searchdialogdemo.provider/countries" of searchable.xml
-        uriMatcher.addURI(AUTHORITY, "publicador", SEARCH_PUBLICADOR);
+        uriMatcher.addURI(AUTHORITY, DBAdapter.DBHelper.TN_PUBLICADOR, SEARCH_PUBLICADOR);
 
         // This URI is invoked, when user selects a suggestion from search dialog or an item from the listview
-        uriMatcher.addURI(AUTHORITY, "publicador/#", GET_PUBLICADOR);
+        uriMatcher.addURI(AUTHORITY, DBAdapter.DBHelper.TN_PUBLICADOR +"/#", GET_PUBLICADOR);
         return uriMatcher;
     }
 

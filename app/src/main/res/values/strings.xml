@@ -133,6 +133,8 @@
     <string name="media_requsito">"Média para Cumprir o Requisito Anual "</string>
     <string name="media_requsito_ponto">"Média para Cumprir o Requisito Anual: "</string>
     <string name="media_momento">"Média Mensal até o momento: "</string>
+    <string name="rotinas_de_teste">Rotinas de Teste</string>
+    <string name="teste_1">Teste 1</string>
 
     <string-array name="sourceDataImport">
         <item>Servidor SQL</item>

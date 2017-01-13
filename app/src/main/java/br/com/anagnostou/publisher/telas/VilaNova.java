@@ -46,7 +46,6 @@ public class VilaNova extends Fragment {
         vilaListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                L.m(view.toString());
                 view.setSelected(true);
                 cursor.moveToPosition(position);
                 Intent intent = new Intent(view.getContext(), AtividadesActivity.class);

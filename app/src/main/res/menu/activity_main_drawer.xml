@@ -48,5 +48,14 @@
         </menu>
     </item>
 
+    <item android:title="@string/rotinas_de_teste">
+        <menu>
+            <item
+                android:id="@+id/teste_1"
+                android:icon="@drawable/skull1"
+                android:title="@string/teste_1" />
+        </menu>
+    </item>
+
 
 </menu>

@@ -41,7 +41,7 @@ public class SearchResults extends AppCompatActivity {
         /**SEARCH*/
         Intent searchIntent = getIntent();
         if(searchIntent.getAction().equals(Intent.ACTION_VIEW)) {
-            L.m(searchIntent.getData().getLastPathSegment());
+            //L.m(searchIntent.getData().getLastPathSegment());
             cursor = dbAdapter.getOnePublicador(searchIntent.getData().getLastPathSegment());
             if (cursor.moveToNext()) {
                 Intent intent = new Intent(this, AtividadesActivity.class);

@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        L.m("id:" + id);
+        //L.m("id:" + id);
         if (id == R.id.btnLogin) {
             final String email = etEmail.getText().toString();
             final String password = etPassword.getText().toString();

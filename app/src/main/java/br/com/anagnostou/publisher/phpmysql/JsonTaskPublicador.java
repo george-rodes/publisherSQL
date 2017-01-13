@@ -25,7 +25,6 @@ public class JsonTaskPublicador extends AsyncTask<JSONArray, Integer, Boolean> {
     private DBAdapter dbAdapter;
     private SQLiteDatabase sqLiteDatabase;
     private MainActivity mainActivity;
-
     public JsonTaskPublicador(Context context,MainActivity mainActivity) {
         this.context = context;
         this.mainActivity = mainActivity;
@@ -39,6 +38,7 @@ public class JsonTaskPublicador extends AsyncTask<JSONArray, Integer, Boolean> {
         progressDialog.setProgress(0);
         progressDialog.show();
     }
+
 
     @Override
     protected void onPreExecute() {

@@ -18,6 +18,18 @@
             android:title="Importação Completa" />
 
         <EditTextPreference
+            android:defaultValue="1"
+            android:key="ttrelatorio_id"
+            android:numeric="integer"
+            android:summary="ID do último registro dos relatorios atualizados"
+            android:title="ID Relatorios " />
+        <EditTextPreference
+            android:defaultValue="1"
+            android:key="ttcadastro_id"
+            android:numeric="integer"
+            android:summary="ID do último registro dos Cadastros atualizados"
+            android:title="ID Cadastros " />
+        <EditTextPreference
             android:defaultValue="http://www.anagnostou.com.br/phptut/json_publisher.php"
             android:key="php_publisher_full"
             android:summary="Script PHP para buscar a tabela completa do publicador"
@@ -43,17 +55,11 @@
             android:summary="Script PHP para envio de relatórios"
             android:title="Script PHP Envio de Relatórios" />
         <EditTextPreference
-            android:defaultValue="1"
-            android:key="ttrelatorio_id"
-            android:numeric="integer"
-            android:summary="ID do último registro dos relatorios atualizados"
-            android:title="ID Relatorios " />
-        <EditTextPreference
-            android:defaultValue="1"
-            android:key="ttcadastro_id"
-            android:numeric="integer"
-            android:summary="ID do último registro dos Cadastros atualizados"
-            android:title="ID Cadastros " />
+            android:defaultValue="http://www.anagnostou.com.br/phptut/json_assistencia.php"
+            android:key="php_assistencia"
+            android:summary="Script PHP para carregar a tabela da assistência às reuniões"
+            android:title="Script PHP Atualização Assistencia" />
+
 
 
     </PreferenceCategory>
