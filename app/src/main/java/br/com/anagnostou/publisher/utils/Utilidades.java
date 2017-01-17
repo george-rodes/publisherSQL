@@ -103,13 +103,10 @@ public class Utilidades extends AppCompatActivity {
 
 
     public static int randInt(int min, int max) {
-
         // Usually this can be a field rather than a method variable
         Random rand = new Random();
-
         // nextInt is normally exclusive of the top value,
         // so add 1 to make it inclusive
-
         return rand.nextInt((max - min) + 1) + min;
     }
 
@@ -123,7 +120,6 @@ public class Utilidades extends AppCompatActivity {
         //calcular a diferenca e retorna anos
         Date dataLocal;
         Date dataBaixada;
-
 
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -260,7 +256,6 @@ public class Utilidades extends AppCompatActivity {
                 return false;
             if (ano.length() != 4)
                 return false;
-
 
             int intDia = Integer.parseInt(dia);
             int intMes = Integer.parseInt(mes);

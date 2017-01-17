@@ -180,7 +180,7 @@ public class DBAdapter {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {"", "M", "Publicador"};
         return db.rawQuery("SELECT " + DBHelper.UID + "," + DBHelper.NOME + "," + DBHelper.FAMILIA + " FROM " +
-                DBHelper.TN_PUBLICADOR + " WHERE data_batismo <> ? AND sexo = ? AND ansepu = ?", selectionArgs);
+                DBHelper.TN_PUBLICADOR + " WHERE " + DBHelper.BATISMO + " <> ? AND " + DBHelper.SEXO + " = ? AND " + DBHelper.ANSEPU + " = ?", selectionArgs);
 
     }
 
@@ -188,7 +188,7 @@ public class DBAdapter {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {""};
         return db.rawQuery("SELECT " + DBHelper.UID + ", " + DBHelper.NOME + "," + DBHelper.FAMILIA + " FROM " +
-                DBHelper.TN_PUBLICADOR + " WHERE data_batismo = ? ORDER BY nome", selectionArgs);
+                DBHelper.TN_PUBLICADOR + " WHERE " + DBHelper.BATISMO + " = ? ORDER BY " + DBHelper.NOME, selectionArgs);
 
     }
 
@@ -197,23 +197,34 @@ public class DBAdapter {
         String[] selectionArgs = {ano, mesini, mesfim};
         return db.rawQuery("SELECT DISTINCT " + DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.UID + ", "
                 + DBHelper.TN_RELATORIO + DBHelper.DOT + DBHelper.NOME + ", " +
-                DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.FAMILIA + " FROM " + DBHelper.TN_RELATORIO + "," + DBHelper.TN_PUBLICADOR + " " +
-                "WHERE  " + DBHelper.TN_RELATORIO + ".nome = " + DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.NOME + " " +
-                "AND " + DBHelper.TN_RELATORIO + ".horas < 1 " +
-                "AND " + DBHelper.TN_RELATORIO + ".ano = ? AND " + DBHelper.TN_RELATORIO + ".mes >= ? AND " + DBHelper.TN_RELATORIO + ".mes <= ?" +
-                "GROUP BY " + DBHelper.TN_RELATORIO + ".nome HAVING count(" + DBHelper.TN_PUBLICADOR + "._id) < 6 ", selectionArgs);
+                DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.FAMILIA +
+                " FROM " + DBHelper.TN_RELATORIO + "," + DBHelper.TN_PUBLICADOR +
+                " WHERE  " + DBHelper.TN_RELATORIO + DBHelper.DOT + DBHelper.NOME + " = " + DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.NOME + " " +
+                " AND " + DBHelper.TN_RELATORIO + DBHelper.DOT + DBHelper.HORAS + " < 1 " +
+                " AND " + DBHelper.TN_RELATORIO + DBHelper.DOT + DBHelper.ANO + " = ? " +
+                " AND " + DBHelper.TN_RELATORIO + ".mes >= ? " +
+                " AND " + DBHelper.TN_RELATORIO + ".mes <= ? " +
+                " GROUP BY " + DBHelper.TN_RELATORIO + DBHelper.DOT + DBHelper.NOME +
+                " HAVING count(" + DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.UID + ") < 6 ", selectionArgs);
     }
 
     public Cursor irregularesCruzaAno(String anoini, String mesini, String mesfim, String anofim, String mesini1, String mesfim1) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {anoini, mesini, mesfim, anofim, mesini1, mesfim1};
-        return db.rawQuery("SELECT DISTINCT " + DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.UID + ", " + DBHelper.TN_RELATORIO + ".nome, " +
-                DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.FAMILIA + " FROM " + DBHelper.TN_RELATORIO + ",publicador " +
-                "WHERE  " + DBHelper.TN_RELATORIO + DBHelper.DOT + DBHelper.NOME + " = " + DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.NOME + " " +
-                "AND " + DBHelper.TN_RELATORIO + ".horas < 1 " +
-                "AND ((" + DBHelper.TN_RELATORIO + ".ano = ? AND " + DBHelper.TN_RELATORIO + ".mes >= ? AND " + DBHelper.TN_RELATORIO + ".mes <= ?) " +
-                "OR (" + DBHelper.TN_RELATORIO + ".ano = ? AND " + DBHelper.TN_RELATORIO + ".mes >= ? AND " + DBHelper.TN_RELATORIO + ".mes <= ? )) " +
-                "GROUP BY " + DBHelper.TN_RELATORIO + DBHelper.DOT + DBHelper.NOME + " HAVING count(publicador._id) < 6 ", selectionArgs);
+        return db.rawQuery("SELECT DISTINCT " + DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.UID + ", " +
+                DBHelper.TN_RELATORIO + DBHelper.DOT +DBHelper.NOME+", " +
+                DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.FAMILIA +
+                " FROM " + DBHelper.TN_RELATORIO + ", " + DBHelper.TN_PUBLICADOR +
+                " WHERE  " + DBHelper.TN_RELATORIO + DBHelper.DOT + DBHelper.NOME + " = " + DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.NOME +
+                " AND " + DBHelper.TN_RELATORIO + ".horas < 1 " +
+                " AND ((" + DBHelper.TN_RELATORIO + ".ano = ? " +
+                " AND " + DBHelper.TN_RELATORIO + ".mes >= ? " +
+                " AND " + DBHelper.TN_RELATORIO + ".mes <= ?) " +
+                " OR (" + DBHelper.TN_RELATORIO + ".ano = ? " +
+                " AND " + DBHelper.TN_RELATORIO + ".mes >= ? " +
+                " AND " + DBHelper.TN_RELATORIO + ".mes <= ? )) " +
+                " GROUP BY " + DBHelper.TN_RELATORIO + DBHelper.DOT + DBHelper.NOME +
+                " HAVING count(publicador._id) < 6 ", selectionArgs);
     }
 
 
@@ -240,14 +251,14 @@ public class DBAdapter {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.UID, DBHelper.NOME, DBHelper.FAMILIA};
         String[] selectionArgs = {ansepu};
-        return db.query(DBHelper.TN_PUBLICADOR, columns, DBHelper.ANSEPU + " = ?", selectionArgs, null, null, DBHelper.NOME);
+        return db.query(DBHelper.TN_PUBLICADOR, columns, DBHelper.ANSEPU + " = ? ", selectionArgs, null, null, DBHelper.NOME);
     }
 
     public Cursor cursorPioneiroPublicador(String pipu) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.UID, DBHelper.NOME, DBHelper.FAMILIA};
         String[] selectionArgs = {pipu};
-        return db.query(DBHelper.TN_PUBLICADOR, columns, DBHelper.PIPU + " = ?", selectionArgs, null, null, DBHelper.NOME);
+        return db.query(DBHelper.TN_PUBLICADOR, columns, DBHelper.PIPU + " = ? ", selectionArgs, null, null, DBHelper.NOME);
     }
 
 
@@ -259,7 +270,7 @@ public class DBAdapter {
         String[] columns = {DBHelper.FAMILIA, DBHelper.GRUPO, DBHelper.BATISMO, DBHelper.CELULAR,
                 DBHelper.RUA, DBHelper.NASCIMENTO, DBHelper.FONE, DBHelper.BAIRRO, DBHelper.ANSEPU, DBHelper.PIPU, DBHelper.SEXO};
         String[] selectionArgs = {name};
-        Cursor cursor = db.query(DBHelper.TN_PUBLICADOR, columns, DBHelper.NOME + " = ?", selectionArgs, null, null, null);
+        Cursor cursor = db.query(DBHelper.TN_PUBLICADOR, columns, DBHelper.NOME + " = ? ", selectionArgs, null, null, null);
         Publicador pub = new Publicador();
         while (cursor.moveToNext()) {
 
@@ -503,21 +514,44 @@ public class DBAdapter {
                 , selectionArgs);
     }
 
-    public Cursor fetchAllAssistencia(){
+    public Cursor fetchAllAssistencia() {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
-        return db.query(DBHelper.TN_ASSISTENCIA,  null, null, null, null,null,null);
+        return db.query(DBHelper.TN_ASSISTENCIA, null, null, null, null, null, null);
 
     }
 
+    public int  getMaxIdAssistencia() {
+        int maxId=0;
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        Cursor c = db.rawQuery("Select max(_id) FROM " + DBHelper.TN_ASSISTENCIA,null);
+        if (c.moveToNext()) {
+            maxId = c.getInt(0);
+        }
+        c.close();
+        return maxId;
+    }
+
     /*
-    SELECT MONTH(assistencia.data) as Mes, YEAR(assistencia.data) as Ano,
-    assistencia.reuniao as Reuniao, COUNT(*) as Numero, SUM(assistencia.presentes) as Total,
-    AVG(assistencia.presentes) as Media
+    SELECT MONTH(assistencia.data) as mes, YEAR(assistencia.data) as ano,
+    assistencia.reuniao as reuniao, COUNT(*) as numero, SUM(assistencia.presentes) as total,
+    AVG(assistencia.presentes) as media
     FROM assistencia
     GROUP BY MONTH(assistencia.data), assistencia.reuniao
     ORDER BY assistencia.data
 
      */
+
+    public Cursor fetchGroupedAssistencia(){
+        SQLiteDatabase db = mydbHelper.getReadableDatabase();
+        return db.rawQuery("SELECT strftime('%m',data) as mes, " +
+                " substr(data,1,4) as ano, " +
+                " reuniao as reuniao, COUNT(*) as numero, " +
+                " SUM(presentes) as total, " +
+                " AVG(presentes) as media FROM assistencia " +
+                " GROUP BY strftime('%m',data), reuniao " +
+                " ORDER BY data DESC" , null);
+
+    }
 
 
     /*****************************************
@@ -593,14 +627,14 @@ public class DBAdapter {
         return db.insert(DBHelper.TN_TT_RELATORIO, null, cv);
     }
 
-    public long  insertDataAssistencia(int id, String data, String reuniao, int presentes) {
+    public long insertDataAssistencia(int id, String data, String reuniao, int presentes) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(DBHelper.UID, id);
         cv.put(DBHelper.DATA, data);
         cv.put(DBHelper.REUNIAO, reuniao);
         cv.put(DBHelper.PRESENTES, presentes);
-        return db.insert(DBHelper.TN_ASSISTENCIA,null,cv);
+        return db.insert(DBHelper.TN_ASSISTENCIA, null, cv);
     }
 
     public Cursor retrieveTTRelatorio() {
@@ -685,6 +719,7 @@ public class DBAdapter {
         cv.put(DBHelper.FIELD1, str);
         return db.insert(DBHelper.TN_TESTE1, null, cv);
     }
+
 
 
     /*************************************

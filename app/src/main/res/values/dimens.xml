@@ -19,4 +19,8 @@
     <dimen name="clearBigger">40dp</dimen>
     <dimen name="clearBigger2">60dp</dimen>
 
+    <dimen name="rvMarginLeftRight">3dp</dimen>
+    <dimen name="rvMarginTop">2dp</dimen>
+    <dimen name="marginLeftAssistencia">10dp</dimen>
+    <dimen name="marginLeftAssistenciaL">20dp</dimen>
 </resources>

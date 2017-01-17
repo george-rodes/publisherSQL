@@ -5,37 +5,30 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
-import br.com.anagnostou.publisher.adapters.CartaoAdapter;
 import br.com.anagnostou.publisher.adapters.PioneiroAdapter;
 import br.com.anagnostou.publisher.objetos.AnoDeServicoDoPioneiro;
-import br.com.anagnostou.publisher.objetos.Publicador;
-import br.com.anagnostou.publisher.utils.L;
-import br.com.anagnostou.publisher.utils.Utilidades;
 
-public class Pioneiros extends Fragment {
+
+public class PioneirosFragment extends Fragment {
     View rootView;
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     Cursor c;
     ArrayList<AnoDeServicoDoPioneiro> pioneirosArray;
 
-    public Pioneiros() {
+
+    public PioneirosFragment() {
     }
 
     @Override
@@ -47,10 +40,17 @@ public class Pioneiros extends Fragment {
         String anoini = "" + (anoDeServico() - 1);
         String anofim = "" + anoDeServico();
 
+
         RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rvFragmentPioneiros);
         LinearLayoutManager llm = new LinearLayoutManager(rootView.getContext());
         rv.setLayoutManager(llm);
         rv.setHasFixedSize(true);
+
+        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(rv.getContext(),
+                llm.getOrientation());
+        rv.addItemDecoration(mDividerItemDecoration);
+
+
         pioneirosArray = new ArrayList<>();
         c = dbAdapter.cursorPioneiros(anoini, anofim);
 
@@ -72,9 +72,6 @@ public class Pioneiros extends Fragment {
         RecyclerView.Adapter adapter = new PioneiroAdapter(pioneirosArray, rootView.getContext());
         rv.setAdapter(adapter);
 
-        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(rv.getContext(),
-                llm.getOrientation());
-        rv.addItemDecoration(mDividerItemDecoration);
 
         return rootView;
     }

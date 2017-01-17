@@ -53,22 +53,12 @@ import br.com.anagnostou.publisher.phpmysql.JsonTaskAssistencia;
 import br.com.anagnostou.publisher.phpmysql.JsonTaskPublicador;
 import br.com.anagnostou.publisher.phpmysql.JsonTaskRelatorio;
 import br.com.anagnostou.publisher.services.*;
-import br.com.anagnostou.publisher.telas.Adriano;
-import br.com.anagnostou.publisher.telas.Anciaos;
-import br.com.anagnostou.publisher.telas.AnoBatismo;
-import br.com.anagnostou.publisher.telas.Centro;
-import br.com.anagnostou.publisher.telas.Irregulares;
+import br.com.anagnostou.publisher.telas.AssistenciaFragment;
+import br.com.anagnostou.publisher.telas.ListViewFragment;
 import br.com.anagnostou.publisher.telas.LoginActivity;
-import br.com.anagnostou.publisher.telas.NaoBatizados;
-import br.com.anagnostou.publisher.telas.NaoRelataram;
-import br.com.anagnostou.publisher.telas.Pioneiros;
-import br.com.anagnostou.publisher.telas.Pregadores;
+import br.com.anagnostou.publisher.telas.PioneirosFragment;
 import br.com.anagnostou.publisher.telas.RelatorioActivity;
-import br.com.anagnostou.publisher.telas.SalaoDoReino;
-import br.com.anagnostou.publisher.telas.Servos;
-import br.com.anagnostou.publisher.telas.VaroesBatizados;
 import br.com.anagnostou.publisher.telas.Vazio;
-import br.com.anagnostou.publisher.telas.VilaNova;
 import br.com.anagnostou.publisher.utils.L;
 import br.com.anagnostou.publisher.utils.Utilidades;
 
@@ -165,8 +155,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startService(intent);
         Utilidades.checkPreferencesIntLimitReached(this);
         areWeAuthenticated();
-        //TESTE
-        getPHPJsonAssistenciaData();
+
 
     }
 
@@ -234,8 +223,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean tablesExist() {
         return Utilidades.existeTabela(DBAdapter.DBHelper.TN_RELATORIO, MainActivity.this)
                 && Utilidades.existeTabela(DBAdapter.DBHelper.TN_PUBLICADOR, MainActivity.this)
-                && Utilidades.existeTabela(DBAdapter.DBHelper.TN_VERSAO, MainActivity.this);
+                && Utilidades.existeTabela(DBAdapter.DBHelper.TN_VERSAO, MainActivity.this)
+                && Utilidades.existeTabela(DBAdapter.DBHelper.TN_ASSISTENCIA, MainActivity.this);
     }
+
+    public boolean atualizarBancoDeDados() {
+        if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
+            /** em vez de chamar a activity, chamar várias Asynctask que uma chama a outra através do onPostExecute */
+            if (!bBackgroundJobs) {
+                if (sp.getString("sourceDataImport", "").contentEquals("SQL")) {
+                    dbAdapter.mydbHelper.dropTablePublicador(sqLiteDatabase);
+                    dbAdapter.mydbHelper.dropTableRelatorio(sqLiteDatabase);
+                    dbAdapter.mydbHelper.dropTableVersao(sqLiteDatabase);
+                    dbAdapter.mydbHelper.dropTableTTRelatorio(sqLiteDatabase);
+                    dbAdapter.mydbHelper.dropTableAssistencia(sqLiteDatabase);
+                    Utilidades.resetPreferencesCounter(this);
+                    getPHPJsonPublisherData();//onPostExecute chama a outra
+                    getPHPJsonAssistenciaData(); //sem Dialogo
+                } else {
+                    //importacao TEXTO
+                    Utilidades.resetPreferencesCounter(this);
+                    final DownloadTaskUpdate downloadTaskUpdate = new DownloadTaskUpdate(MainActivity.this, this, mSectionsPagerAdapter);
+                    downloadTaskUpdate.execute(spHomepage + spUpdate);
+                }
+            } else L.t(getApplicationContext(), getString(R.string.background_jobs_in_progress));
+            return true;
+        } else {
+            dialogoNoInternet();
+            return false;
+        }
+    }
+
 
     public void getPHPJsonPublisherData() {
         String url = sp.getString("php_publisher_full", NA);
@@ -269,40 +287,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
     }
-
-    public void getPHPJsonAssistenciaData() {
-        String url = "http://www.anagnostou.com.br/phptut/json_assistencia.php"; //sp.getString("php_assistencia", NA);
-        L.t(this,url);
-        L.m(url);
-        StringRequest srAssistencia = new StringRequest(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                showPHPJsonAssistenciaData(response);
-            }
-        },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        L.t(MainActivity.this, error.getMessage());
-                    }
-                });
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(srAssistencia);
-    }
-
-
-    public void showPHPJsonAssistenciaData(String response) {
-        try {
-            JSONArray arrayJSON = new JSONArray(response);
-                dbAdapter.mydbHelper.dropTableAssistencia(sqLiteDatabase);
-                L.m("Full Import, dropping table");
-            JsonTaskAssistencia jsonTaskAssistencia = new JsonTaskAssistencia(this);
-            jsonTaskAssistencia.execute(arrayJSON);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 
     public void getPHPJsonRelatorioData() {
@@ -338,31 +322,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public boolean atualizarBancoDeDados() {
-        if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
-            /** em vez de chamar a activity, chamar várias Asynctask que uma chama a outra através do onPostExecute */
-            if (!bBackgroundJobs) {
-                if (sp.getString("sourceDataImport", "").contentEquals("SQL")) {
-                    dbAdapter.mydbHelper.dropTablePublicador(sqLiteDatabase);
-                    dbAdapter.mydbHelper.dropTableRelatorio(sqLiteDatabase);
-                    dbAdapter.mydbHelper.dropTableVersao(sqLiteDatabase);
-                    dbAdapter.mydbHelper.dropTableTTRelatorio(sqLiteDatabase);
-                    dbAdapter.mydbHelper.dropTableAssistencia(sqLiteDatabase);
-                    Utilidades.resetPreferencesCounter(this);
-                    getPHPJsonPublisherData();//onPostExecute chama a outra
-                } else {
-                    //importacao TEXTO
-                    Utilidades.resetPreferencesCounter(this);
-                    final DownloadTaskUpdate downloadTaskUpdate = new DownloadTaskUpdate(MainActivity.this, this, mSectionsPagerAdapter);
-                    downloadTaskUpdate.execute(spHomepage + spUpdate);
-                }
-            } else L.t(getApplicationContext(), getString(R.string.background_jobs_in_progress));
-            return true;
-        } else {
-            dialogoNoInternet();
-            return false;
+    public void getPHPJsonAssistenciaData() {
+        String url = sp.getString("php_assistencia", NA);
+        //"http://www.anagnostou.com.br/phptut/json_assistencia.php"; //
+        L.t(this, url);
+        L.m(url);
+        StringRequest srAssistencia = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                showPHPJsonAssistenciaData(response);
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        L.t(MainActivity.this, error.getMessage());
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(srAssistencia);
+    }
+
+
+    public void showPHPJsonAssistenciaData(String response) {
+        try {
+            JSONArray arrayJSON = new JSONArray(response);
+            dbAdapter.mydbHelper.dropTableAssistencia(sqLiteDatabase);
+            L.m("Full Import, dropping table");
+            JsonTaskAssistencia jsonTaskAssistencia = new JsonTaskAssistencia(this);
+            jsonTaskAssistencia.execute(arrayJSON);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
+
 
     public void checkPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -502,37 +495,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private void teste_1() {
-        //simular mudanca de banco de dados
-        //creatre dbadapter cursors
-        //insert data
-
-        Cursor p = dbAdapter.pragma(DBAdapter.DBHelper.TN_TESTE1);
-        if (p.getCount() > 0) {
-            while (p.moveToNext()) {
-               // L.m("Field Name/Type: " + p.getString(p.getColumnIndex("name")) + " / " + p.getString(p.getColumnIndex("type")));
-            }
-        }
-        for (int i = 1; i < 9; i++) {
-            dbAdapter.insertTest1("Record # " + i);
-           // L.m("Insert Record # " + i);
-        }
-
-        Cursor c = dbAdapter.test1();
-        if (c.getCount() > 0) {
-            while (c.moveToNext()) {
-                //L.m("A Record: " + c.getString(1) + " / " + c.getString(2));
-            }
-        } else L.t(this, "No Records, but table is there");
-
-        Cursor c2 = dbAdapter.fetchAllAssistencia();
-        if (c2.getCount() > 0) {
-            while (c2.moveToNext()) {
-                L.m("Assistencia: " + c2.getInt(0) + " / " + c2.getString(1) + " / " + c2.getString(2) + " / " + c2.getInt(3));
-            }
-        } else L.t(this, "No Assistencia, but table is there");
-
-    }
 
     private void enviaNaoRelataram() {
         Cursor c = dbAdapter.naoRelatouMesPassado("" + anoNumero(), "" + mesNumero());
@@ -569,38 +531,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
-        public SectionsPagerAdapter(FragmentManager fm) {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
             if (position == 0 && bancoTemDados) {
-                return new Adriano();
-            }
-            if (position == 1 && bancoTemDados) {
-                return new SalaoDoReino();
-            }
-            if (position == 2 && bancoTemDados) {
-                return new VilaNova();
-            }
-            if (position == 3 && bancoTemDados) {
-                return new Centro();
-            }
-
-            if (position == 4 && bancoTemDados) {
-                return new Anciaos();
-            }
-            if (position == 5 && bancoTemDados) {
-                return new Servos();
-            }
-
-            if (position == 6 && bancoTemDados) {
-                return new Pregadores();
-            }
-
-            if (position == 7 && bancoTemDados) {
-                return new Pioneiros();
+                return criaFragment("Adriano");
+            } else if (position == 1 && bancoTemDados) {
+                return criaFragment("Salão do Reino");
+            } else if (position == 2 && bancoTemDados) {
+                return criaFragment("Vila Nova");
+            } else if (position == 3 && bancoTemDados) {
+                return criaFragment("Centro");
+            } else if (position == 4 && bancoTemDados) {
+                return criaFragment("Ancião");
+            } else if (position == 5 && bancoTemDados) {
+                return criaFragment("Servo");
+            } else if (position == 6 && bancoTemDados) {
+                return new PioneirosFragment();
             }
 
             return new Vazio();
@@ -608,7 +558,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override // Show x total pages.
         public int getCount() {
-            return 8;
+            return 7;
         }
 
         @Override
@@ -629,8 +579,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 case 5:
                     return "SERVOS";
                 case 6:
-                    return "PUBLICADORES";
-                case 7:
                     return "PIONEIROS";
 
             }
@@ -639,25 +587,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public class SecondSectionsPagerAdapter extends FragmentStatePagerAdapter {
-        public SecondSectionsPagerAdapter(FragmentManager fm) {
+        SecondSectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
             if (position == 0 && bancoTemDados) {
-                return new Anciaos();
+                return criaFragment("Ancião");
             }
             if (position == 1 && bancoTemDados) {
-                return new Servos();
+                return criaFragment("Servo");
             }
 
             if (position == 3 && bancoTemDados) {
-                return new Pregadores();
+                return criaFragment("Publicador");
             }
 
             if (position == 2 && bancoTemDados) {
-                return new Pioneiros();
+                return new PioneirosFragment();
             }
             return new Vazio();
         }
@@ -684,29 +632,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public class SpecialPagerAdapter extends FragmentStatePagerAdapter {
-        public SpecialPagerAdapter(FragmentManager fm) {
+        SpecialPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
             if (position == 0 && bancoTemDados) {
-                return new NaoRelataram();
+                return criaFragment("NaoRelataram");
             } else if (position == 1 && bancoTemDados) {
-                return new Irregulares();
+                //return new IrregularesFragment();
+                return criaFragment("Irregulares");
             } else if (position == 2 && bancoTemDados) {
-                return new VaroesBatizados();
+                return criaFragment("Varoes");
             } else if (position == 3 && bancoTemDados) {
-                return new AnoBatismo();
+                return criaFragment("AnoBatismo");
             } else if (position == 4 && bancoTemDados) {
-                return new NaoBatizados();
+                return criaFragment("NaoBatizados");
+            } else if (position == 5 && bancoTemDados) {
+
+                return new AssistenciaFragment();
             }
             return new Vazio();
         }
 
         @Override // Show x total pages.
         public int getCount() {
-            return 5;
+            return 6;
         }
 
         @Override
@@ -722,10 +674,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     return "MENOS DE UM ANO DE BATISMO";
                 case 4:
                     return "NÃO BATIZADOS";
+                case 5:
+                    return "ASSISTENCIA";
 
             }
             return null;
         }
+
+    }
+
+    public Fragment criaFragment(String pesquisa){
+        Bundle bundle = new Bundle();
+        bundle.putString("pesquisa", pesquisa);
+        Fragment fragment = new ListViewFragment();
+        fragment.setArguments(bundle);
+        return fragment;
 
     }
 
@@ -785,6 +748,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         return ano;
+    }
+
+    private void teste_1() {
+        //simular mudanca de banco de dados
+        //creatre dbadapter cursors
+        //insert data
+        // String url = sp.getString("php_assistencia", NA);
+        // L.m(url);
+        //ad getPHPJsonAssistenciaData();
+        Cursor p = dbAdapter.pragma(DBAdapter.DBHelper.TN_TESTE1);
+        if (p.getCount() > 0) {
+            while (p.moveToNext()) {
+                // L.m("Field Name/Type: " + p.getString(p.getColumnIndex("name")) + " / " + p.getString(p.getColumnIndex("type")));
+            }
+        }
+        for (int i = 1; i < 9; i++) {
+            dbAdapter.insertTest1("Record # " + i);
+            // L.m("Insert Record # " + i);
+        }
+
+        Cursor c = dbAdapter.test1();
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                //L.m("A Record: " + c.getString(1) + " / " + c.getString(2));
+            }
+        } else L.t(this, "No Records, but table is there");
+
+        Cursor c2 = dbAdapter.fetchAllAssistencia();
+        if (c2.getCount() > 0) {
+            while (c2.moveToNext()) {
+                L.m("Assistencia: " + c2.getInt(0) + " / " + c2.getString(1) + " / " + c2.getString(2) + " / " + c2.getInt(3));
+            }
+        } else L.t(this, "No Assistencia, but table is there");
+
     }
 
 

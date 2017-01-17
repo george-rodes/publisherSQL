@@ -135,6 +135,17 @@
     <string name="media_momento">"Média Mensal até o momento: "</string>
     <string name="rotinas_de_teste">Rotinas de Teste</string>
     <string name="teste_1">Teste 1</string>
+    <string name="seta">Seta</string>
+    <string name="janeiro_2017">Janeiro / 2017</string>
+    <string name="reuniao_fim_de_semana">Reunião de fim de semana:</string>
+    <string name="_108">108</string>
+    <string name="reuniao_durante_a_semana">Reunião durante a semana</string>
+    <string name="numero_de_reunioes">Número de Reuniões:</string>
+    <string name="_4" > 4 </string>
+    <string name="total_de_presentes">Total de Presentes</string>
+    <string name="_400">404</string>
+    <string name="ano_de_servico">Ano de Serviço</string>
+    <string name="media_do_mes">Média do Mes:</string>
 
     <string-array name="sourceDataImport">
         <item>Servidor SQL</item>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/cvAssistencia"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/rvMarginLeftRight"
+    android:layout_marginLeft="@dimen/rvMarginLeftRight"
+    android:layout_marginRight="@dimen/rvMarginLeftRight"
+    android:layout_marginStart="@dimen/rvMarginLeftRight"
+    android:layout_marginTop="@dimen/rvMarginTop"
+    app:cardCornerRadius="5dp"
+    card_view:cardBackgroundColor="@color/colorPrimary"
+    card_view:cardPreventCornerOverlap="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/buttons"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/mes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/janeiro_2017"
+                    android:textColor="@color/dark_color"
+                    android:textSize="18sp"
+                    card_view:ignore="RelativeOverlap" />
+
+                <TextView
+                    android:id="@+id/reuniao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/marginLeftAssistencia"
+                    android:layout_marginStart="@dimen/marginLeftAssistencia"
+                    android:text="@string/reuniao_durante_a_semana"
+                    android:textColor="@color/dark_color"
+                    android:textSize="16sp"
+                    card_view:ignore="RelativeOverlap" />
+
+
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/arrowAssist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/seta"
+                android:src="@drawable/ic_keyboard_arrow_down_black_48dp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:background="@drawable/retangulo_detalhe"
+            android:id="@+id/ll_hide_me_assist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/marginLeftAssistenciaL"
+                android:layout_marginStart="@dimen/marginLeftAssistenciaL">
+
+                <TextView
+android:textColor="@color/dark_color"
+                    android:id="@+id/mediaLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/media_do_mes"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:textColor="@color/dark_color"
+                    android:id="@+id/mediaAssistencia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/_108"
+                    android:textSize="16sp"
+                    card_view:ignore="RelativeOverlap" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/marginLeftAssistenciaL"
+                android:layout_marginStart="@dimen/marginLeftAssistenciaL">
+
+                <TextView
+                    android:textColor="@color/dark_color"
+                    android:id="@+id/numeroLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/numero_de_reunioes"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:textColor="@color/dark_color"
+                    android:id="@+id/numero"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/_4"
+                    android:textSize="14sp"
+                    card_view:ignore="RelativeOverlap" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/marginLeftAssistenciaL"
+                android:layout_marginStart="@dimen/marginLeftAssistenciaL">
+
+                <TextView
+                    android:textColor="@color/dark_color"
+                    android:id="@+id/presentesLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/total_de_presentes"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:textColor="@color/dark_color"
+                    android:id="@+id/presentes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/_400"
+                    android:textSize="14sp"
+                    card_view:ignore="RelativeOverlap"
+                     />
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

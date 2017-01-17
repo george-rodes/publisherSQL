@@ -21,7 +21,10 @@ import org.json.JSONObject;
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
+import br.com.anagnostou.publisher.phpmysql.AssistenciaRequest;
+import br.com.anagnostou.publisher.phpmysql.LoginRequest;
 import br.com.anagnostou.publisher.phpmysql.SendReportRequest;
+import br.com.anagnostou.publisher.telas.LoginActivity;
 import br.com.anagnostou.publisher.telas.RelatorioActivity;
 import br.com.anagnostou.publisher.utils.L;
 import br.com.anagnostou.publisher.utils.Utilidades;
@@ -63,6 +66,7 @@ public class CheckSQLIntentService extends IntentService {
                 //createNotification();
                 //L.m("Thread ID " + Thread.currentThread().getId());
                 Thread.sleep(3000);
+                getAssistencia();
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTrelatorio();
                 Thread.sleep(3000);
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTcadastro();
@@ -74,6 +78,44 @@ public class CheckSQLIntentService extends IntentService {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String getMaxIdAssistencia() {
+        if (!sqLiteDatabase.isOpen())
+            sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
+        return "" + dbAdapter.getMaxIdAssistencia();
+
+    }
+
+    private void getAssistencia() {
+        if (!sqLiteDatabase.isOpen())
+            sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (response.length() > 4) {
+                    JSONArray jsonArray;
+                    try {
+                        jsonArray = new JSONArray(response);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject;
+                            jsonObject = jsonArray.getJSONObject(i);
+                            dbAdapter.insertDataAssistencia(
+                                    jsonObject.getInt("_id"),
+                                    jsonObject.getString("data"),
+                                    jsonObject.getString("reuniao"),
+                                    jsonObject.getInt("presentes"));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(new AssistenciaRequest(getMaxIdAssistencia(), responseListener));
+
     }
 
     private void getCheckTT() {
@@ -112,18 +154,18 @@ public class CheckSQLIntentService extends IntentService {
                 String entregue = c.getString(c.getColumnIndex("entregue"));
 
 
-                 L.m("" + c.getInt(c.getColumnIndex("_id")));
-                 L.m(c.getString(c.getColumnIndex("email")));
-                 L.m(c.getString(c.getColumnIndex("nome")));
-                 L.m(c.getString(c.getColumnIndex("ano")));
-                 L.m(c.getString(c.getColumnIndex("mes")));
-                 L.m(c.getString(c.getColumnIndex("modalidade")));
-                 L.m(c.getString(c.getColumnIndex("publicacoes")));
-                 L.m(c.getString(c.getColumnIndex("videos")));
-                 L.m(c.getString(c.getColumnIndex("horas")));
-                 L.m(c.getString(c.getColumnIndex("revisitas")));
-                 L.m(c.getString(c.getColumnIndex("estudos")));
-                 L.m(c.getString(c.getColumnIndex("entregue")));
+                /*L.m("" + c.getInt(c.getColumnIndex("_id")));
+                L.m(c.getString(c.getColumnIndex("email")));
+                L.m(c.getString(c.getColumnIndex("nome")));
+                L.m(c.getString(c.getColumnIndex("ano")));
+                L.m(c.getString(c.getColumnIndex("mes")));
+                L.m(c.getString(c.getColumnIndex("modalidade")));
+                L.m(c.getString(c.getColumnIndex("publicacoes")));
+                L.m(c.getString(c.getColumnIndex("videos")));
+                L.m(c.getString(c.getColumnIndex("horas")));
+                L.m(c.getString(c.getColumnIndex("revisitas")));
+                L.m(c.getString(c.getColumnIndex("estudos")));
+                L.m(c.getString(c.getColumnIndex("entregue")));*/
 
                 if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
                     //L.m("We are online, sending...");
