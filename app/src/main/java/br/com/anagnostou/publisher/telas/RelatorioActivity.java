@@ -54,8 +54,8 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_relatorio);
         Toolbar toolbar = (Toolbar) findViewById(R.id.relatorio_toolbar);
         setSupportActionBar(toolbar);
-        //noinspection ConstantConditions
-        getSupportActionBar().setHomeButtonEnabled(true);
+
+        if( getSupportActionBar() != null) getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.relatorio);
         dbAdapter = new DBAdapter(getApplicationContext());
@@ -112,8 +112,6 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
             }
         }
         if (intent.hasExtra("Origem") && intent.getStringExtra("Origem").contentEquals("CartaoAdapter")) {
-
-
             String nome = intent.getStringExtra("nome");
             int ano = intent.getIntExtra("ano", 0);
             int mes = intent.getIntExtra("mes", 0);

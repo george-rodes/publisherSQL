@@ -32,7 +32,7 @@ public class MeetingDetail extends AppCompatDialogFragment implements View.OnCli
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.dialog_meeting_detail, null);
+        view = inflater.inflate( R.layout.dialog_meeting_detail,container,false );
         assistencia = (TextView) view.findViewById(R.id.assistencia);
         assistenciaLabel = (TextView) view.findViewById(R.id.assistenciaLabel);
         button = (Button) view.findViewById(R.id.button);

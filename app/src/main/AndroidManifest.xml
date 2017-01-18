@@ -52,8 +52,6 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
-
         <activity
             android:name=".telas.CartaoActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -87,6 +85,8 @@
             android:name=".providers.CustomSuggestions"
             android:authorities="anagnostou.publisher.providers"
             android:exported="false" />
+
+        <activity android:name=".telas.AssistenciaActivity"></activity>
     </application>
 
 </manifest>

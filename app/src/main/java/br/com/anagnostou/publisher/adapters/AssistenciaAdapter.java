@@ -108,7 +108,7 @@ public class AssistenciaAdapter extends RecyclerView.Adapter<AssistenciaAdapter.
                 args.putString("ano",ano);
                 args.putString("reuniao",reuniao);
                 md.setArguments(args);
-                md.show(fm,"Assistencia a Reunião Detalhada");
+                md.show(fm,"Assistencia da Reunião Detalhada");
 
             }
         });

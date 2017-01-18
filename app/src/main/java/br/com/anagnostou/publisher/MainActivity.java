@@ -53,6 +53,7 @@ import br.com.anagnostou.publisher.phpmysql.JsonTaskAssistencia;
 import br.com.anagnostou.publisher.phpmysql.JsonTaskPublicador;
 import br.com.anagnostou.publisher.phpmysql.JsonTaskRelatorio;
 import br.com.anagnostou.publisher.services.*;
+import br.com.anagnostou.publisher.telas.AssistenciaActivity;
 import br.com.anagnostou.publisher.telas.AssistenciaFragment;
 import br.com.anagnostou.publisher.telas.ListViewFragment;
 import br.com.anagnostou.publisher.telas.LoginActivity;
@@ -324,9 +325,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void getPHPJsonAssistenciaData() {
         String url = sp.getString("php_assistencia", NA);
-        //"http://www.anagnostou.com.br/phptut/json_assistencia.php"; //
-        L.t(this, url);
-        L.m(url);
         StringRequest srAssistencia = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -407,13 +405,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         if (id == R.id.novo_relatorio) {
             //Adicionando modo offline
-
             if (areWeAuthenticated()) {
                 Intent intent = new Intent(this, RelatorioActivity.class);
                 intent.putExtra("origem", "MainActivity");
                 intent.putExtra("objetivo", "novo relatorio");
                 startActivity(intent);
             }
+        } else if (id == R.id.enviar_assistencia) {
+
+            if (areWeAuthenticated()) {
+                Intent intent = new Intent(this, AssistenciaActivity.class);
+                intent.putExtra("origem", "MainActivity");
+                intent.putExtra("objetivo", "enviar assistencia");
+                startActivity(intent);
+            }
+
 
 
         } else if (id == R.id.naorelatou) {
@@ -434,7 +440,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     grupo = "Centro";
                     break;
             }
-
             StringBuilder sb = new StringBuilder();
             sb.append("Grupo: ").append(grupo).append("\n");
             for (String n : dbAdapter.naoRelatouPorGrupo("" + anoNumero(), "" + mesNumero(), grupo)) {
@@ -444,19 +449,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             dialogoNaoRelatou(sb.toString());
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void dialogoNaoRelatou(String sb) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage(sb);
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
 
 
@@ -506,28 +498,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 sb.append("\n");
             }
         }
-        //L.m(sb.toString());
         PackageManager pm = getPackageManager();
-
         try {
-
             Intent waIntent = new Intent(Intent.ACTION_SEND);
             waIntent.setType("text/plain");
             String text = sb.toString();
-
             pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
             //Check if package exists or not. If not then code
             //in catch block will be called
             waIntent.setPackage("com.whatsapp");
-
             waIntent.putExtra(Intent.EXTRA_TEXT, text);
             startActivity(Intent.createChooser(waIntent, "Share with"));
 
         } catch (PackageManager.NameNotFoundException e) {
             L.t(this, "WhatsApp not Installed");
-
         }
-
     }
 
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
@@ -683,7 +668,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public Fragment criaFragment(String pesquisa){
+    public Fragment criaFragment(String pesquisa) {
         Bundle bundle = new Bundle();
         bundle.putString("pesquisa", pesquisa);
         Fragment fragment = new ListViewFragment();
@@ -718,6 +703,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void dialogoNoInternet() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage(R.string.sem_conexao_internet);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void dialogoNaoRelatou(String sb) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage(sb);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();

@@ -17,9 +17,14 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/naorelatou"
-
+        android:id="@+id/enviar_assistencia"
         android:orderInCategory="300"
+        android:title="@string/enviar_assistencia"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/naorelatou"
+        android:orderInCategory="400"
         android:title="@string/relat_rios_em_falta"
         app:showAsAction="never" />
 

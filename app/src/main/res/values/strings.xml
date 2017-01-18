@@ -101,7 +101,8 @@
     <string name="CANCEL">CANCELAR</string>
     <string name="dialogo_servidor_corrigido">O Relatório foi corrigido com sucesso!</string>
     <string name="dialogo_servidor_gravado">O Relatório foi enviado com sucesso!</string>
-    <string name="fone">015–981...58.27.26</string>
+    <string name="enviar_assistencia">Enviar Assistência</string>
+    <string name="fone">015–981.58.27.26</string>
     <string name="_regular">" Regular"</string>
     <string name="dados_ano_servico">Dados do Ano de Serviço</string>
     <string name="familia_">"Familia "</string>
@@ -141,7 +142,7 @@
     <string name="_108">108</string>
     <string name="reuniao_durante_a_semana">Reunião durante a semana:</string>
     <string name="numero_de_reunioes">Número de Reuniões:</string>
-    <string name="_4" > 4 </string>
+    <string name="_4"> 4 </string>
     <string name="total_de_presentes">Total de Presentes</string>
     <string name="_400">404</string>
     <string name="ano_de_servico">Ano de Serviço</string>
@@ -179,10 +180,17 @@
         <item>Publicador</item>
         <item>Pioneiro Regular</item>
         <item>Pioneiro Auxiliar</item>
-
     </string-array>
+
+    <string-array name="reuniao">
+        <item>Reunião durante a semana</item>
+        <item>Reunião de fim de semana</item>
+    </string-array>
+
 
     <string name="text">Scheidender US-Präsident Barack Obama begnadigt Chelsea Manning - frei im Mai 2017.
         Stand: 22:27 Uhr. Chelsea Manning. Quelle: AFP. Kurz vor der Amtsübergabe an Donald Trump hat US-Präsident Barack Obama der verurteilten </string>
+    <string name="data_no_formato_dd_mm_aaaa">Data no formato dia/mes/ano</string>
+
 
 </resources>
