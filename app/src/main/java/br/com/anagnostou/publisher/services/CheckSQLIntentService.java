@@ -22,10 +22,9 @@ import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
 import br.com.anagnostou.publisher.phpmysql.AssistenciaRequest;
-import br.com.anagnostou.publisher.phpmysql.LoginRequest;
+import br.com.anagnostou.publisher.phpmysql.SendMeetingRequest;
 import br.com.anagnostou.publisher.phpmysql.SendReportRequest;
-import br.com.anagnostou.publisher.telas.LoginActivity;
-import br.com.anagnostou.publisher.telas.RelatorioActivity;
+import br.com.anagnostou.publisher.telas.AssistenciaActivity;
 import br.com.anagnostou.publisher.utils.L;
 import br.com.anagnostou.publisher.utils.Utilidades;
 
@@ -41,7 +40,7 @@ public class CheckSQLIntentService extends IntentService {
     String ttcadastro_id;
     Integer idRelatorio, idCadastro, idRegistroProcessadoRelatorio, idRegistroProcessadoCadastro;
     Boolean dataBaseOperationInProgress = false;
-    private String urlAssistencia;
+    private String urlAssistencia, urlAssistenciaSend;
 
     public CheckSQLIntentService() {
         super("CheckSQLIntentService");
@@ -69,11 +68,14 @@ public class CheckSQLIntentService extends IntentService {
                 Thread.sleep(3000);
                 getAssistencia();
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTrelatorio();
-                Thread.sleep(3000);
+                Thread.sleep(2000);
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTcadastro();
-                Thread.sleep(2158);
+                Thread.sleep(1500);
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL"))
                     checkLocalRelatorio();
+                Thread.sleep(1200);
+                if (sp.getString("sourceDataImport", "").contentEquals("SQL"))
+                    checkLocalAssistencia();
                 Thread.sleep(checkIntervall);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -122,7 +124,8 @@ public class CheckSQLIntentService extends IntentService {
     private void getCheckTT() {
         checkTTrelatorioUrl = sp.getString("php_ttrelatorio", "");
         checkTTcadastroUrl = sp.getString("php_ttcadastro", "");
-        urlAssistencia = sp.getString("php_assistencia","");
+        urlAssistencia = sp.getString("php_assistencia", "");
+        urlAssistenciaSend = sp.getString("assistsend", "");
 
         ttrelatorio_id = sp.getString("ttrelatorio_id", "");
         if (!ttrelatorio_id.isEmpty()) {
@@ -154,21 +157,6 @@ public class CheckSQLIntentService extends IntentService {
                 String revisitas = c.getString(c.getColumnIndex("revisitas"));
                 String estudos = c.getString(c.getColumnIndex("estudos"));
                 String entregue = c.getString(c.getColumnIndex("entregue"));
-
-
-                /*L.m("" + c.getInt(c.getColumnIndex("_id")));
-                L.m(c.getString(c.getColumnIndex("email")));
-                L.m(c.getString(c.getColumnIndex("nome")));
-                L.m(c.getString(c.getColumnIndex("ano")));
-                L.m(c.getString(c.getColumnIndex("mes")));
-                L.m(c.getString(c.getColumnIndex("modalidade")));
-                L.m(c.getString(c.getColumnIndex("publicacoes")));
-                L.m(c.getString(c.getColumnIndex("videos")));
-                L.m(c.getString(c.getColumnIndex("horas")));
-                L.m(c.getString(c.getColumnIndex("revisitas")));
-                L.m(c.getString(c.getColumnIndex("estudos")));
-                L.m(c.getString(c.getColumnIndex("entregue")));*/
-
                 if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
                     //L.m("We are online, sending...");
                     enviarRelatorio(id, email, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
@@ -176,6 +164,49 @@ public class CheckSQLIntentService extends IntentService {
 
             }
         }
+    }
+
+    private void checkLocalAssistencia() {
+        Cursor c = dbAdapter.retrieveTTAssistencia();
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                int id = c.getInt(c.getColumnIndex("_id"));
+                String data = c.getString(c.getColumnIndex("data"));
+                String reuniao = c.getString(c.getColumnIndex("reuniao"));
+                String presentes = c.getString(c.getColumnIndex("presentes"));
+
+                if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
+                    //L.m("We are online, sending...");
+                    enviarAssistenciaOnLine(id, data, reuniao, presentes);
+                } //else L.m("We are offline ");
+
+            }
+        }
+    }
+
+    private void enviarAssistenciaOnLine(final int id, String data, String reuniao, String presentes) {
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //L.m(response);
+                try {
+                    JSONArray arrayJSON = new JSONArray(response);
+                    //L.m(response);
+                    if (arrayJSON.length() > 0) {
+                        JSONObject jsonObject = arrayJSON.getJSONObject(0);
+                        if (!jsonObject.getString("result").isEmpty()) {
+                            if (jsonObject.getString("result").contentEquals("SUCCESS")) {
+                                dbAdapter.deleteTTAssistencia("" + id);
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(CheckSQLIntentService.this);
+        queue.add(new SendMeetingRequest(urlAssistenciaSend, data, reuniao, presentes, responseListener));
     }
 
 

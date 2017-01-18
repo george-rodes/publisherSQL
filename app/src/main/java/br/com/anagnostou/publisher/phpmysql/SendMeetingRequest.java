@@ -17,8 +17,9 @@ public class SendMeetingRequest extends StringRequest {
         super(Method.POST, url, listener, null);
         params = new HashMap<>();
         params.put("data", data);
-        params.put("presentes", presentes);
         params.put("reuniao", reuniao);
+        params.put("presentes", presentes);
+
 
 
     }

@@ -86,7 +86,12 @@
             android:authorities="anagnostou.publisher.providers"
             android:exported="false" />
 
-        <activity android:name=".telas.AssistenciaActivity"></activity>
+        <activity android:name=".telas.AssistenciaActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.anagnostou.publisher.MainActivity" />
+
+        </activity>
     </application>
 
 </manifest>

@@ -176,6 +176,20 @@
         <item>2018</item>
     </string-array>
 
+    <string-array name="fim_de_semana">
+        <item>sábado</item>
+        <item>domingo</item>
+    </string-array>
+
+    <string-array name="durante_a_semana">
+        <item>segunda-feira</item>
+        <item>terça-feira</item>
+        <item>quarta-feira</item>
+        <item>quinta-feira</item>
+        <item>sexta-feira</item>
+    </string-array>
+
+
     <string-array name="modalidade">
         <item>Publicador</item>
         <item>Pioneiro Regular</item>
@@ -189,8 +203,16 @@
 
 
     <string name="text">Scheidender US-Präsident Barack Obama begnadigt Chelsea Manning - frei im Mai 2017.
-        Stand: 22:27 Uhr. Chelsea Manning. Quelle: AFP. Kurz vor der Amtsübergabe an Donald Trump hat US-Präsident Barack Obama der verurteilten </string>
+        Stand: 22:27 Uhr. Chelsea Manning. Quelle: AFP. Kurz vor der Amtsübergabe an Donald Trump
+        hat US-Präsident Barack Obama der verurteilten </string>
     <string name="data_no_formato_dd_mm_aaaa">Data no formato dia/mes/ano</string>
+    <string name="presentes">Presentes</string>
+    <string name="dialogo_cancelar_envio_assistencia">Cancelar o envio da assistência?</string>
+    <string name="informe_presentes">Por favor, informe o número dos presentes!</string>
+    <string name="confirma_baixomedia">A assistência informada de %1$s está bem diferente da média de %2$s.\nConfirma?</string>
+    <string name="fora_da_faixa">O número informado está fora da faixa permitida</string>
+    <string name="offline_aguardando_online">O Relatório foi gravado no modo OFFLINE. O Relatório será enviado automaticamente assim que o sistema estiver ONLINE.</string>
+    <string name="houston">Gravação Local Falhou. Avise o George</string>
 
 
 </resources>

@@ -596,6 +596,16 @@ public class DBAdapter {
 
     }
 
+    public int mediaReunioes(){
+        int result;
+        SQLiteDatabase db = mydbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("Select avg(presentes) from " + DBHelper.TN_ASSISTENCIA,null);
+        if (c.moveToNext()){
+            result= c.getInt(0);
+        } else result = 1;
+        c.close();
+        return result;
+    }
 
     /*****************************************
      * INSERT
@@ -670,6 +680,7 @@ public class DBAdapter {
         return db.insert(DBHelper.TN_TT_RELATORIO, null, cv);
     }
 
+
     public long insertDataAssistencia(int id, String data, String reuniao, int presentes) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -680,6 +691,16 @@ public class DBAdapter {
         return db.insert(DBHelper.TN_ASSISTENCIA, null, cv);
     }
 
+    public long insertTTAssistencia(String data, String reuniao, String presentes) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DBHelper.DATA, data);
+        cv.put(DBHelper.REUNIAO, reuniao);
+        cv.put(DBHelper.PRESENTES, presentes);
+        return db.insert(DBHelper.TN_TT_ASSISTENCIA, null, cv);
+    }
+
+
     public Cursor retrieveTTRelatorio() {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] columns = {DBHelper.UID, DBHelper.EMAIL, DBHelper.ANO, DBHelper.MES, DBHelper.NOME,
@@ -689,11 +710,26 @@ public class DBAdapter {
 
     }
 
+    public Cursor retrieveTTAssistencia() {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String[] columns = {DBHelper.UID, DBHelper.DATA, DBHelper.REUNIAO, DBHelper.PRESENTES};
+        return db.query(DBHelper.TN_TT_ASSISTENCIA, columns, null, null, null, null, null);
+
+    }
+
     public boolean deleteTTRelatorio(String id) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String selection = DBHelper.UID + " = ? ";
         String[] selectionArgs = {id};
         int count = db.delete(DBHelper.TN_TT_RELATORIO, selection, selectionArgs);
+        return count > 0;
+    }
+
+    public boolean deleteTTAssistencia(String id) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String selection = DBHelper.UID + " = ? ";
+        String[] selectionArgs = {id};
+        int count = db.delete(DBHelper.TN_TT_ASSISTENCIA, selection, selectionArgs);
         return count > 0;
     }
 
@@ -788,7 +824,7 @@ public class DBAdapter {
 
 
         static final String DB_NAME = "appledore";
-        private static final int DB_VERSION = 3;//12/1/2017 8:31, 2 test
+        private static final int DB_VERSION = 4;//18/1/2017
 
 
         /**
@@ -800,6 +836,7 @@ public class DBAdapter {
         public static final String TN_TT_RELATORIO = "ttrelatorio";
         public static final String TN_TESTE1 = "t1";
         public static final String TN_ASSISTENCIA = "assistencia";
+        public static final String TN_TT_ASSISTENCIA = "ttassistencia";
 
 
         static final String ANO = "ano";
@@ -850,6 +887,14 @@ public class DBAdapter {
                 + PRESENTES + " INTEGER, "
                 + " UNIQUE " + ABREASPAS + DATA + VIRGULA + REUNIAO + FECHAASPAS + FECHAASPAS + ";";
 
+        private static final String CREATE_TABLE_TT_ASSISTENCIA = "CREATE TABLE "
+                + TN_TT_ASSISTENCIA + ABREASPAS
+                + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + DATA + " TEXT, "
+                + REUNIAO + " TEXT, "
+                + PRESENTES + " INTEGER, "
+                + " UNIQUE " + ABREASPAS + DATA + VIRGULA + REUNIAO + FECHAASPAS + FECHAASPAS + ";";
+
         private static final String CREATE_TABLE_RELATORIO = "CREATE TABLE "
                 + TN_RELATORIO + ABREASPAS
                 + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -891,6 +936,7 @@ public class DBAdapter {
         static final String DROP_TABLE_PUBLICADOR = "DROP TABLE IF EXISTS " + TN_PUBLICADOR;
         static final String DROP_TABLE_VERSAO = "DROP TABLE IF EXISTS " + TN_VERSAO;
         static final String DROP_TABLE_ASSISTENCIA = "DROP TABLE IF EXISTS " + TN_ASSISTENCIA;
+        static final String DROP_TABLE_TT_ASSISTENCIA = "DROP TABLE IF EXISTS " + TN_TT_ASSISTENCIA;
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -904,6 +950,7 @@ public class DBAdapter {
                 db.execSQL(DROP_TABLE_VERSAO);
                 db.execSQL(DROP_TABLE_TEST1);
                 db.execSQL(DROP_TABLE_ASSISTENCIA);
+                db.execSQL(DROP_TABLE_TT_ASSISTENCIA);
                 L.m("onUpgrade calls onCreate");
                 onCreate(db);
             } catch (SQLException e) {
@@ -921,6 +968,7 @@ public class DBAdapter {
                 db.execSQL(CREATE_TABLE_VERSAO);
                 db.execSQL(CREATE_TABLE_TEST1);
                 db.execSQL(CREATE_TABLE_ASSISTENCIA);
+                db.execSQL(CREATE_TABLE_TT_ASSISTENCIA);
 
             } catch (SQLException e) {
                 L.m(e + "on Create failed");
@@ -967,6 +1015,14 @@ public class DBAdapter {
             try {
                 db.execSQL(DROP_TABLE_ASSISTENCIA);
                 db.execSQL(CREATE_TABLE_ASSISTENCIA);
+            } catch (SQLException ignored) {
+
+            }
+        }
+        public void dropTableTTAssistencia(SQLiteDatabase db) {
+            try {
+                db.execSQL(DROP_TABLE_TT_ASSISTENCIA);
+                db.execSQL(CREATE_TABLE_TT_ASSISTENCIA);
             } catch (SQLException ignored) {
 
             }
