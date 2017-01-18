@@ -41,6 +41,7 @@ public class CheckSQLIntentService extends IntentService {
     String ttcadastro_id;
     Integer idRelatorio, idCadastro, idRegistroProcessadoRelatorio, idRegistroProcessadoCadastro;
     Boolean dataBaseOperationInProgress = false;
+    private String urlAssistencia;
 
     public CheckSQLIntentService() {
         super("CheckSQLIntentService");
@@ -114,13 +115,14 @@ public class CheckSQLIntentService extends IntentService {
         };
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(new AssistenciaRequest(getMaxIdAssistencia(), responseListener));
+        queue.add(new AssistenciaRequest(urlAssistencia, getMaxIdAssistencia(), responseListener));
 
     }
 
     private void getCheckTT() {
         checkTTrelatorioUrl = sp.getString("php_ttrelatorio", "");
         checkTTcadastroUrl = sp.getString("php_ttcadastro", "");
+        urlAssistencia = sp.getString("php_assistencia","");
 
         ttrelatorio_id = sp.getString("ttrelatorio_id", "");
         if (!ttrelatorio_id.isEmpty()) {

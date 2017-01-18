@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AssistenciaRequest extends StringRequest {
-    private static String ASSISTENCIA_REQUEST_URL = "http://www.anagnostou.com.br/phptut/json_assistencia.php";
     private Map<String, String> params;
-//id is the max _id on my local database
+    //id is the max _id on my local database
 
-    public AssistenciaRequest(String id, Response.Listener<String> listener) {
-        super(Method.POST, ASSISTENCIA_REQUEST_URL, listener, null);
+    public AssistenciaRequest(String url, String id, Response.Listener<String> listener) {
+        //super(Method.POST, ASSISTENCIA_REQUEST_URL, listener, null);
+        super(Method.POST, url, listener, null);
         params = new HashMap<>();
         params.put("id", id);
     }

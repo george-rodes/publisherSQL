@@ -23,6 +23,7 @@ import android.widget.Spinner;
 
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.MainActivity;
+
 import java.util.StringTokenizer;
 
 public class Utilidades extends AppCompatActivity {
@@ -284,5 +285,88 @@ public class Utilidades extends AppCompatActivity {
         }
         return true;
     }
+
+
+    public static String mesNomeParaNumero(String mes) {
+        switch (mes) {
+            case "Janeiro":
+                return "01";
+            case "Fevereiro":
+                return "02";
+
+            case "Março":
+                return "03";
+
+            case "Abril":
+                return "04";
+
+            case "Maio":
+                return "05";
+
+            case "Junho":
+                return "06";
+
+            case "Julho":
+                return "07";
+
+            case "Agosto":
+                return "08";
+
+            case "Setembro":
+                return "09";
+
+            case "Outubro":
+                return "10";
+
+            case "Novembro":
+                return "11";
+
+            case "Dezembro":
+                return "12";
+        }
+        return "01";
+    }
+
+    public static String mesNumeroParaNome(String mes) {
+        switch (mes) {
+            case "01":
+                return "Janeiro";
+
+            case "02":
+                return "Fevereiro";
+
+            case "03":
+                return "Março";
+
+            case "04":
+                return "Abril";
+
+            case "05":
+                return "Maio";
+
+            case "06":
+                return "Junho";
+
+            case "07":
+                return "Julho";
+
+            case "08":
+                return "Agosto";
+
+            case "09":
+                return "Setembro";
+
+            case "10":
+                return "Outubro";
+
+            case "11":
+                return "Novembro";
+
+            case "12":
+                return "Dezembro";
+        }
+        return "São Nunca";
+    }
+
 
 }

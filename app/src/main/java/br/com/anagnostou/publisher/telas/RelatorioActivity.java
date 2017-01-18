@@ -1,17 +1,14 @@
 package br.com.anagnostou.publisher.telas;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
 import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,29 +18,20 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
 import java.util.Calendar;
-
 import java.util.GregorianCalendar;
-
 import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.objetos.Relatorio;
 import br.com.anagnostou.publisher.phpmysql.SendReportRequest;
-
 import br.com.anagnostou.publisher.utils.L;
 import br.com.anagnostou.publisher.utils.Utilidades;
-
-
 import static br.com.anagnostou.publisher.MainActivity.SP_SPNAME;
 
 public class RelatorioActivity extends AppCompatActivity implements View.OnClickListener {
@@ -59,7 +47,6 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
     private EditText etEstudos;
     private String url;
     private String email;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -523,7 +510,6 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
                 }
             }
         });
-
     }
 
 

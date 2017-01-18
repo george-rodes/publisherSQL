@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@color/depressed_color"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/assistenciaLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/dark_color"
+        android:textStyle="bold"
+        android:padding="15dp"
+        android:text="@string/reuniao_durante_a_semana"
+        android:textAlignment="center"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:height="1dp"
+        android:background="@color/colorPrimary" />
+
+    <TextView
+
+        android:textAlignment="center"
+        android:id="@+id/assistencia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:text="@string/reuniao_durante_a_semana"
+
+        android:textColor="@color/dark_color"
+        android:textSize="15sp" />
+
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@color/colorPrimary"
+        android:text="@string/ok"
+        android:textColor="@color/white" />
+
+</LinearLayout>

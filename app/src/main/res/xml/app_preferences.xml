@@ -59,6 +59,11 @@
             android:key="php_assistencia"
             android:summary="Script PHP para carregar a tabela da assistência às reuniões"
             android:title="Script PHP Atualização Assistencia" />
+        <EditTextPreference
+            android:defaultValue="http://www.anagnostou.com.br/phptut/json_assistencia.php"
+            android:key="php_assistencia"
+            android:summary="Script PHP para carregar a tabela da assistência às reuniões"
+            android:title="Script PHP Atualização Assistencia" />
 
 
 

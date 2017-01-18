@@ -638,9 +638,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 0 && bancoTemDados) {
+            if (position == 1 && bancoTemDados) {
                 return criaFragment("NaoRelataram");
-            } else if (position == 1 && bancoTemDados) {
+            } else if (position == 5 && bancoTemDados) {
                 //return new IrregularesFragment();
                 return criaFragment("Irregulares");
             } else if (position == 2 && bancoTemDados) {
@@ -649,7 +649,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return criaFragment("AnoBatismo");
             } else if (position == 4 && bancoTemDados) {
                 return criaFragment("NaoBatizados");
-            } else if (position == 5 && bancoTemDados) {
+            } else if (position == 0 && bancoTemDados) {
 
                 return new AssistenciaFragment();
             }
@@ -664,9 +664,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-                case 0:
-                    return "NÃO RELATARAM";
                 case 1:
+                    return "NÃO RELATARAM";
+                case 5:
                     return "IRREGULARES";
                 case 2:
                     return "VARÕES BATIZADOS";
@@ -674,7 +674,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     return "MENOS DE UM ANO DE BATISMO";
                 case 4:
                     return "NÃO BATIZADOS";
-                case 5:
+                case 0:
                     return "ASSISTENCIA";
 
             }

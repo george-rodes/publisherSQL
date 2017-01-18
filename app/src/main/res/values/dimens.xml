@@ -22,5 +22,7 @@
     <dimen name="rvMarginLeftRight">3dp</dimen>
     <dimen name="rvMarginTop">2dp</dimen>
     <dimen name="marginLeftAssistencia">10dp</dimen>
-    <dimen name="marginLeftAssistenciaL">20dp</dimen>
+    <dimen name="marginLeftAssistenciaL">45dp</dimen>
+    <dimen name="assisMarginRight">5dp</dimen>
+    <dimen name="assisMarginRightBox">50dp</dimen>
 </resources>

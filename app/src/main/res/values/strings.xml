@@ -139,7 +139,7 @@
     <string name="janeiro_2017">Janeiro / 2017</string>
     <string name="reuniao_fim_de_semana">Reunião de fim de semana:</string>
     <string name="_108">108</string>
-    <string name="reuniao_durante_a_semana">Reunião durante a semana</string>
+    <string name="reuniao_durante_a_semana">Reunião durante a semana:</string>
     <string name="numero_de_reunioes">Número de Reuniões:</string>
     <string name="_4" > 4 </string>
     <string name="total_de_presentes">Total de Presentes</string>
@@ -182,5 +182,7 @@
 
     </string-array>
 
+    <string name="text">Scheidender US-Präsident Barack Obama begnadigt Chelsea Manning - frei im Mai 2017.
+        Stand: 22:27 Uhr. Chelsea Manning. Quelle: AFP. Kurz vor der Amtsübergabe an Donald Trump hat US-Präsident Barack Obama der verurteilten </string>
 
 </resources>

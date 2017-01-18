@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
@@ -212,7 +213,7 @@ public class DBAdapter {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {anoini, mesini, mesfim, anofim, mesini1, mesfim1};
         return db.rawQuery("SELECT DISTINCT " + DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.UID + ", " +
-                DBHelper.TN_RELATORIO + DBHelper.DOT +DBHelper.NOME+", " +
+                DBHelper.TN_RELATORIO + DBHelper.DOT + DBHelper.NOME + ", " +
                 DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.FAMILIA +
                 " FROM " + DBHelper.TN_RELATORIO + ", " + DBHelper.TN_PUBLICADOR +
                 " WHERE  " + DBHelper.TN_RELATORIO + DBHelper.DOT + DBHelper.NOME + " = " + DBHelper.TN_PUBLICADOR + DBHelper.DOT + DBHelper.NOME +
@@ -341,8 +342,6 @@ public class DBAdapter {
     }
 
     public String[] mediasPioneiro(String nome, String anoini, String anofim) {
-
-
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String[] selectionArgs = {nome, anoini, anofim};
@@ -520,10 +519,10 @@ public class DBAdapter {
 
     }
 
-    public int  getMaxIdAssistencia() {
-        int maxId=0;
+    public int getMaxIdAssistencia() {
+        int maxId = 0;
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
-        Cursor c = db.rawQuery("Select max(_id) FROM " + DBHelper.TN_ASSISTENCIA,null);
+        Cursor c = db.rawQuery("Select max(_id) FROM " + DBHelper.TN_ASSISTENCIA, null);
         if (c.moveToNext()) {
             maxId = c.getInt(0);
         }
@@ -541,7 +540,7 @@ public class DBAdapter {
 
      */
 
-    public Cursor fetchGroupedAssistencia(){
+    public Cursor fetchGroupedAssistencia() {
         SQLiteDatabase db = mydbHelper.getReadableDatabase();
         return db.rawQuery("SELECT strftime('%m',data) as mes, " +
                 " substr(data,1,4) as ano, " +
@@ -549,7 +548,51 @@ public class DBAdapter {
                 " SUM(presentes) as total, " +
                 " AVG(presentes) as media FROM assistencia " +
                 " GROUP BY strftime('%m',data), reuniao " +
-                " ORDER BY data DESC" , null);
+                " ORDER BY data DESC", null);
+
+    }
+
+    public String mediaAnualMidWeek(String ini, String fim) {
+        SQLiteDatabase db = mydbHelper.getReadableDatabase();
+        String result;
+        String[] selectionArgs = {ini, fim};
+        Cursor c = db.rawQuery("SELECT AVG(presentes) FROM " + DBHelper.TN_ASSISTENCIA +
+                " WHERE " + DBHelper.REUNIAO + " = 'midweek' AND  data >= ? AND data <= ?  ", selectionArgs);
+        if (c.moveToNext()) {
+            result = String.format(Locale.getDefault(), "%.1f", c.getFloat(0));
+        } else result = "99,9";
+        c.close();
+        return result;
+
+    }
+
+    public String mediaAnualWeekEnd(String ini, String fim) {
+        String result;
+        SQLiteDatabase db = mydbHelper.getReadableDatabase();
+        String[] selectionArgs = {ini, fim};
+        Cursor c = db.rawQuery("SELECT AVG(presentes) FROM " + DBHelper.TN_ASSISTENCIA +
+                " WHERE " + DBHelper.REUNIAO + " = 'weekend' AND  data >= ? AND data <= ?  ", selectionArgs);
+        if (c.moveToNext()) {
+            result = String.format(Locale.getDefault(), "%.1f", c.getFloat(0));
+        } else result = "99,9";
+        c.close();
+        return result;
+    }
+
+    public String assistenciaDoMes(String reuniao,String data ){
+        SQLiteDatabase db = mydbHelper.getReadableDatabase();
+        String[] selectionArgs = {reuniao,data};
+        Cursor c = db.rawQuery("SELECT data, presentes FROM " + DBHelper.TN_ASSISTENCIA +
+                " WHERE " + DBHelper.REUNIAO + " = ? AND  substr(data,1,7) = ? ", selectionArgs);
+        StringBuilder sb = new StringBuilder();
+
+        while (c.moveToNext() ){
+            if (c.getString(1).length()==3) {
+                sb.append(c.getString(0)).append(": ").append(c.getString(1)).append("\n");
+            } else sb.append(c.getString(0)).append(":   ").append(c.getString(1)).append("\n");
+        }
+        c.close();
+        return sb.toString();
 
     }
 
@@ -719,6 +762,7 @@ public class DBAdapter {
         cv.put(DBHelper.FIELD1, str);
         return db.insert(DBHelper.TN_TESTE1, null, cv);
     }
+
 
 
 

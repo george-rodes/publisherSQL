@@ -1,12 +1,18 @@
 package br.com.anagnostou.publisher.adapters;
 
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,6 +23,8 @@ import java.util.List;
 import java.util.Locale;
 import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.objetos.Assistencia;
+import br.com.anagnostou.publisher.telas.LoginActivity;
+import br.com.anagnostou.publisher.telas.MeetingDetail;
 
 
 public class AssistenciaAdapter extends RecyclerView.Adapter<AssistenciaAdapter.ItemViewHolder> {
@@ -60,6 +68,9 @@ public class AssistenciaAdapter extends RecyclerView.Adapter<AssistenciaAdapter.
 
     @Override
     public void onBindViewHolder(final ItemViewHolder h, int i) {
+        final String mes = assistencias.get(i).getMes();
+        final String ano = assistencias.get(i).getAno();
+        final String reuniao = assistencias.get(i).getReuniao();
 
         h.details.setVisibility(View.GONE);
         h.seta.setImageResource(R.drawable.ic_keyboard_arrow_down_black_48dp);
@@ -87,15 +98,20 @@ public class AssistenciaAdapter extends RecyclerView.Adapter<AssistenciaAdapter.
             }
         });
 
-        // h.cardView.setOnClickListener(new View.OnClickListener() {
-        /*h.details.setOnClickListener(new View.OnClickListener() {
+        h.details.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), PioneirosActivity.class);
-                intent.putExtra("nome", nome);
-                context.startActivity(intent);
+                android.support.v4.app.FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
+                MeetingDetail md = new MeetingDetail();
+                Bundle args = new Bundle();
+                args.putString("mes",mes);
+                args.putString("ano",ano);
+                args.putString("reuniao",reuniao);
+                md.setArguments(args);
+                md.show(fm,"Assistencia a Reunião Detalhada");
+
             }
-        });*/
+        });
 
     }
 

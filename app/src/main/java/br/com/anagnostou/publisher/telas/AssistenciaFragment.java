@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,34 +27,27 @@ import br.com.anagnostou.publisher.objetos.Assistencia;
 import br.com.anagnostou.publisher.utils.L;
 
 
-/**
- * Created by George on 16/01/2017.
- */
-
 public class AssistenciaFragment extends Fragment {
-    private int mes, ano, numero, total;
-    private float media;
-    private String reuniao;
-
     View rootView;
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
     Cursor c;
     ArrayList<Assistencia> assistenciasArray;
+    TextView weekendAno, midweekAno,anoDeServioLabel;
+
 
     public AssistenciaFragment() {
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_assistencia, container, false);
         dbAdapter = new DBAdapter(rootView.getContext());
         sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-        String anoini = "" + (anoDeServico() - 1);
-        String anofim = "" + anoDeServico();
-
+        weekendAno = (TextView) rootView.findViewById(R.id.weekendAno);
+        midweekAno = (TextView) rootView.findViewById(R.id.midweekAno);
+        anoDeServioLabel = (TextView) rootView.findViewById(R.id.anoDeServioLabel);
+        preencheMediaAnual();
 
         RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rvAssistencia);
         LinearLayoutManager llm = new LinearLayoutManager(rootView.getContext());
@@ -72,10 +66,18 @@ public class AssistenciaFragment extends Fragment {
         }
         RecyclerView.Adapter adapter = new AssistenciaAdapter(assistenciasArray, rootView.getContext());
         rv.setAdapter(adapter);
-
         return rootView;
     }
 
+    private void preencheMediaAnual() {
+        String ini = (anoDeServico() - 1) +"-09-01" ;
+        String fim = anoDeServico() + "-08-31" ;
+        String str = "Ano de Serviço " + anoDeServico();
+        anoDeServioLabel.setText(str);
+        //String.format(Locale.getDefault(), "%.1f", dbAdapter.mediaAnualMidWeek(ini, fim) );
+        midweekAno.setText(dbAdapter.mediaAnualMidWeek(ini, fim));
+        weekendAno.setText(dbAdapter.mediaAnualWeekEnd(ini, fim));
+    }
 
     private int anoDeServico() {
         int ano;
@@ -84,9 +86,10 @@ public class AssistenciaFragment extends Fragment {
         cal.setTime(Calendar.getInstance().getTime());
         mes = cal.get(Calendar.MONTH) + 1;
         ano = cal.get(Calendar.YEAR);
-        //comecar a considerar o novo ano de servico em Outubro
-        if (mes > 9) return ano + 1;
+        //comecar a considerar o novo ano de servico em Novembro
+        if (mes > 10) return ano + 1;
         else return ano;
     }
+
 
 }
