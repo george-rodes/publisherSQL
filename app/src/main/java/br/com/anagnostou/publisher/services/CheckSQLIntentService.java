@@ -54,13 +54,13 @@ public class CheckSQLIntentService extends IntentService {
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         getCheckTT();
         dataBaseOperationInProgress = false;
-        checkIntervall = 60000;
+        checkIntervall = 50000;
         checkUpdates();
     }
 
     private void checkUpdates() {
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-        //L.m("checkUpdates every ms: " + checkIntervall);
+        L.m("checkUpdates every ms: " + checkIntervall);
         while (!dataBaseOperationInProgress) {
             try {
                 //createNotification();
@@ -70,12 +70,10 @@ public class CheckSQLIntentService extends IntentService {
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTrelatorio();
                 Thread.sleep(2000);
                 if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTcadastro();
-                Thread.sleep(1500);
-                if (sp.getString("sourceDataImport", "").contentEquals("SQL"))
-                    checkLocalRelatorio();
-                Thread.sleep(1200);
-                if (sp.getString("sourceDataImport", "").contentEquals("SQL"))
-                    checkLocalAssistencia();
+                Thread.sleep(2000);
+                if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkLocalRelatorio();
+                Thread.sleep(2000);
+                if (sp.getString("sourceDataImport", "").contentEquals("SQL"))   checkLocalAssistencia();
                 Thread.sleep(checkIntervall);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -158,9 +156,9 @@ public class CheckSQLIntentService extends IntentService {
                 String estudos = c.getString(c.getColumnIndex("estudos"));
                 String entregue = c.getString(c.getColumnIndex("entregue"));
                 if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
-                    //L.m("We are online, sending...");
+                    L.m("We are online, sending...");
                     enviarRelatorio(id, email, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
-                } //else L.m("We are offline ");
+                } else L.m("We are offline ");
 
             }
         }
@@ -216,7 +214,7 @@ public class CheckSQLIntentService extends IntentService {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //L.m(response);
+                L.m(response);
                 try {
                     JSONArray arrayJSON = new JSONArray(response);
                     if (arrayJSON.length() > 0) {
@@ -224,7 +222,7 @@ public class CheckSQLIntentService extends IntentService {
                         if (!jsonObject.getString("result").isEmpty()) {
                             if (jsonObject.getString("result").contentEquals("SUCCESS")) {
                                 dbAdapter.deleteTTRelatorio("" + id);
-                                // L.m("deleted: " + dbAdapter.deleteTTRelatorio(""+id));
+                                L.m("deleted: " + dbAdapter.deleteTTRelatorio(""+id));
                             }
                         }
                     }
@@ -302,10 +300,12 @@ public class CheckSQLIntentService extends IntentService {
 
     public void checkTTrelatorio() {
         getCheckTT();
-        //L.m("checkTTrelatorio idRelatorio beginning: " + idRelatorio);
+        L.m("checkTTrelatorio idRelatorio beginning: " + idRelatorio);
         StringRequest srRelatorio = new StringRequest(checkTTrelatorioUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                L.m(checkTTrelatorioUrl);
+                L.m(response);
                 if (!response.contentEquals("0")) {
                     dataBaseOperationInProgress = true;
                     try {
@@ -341,11 +341,13 @@ public class CheckSQLIntentService extends IntentService {
                         e.printStackTrace();
                     }
                     dataBaseOperationInProgress = false;
-                    // L.m("checkTTrelatorio DatabaseOperation Completed! with ID: " + idRegistroProcessadoRelatorio);
+                     L.m("checkTTrelatorio DatabaseOperation Completed! with ID: " + idRegistroProcessadoRelatorio);
                 }
             }
         }, null);
         RequestQueue requestQueue = Volley.newRequestQueue(this);
+        srRelatorio.setShouldCache(false);
+        L.m(srRelatorio.toString());
         requestQueue.add(srRelatorio);
     }
 

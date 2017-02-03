@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -370,7 +371,9 @@ public class RelatorioActivity extends AppCompatActivity implements View.OnClick
 
 
         RequestQueue queue = Volley.newRequestQueue(RelatorioActivity.this);
-        queue.add(new SendReportRequest(email, url, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue, responseListener));
+        SendReportRequest sendReportRequest = new SendReportRequest(email, url, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue, responseListener);
+        sendReportRequest.setShouldCache(false);
+        queue.add(sendReportRequest);
     }
 
     private void dialogoServidorSucessoUpdate() {
