@@ -94,6 +94,8 @@ public class CheckSQLIntentService extends IntentService {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                L.m("getAssistencia response: " + response);
+
                 if (response.length() > 4) {
                     JSONArray jsonArray;
                     try {
@@ -115,7 +117,9 @@ public class CheckSQLIntentService extends IntentService {
         };
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(new AssistenciaRequest(urlAssistencia, getMaxIdAssistencia(), responseListener));
+        AssistenciaRequest assistenciaRequest = new AssistenciaRequest(urlAssistencia, getMaxIdAssistencia(), responseListener);
+        assistenciaRequest.setShouldCache(false);
+        queue.add(assistenciaRequest);
 
     }
 
@@ -159,7 +163,6 @@ public class CheckSQLIntentService extends IntentService {
                     L.m("We are online, sending...");
                     enviarRelatorio(id, email, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
                 } else L.m("We are offline ");
-
             }
         }
     }
@@ -177,7 +180,6 @@ public class CheckSQLIntentService extends IntentService {
                     //L.m("We are online, sending...");
                     enviarAssistenciaOnLine(id, data, reuniao, presentes);
                 } //else L.m("We are offline ");
-
             }
         }
     }
@@ -186,10 +188,9 @@ public class CheckSQLIntentService extends IntentService {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //L.m(response);
+                L.m("enviarAssistenciaOnLine " + response);
                 try {
                     JSONArray arrayJSON = new JSONArray(response);
-                    //L.m(response);
                     if (arrayJSON.length() > 0) {
                         JSONObject jsonObject = arrayJSON.getJSONObject(0);
                         if (!jsonObject.getString("result").isEmpty()) {
@@ -204,7 +205,9 @@ public class CheckSQLIntentService extends IntentService {
             }
         };
         RequestQueue queue = Volley.newRequestQueue(CheckSQLIntentService.this);
-        queue.add(new SendMeetingRequest(urlAssistenciaSend, data, reuniao, presentes, responseListener));
+        SendMeetingRequest sendMeetingRequest = new SendMeetingRequest(urlAssistenciaSend, data, reuniao, presentes, responseListener);
+        sendMeetingRequest.setShouldCache(false);
+        queue.add(sendMeetingRequest);
     }
 
 
@@ -214,7 +217,7 @@ public class CheckSQLIntentService extends IntentService {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                L.m(response);
+                L.m("enviarRelatorio: " + response);
                 try {
                     JSONArray arrayJSON = new JSONArray(response);
                     if (arrayJSON.length() > 0) {
@@ -233,7 +236,9 @@ public class CheckSQLIntentService extends IntentService {
         };
 
         RequestQueue queue = Volley.newRequestQueue(CheckSQLIntentService.this);
-        queue.add(new SendReportRequest(email, url, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue, responseListener));
+        SendReportRequest sendReportRequest = new SendReportRequest(email, url, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue, responseListener);
+        sendReportRequest.setShouldCache(false);
+        queue.add(sendReportRequest);
     }
 
     private void checkTTcadastro() {
@@ -242,6 +247,7 @@ public class CheckSQLIntentService extends IntentService {
         StringRequest srCadastro = new StringRequest(checkTTcadastroUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                L.m("checkTTcadastro: " + response );
                 if (!response.contentEquals("0")) {
                     dataBaseOperationInProgress = true;
                     try {
@@ -293,9 +299,8 @@ public class CheckSQLIntentService extends IntentService {
             }
         }, null);
         RequestQueue requestQueue = Volley.newRequestQueue(this);
+        srCadastro.setShouldCache(false);
         requestQueue.add(srCadastro);
-
-
     }
 
     public void checkTTrelatorio() {
@@ -305,7 +310,7 @@ public class CheckSQLIntentService extends IntentService {
             @Override
             public void onResponse(String response) {
                 L.m(checkTTrelatorioUrl);
-                L.m(response);
+                L.m("checkTTrelatorio" + response);
                 if (!response.contentEquals("0")) {
                     dataBaseOperationInProgress = true;
                     try {
@@ -347,7 +352,6 @@ public class CheckSQLIntentService extends IntentService {
         }, null);
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         srRelatorio.setShouldCache(false);
-        L.m(srRelatorio.toString());
         requestQueue.add(srRelatorio);
     }
 

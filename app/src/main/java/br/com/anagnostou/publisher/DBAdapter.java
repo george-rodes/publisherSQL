@@ -824,7 +824,7 @@ public class DBAdapter {
 
 
         static final String DB_NAME = "appledore";
-        private static final int DB_VERSION = 4;//18/1/2017
+        private static final int DB_VERSION = 5;//4/2/2017
 
 
         /**

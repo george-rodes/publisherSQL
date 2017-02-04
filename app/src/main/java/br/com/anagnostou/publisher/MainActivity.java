@@ -271,6 +271,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
+        srPublisher.setShouldCache(false);
         requestQueue.add(srPublisher);
     }
 
@@ -306,6 +307,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
+        srRelatorio.setShouldCache(false);
         requestQueue.add(srRelatorio);
     }
 
@@ -338,6 +340,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
+        srAssistencia.setShouldCache(false);
         requestQueue.add(srAssistencia);
     }
 

@@ -227,7 +227,7 @@ public class AssistenciaActivity extends AppCompatActivity implements View.OnCli
                 //L.m(response);
                 try {
                     JSONArray arrayJSON = new JSONArray(response);
-                    L.m(response);
+                    L.m("SendMeetingRequest: " + response);
                     if (arrayJSON.length() > 0) {
                         JSONObject jsonObject = arrayJSON.getJSONObject(0);
                         if (!jsonObject.getString("result").isEmpty()) {
@@ -248,7 +248,9 @@ public class AssistenciaActivity extends AppCompatActivity implements View.OnCli
 
 
         RequestQueue queue = Volley.newRequestQueue(AssistenciaActivity.this);
-        queue.add(new SendMeetingRequest(url, data,reuniao,presentes,responseListener));
+        SendMeetingRequest sendMeetingRequest = new SendMeetingRequest(url, data,reuniao,presentes,responseListener);
+        sendMeetingRequest.setShouldCache(false);
+        queue.add(sendMeetingRequest);
     }
 
 
