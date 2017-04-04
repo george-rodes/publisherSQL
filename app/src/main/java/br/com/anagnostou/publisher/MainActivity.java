@@ -440,7 +440,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     grupo = "Vila Nova";
                     break;
                 case 3:
-                    grupo = "Centro";
+                    grupo = "Siriemas";
                     break;
             }
             StringBuilder sb = new StringBuilder();
@@ -532,7 +532,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else if (position == 2 && bancoTemDados) {
                 return criaFragment("Vila Nova");
             } else if (position == 3 && bancoTemDados) {
-                return criaFragment("Centro");
+                return criaFragment("Siriemas");
             } else if (position == 4 && bancoTemDados) {
                 return criaFragment("Ancião");
             } else if (position == 5 && bancoTemDados) {
@@ -559,7 +559,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 case 2:
                     return "VILA NOVA";
                 case 3:
-                    return "CENTRO";
+                    return "SIRIEMAS";
 
                 /** TABS SCROLLABLE *******/
                 case 4:
