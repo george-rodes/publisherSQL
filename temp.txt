@@ -1,0 +1,33 @@
+List<String> retrieveAllApelidoDeClientes() {
+        SQLiteDatabase db = mydbHelper.getReadableDatabase();
+        String[] columns = {DBHelper.APELIDO};
+        Cursor c = db.query(DBHelper.TN_CLIENTE, columns, null, null, null, null, DBHelper.APELIDO);
+        List<String> nomes = new ArrayList<>();
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                nomes.add(c.getString(c.getColumnIndex(DBHelper.APELIDO)));
+            }
+        } else nomes.add("Sem Nomes");
+        c.close();
+        return nomes;
+    }
+
+  etApelido = (AutoCompleteTextView) findViewById(R.id.etApelidoOrcamento);
+ adapterApelido = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, dbAdapter.retrieveAllApelidoDeClientes());
+  etApelido.setAdapter(adapterApelido);
+
+<AutoCompleteTextView
+                        android:id="@+id/etApelidoOrcamento"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/formItemHeightS"
+                        android:background="@drawable/barradegradelights"
+                        android:completionThreshold="1"
+                        android:hint="@string/apelido_do_cliente"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapWords|textVisiblePassword"
+                        android:paddingLeft="2dp"
+                        android:paddingStart="2dp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/formLabelHeaderS" />
+
+android:background="@drawable/rounded_button"
