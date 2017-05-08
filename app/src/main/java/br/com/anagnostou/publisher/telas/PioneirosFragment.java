@@ -19,6 +19,8 @@ import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.adapters.PioneiroAdapter;
 import br.com.anagnostou.publisher.objetos.AnoDeServicoDoPioneiro;
 
+import static br.com.anagnostou.publisher.utils.Utilidades.anoDeServico;
+
 
 public class PioneirosFragment extends Fragment {
     View rootView;
@@ -76,17 +78,7 @@ public class PioneirosFragment extends Fragment {
         return rootView;
     }
 
-    private int anoDeServico() {
-        int ano;
-        int mes;
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(Calendar.getInstance().getTime());
-        mes = cal.get(Calendar.MONTH) + 1;
-        ano = cal.get(Calendar.YEAR);
-        //comecar a considerar o novo ano de servico depois do segundo relatorio entre em novembro
-        if (mes > 11) return ano + 1;
-        else return ano;
-    }
+
 
     public float mediasRequisito(int mes, int soma) {
         int mesesrestantes = 12 - mes;

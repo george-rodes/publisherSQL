@@ -42,7 +42,7 @@ public class JsonTaskPublicador extends AsyncTask<JSONArray, Integer, Boolean> {
 
     @Override
     protected void onPreExecute() {
-        mainActivity.bBackgroundJobs = true;
+       // mainActivity.bBackgroundJobs = true;
     }
 
     @Override

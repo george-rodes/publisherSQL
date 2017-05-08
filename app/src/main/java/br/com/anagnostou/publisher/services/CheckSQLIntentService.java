@@ -60,20 +60,20 @@ public class CheckSQLIntentService extends IntentService {
 
     private void checkUpdates() {
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-        L.m("checkUpdates every ms: " + checkIntervall);
+        //L.m("checkUpdates every ms: " + checkIntervall);
         while (!dataBaseOperationInProgress) {
             try {
                 //createNotification();
                 //L.m("Thread ID " + Thread.currentThread().getId());
                 Thread.sleep(3000);
                 getAssistencia();
-                if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTrelatorio();
+                checkTTrelatorio();
                 Thread.sleep(2000);
-                if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkTTcadastro();
+                checkTTcadastro();
                 Thread.sleep(2000);
-                if (sp.getString("sourceDataImport", "").contentEquals("SQL")) checkLocalRelatorio();
+                checkLocalRelatorio();
                 Thread.sleep(2000);
-                if (sp.getString("sourceDataImport", "").contentEquals("SQL"))   checkLocalAssistencia();
+                checkLocalAssistencia();
                 Thread.sleep(checkIntervall);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -94,7 +94,7 @@ public class CheckSQLIntentService extends IntentService {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                L.m("getAssistencia response: " + response);
+                // L.m("getAssistencia response: " + response);
 
                 if (response.length() > 4) {
                     JSONArray jsonArray;
@@ -160,7 +160,7 @@ public class CheckSQLIntentService extends IntentService {
                 String estudos = c.getString(c.getColumnIndex("estudos"));
                 String entregue = c.getString(c.getColumnIndex("entregue"));
                 if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
-                    L.m("We are online, sending...");
+                    // L.m("We are online, sending...");
                     enviarRelatorio(id, email, nome, ano, mes, modalidade, publicacoes, videos, horas, revisitas, estudos, entregue);
                 } else L.m("We are offline ");
             }
@@ -188,7 +188,7 @@ public class CheckSQLIntentService extends IntentService {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                L.m("enviarAssistenciaOnLine " + response);
+                // L.m("enviarAssistenciaOnLine " + response);
                 try {
                     JSONArray arrayJSON = new JSONArray(response);
                     if (arrayJSON.length() > 0) {
@@ -217,7 +217,7 @@ public class CheckSQLIntentService extends IntentService {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                L.m("enviarRelatorio: " + response);
+                //  L.m("enviarRelatorio: " + response);
                 try {
                     JSONArray arrayJSON = new JSONArray(response);
                     if (arrayJSON.length() > 0) {
@@ -225,7 +225,7 @@ public class CheckSQLIntentService extends IntentService {
                         if (!jsonObject.getString("result").isEmpty()) {
                             if (jsonObject.getString("result").contentEquals("SUCCESS")) {
                                 dbAdapter.deleteTTRelatorio("" + id);
-                                L.m("deleted: " + dbAdapter.deleteTTRelatorio(""+id));
+                                // L.m("deleted: " + dbAdapter.deleteTTRelatorio(""+id));
                             }
                         }
                     }
@@ -247,7 +247,7 @@ public class CheckSQLIntentService extends IntentService {
         StringRequest srCadastro = new StringRequest(checkTTcadastroUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                L.m("checkTTcadastro: " + response );
+                // L.m("checkTTcadastro: " + response );
                 if (!response.contentEquals("0")) {
                     dataBaseOperationInProgress = true;
                     try {
@@ -305,12 +305,12 @@ public class CheckSQLIntentService extends IntentService {
 
     public void checkTTrelatorio() {
         getCheckTT();
-        L.m("checkTTrelatorio idRelatorio beginning: " + idRelatorio);
+        // L.m("checkTTrelatorio idRelatorio beginning: " + idRelatorio);
         StringRequest srRelatorio = new StringRequest(checkTTrelatorioUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                L.m(checkTTrelatorioUrl);
-                L.m("checkTTrelatorio" + response);
+                //  L.m(checkTTrelatorioUrl);
+                //  L.m("checkTTrelatorio" + response);
                 if (!response.contentEquals("0")) {
                     dataBaseOperationInProgress = true;
                     try {
@@ -346,7 +346,7 @@ public class CheckSQLIntentService extends IntentService {
                         e.printStackTrace();
                     }
                     dataBaseOperationInProgress = false;
-                     L.m("checkTTrelatorio DatabaseOperation Completed! with ID: " + idRegistroProcessadoRelatorio);
+                    // L.m("checkTTrelatorio DatabaseOperation Completed! with ID: " + idRegistroProcessadoRelatorio);
                 }
             }
         }, null);

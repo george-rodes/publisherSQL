@@ -45,11 +45,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
-import br.com.anagnostou.publisher.asynctasks.CheckUpdateAvailable;
-import br.com.anagnostou.publisher.asynctasks.DownloadTaskUpdate;
 import br.com.anagnostou.publisher.phpmysql.JsonTaskAssistencia;
+import br.com.anagnostou.publisher.phpmysql.JsonTaskGrupos;
 import br.com.anagnostou.publisher.phpmysql.JsonTaskPublicador;
 import br.com.anagnostou.publisher.phpmysql.JsonTaskRelatorio;
 import br.com.anagnostou.publisher.services.*;
@@ -66,7 +67,7 @@ import br.com.anagnostou.publisher.utils.Utilidades;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     int PERM_EXT_STORAGE = 99;
     public boolean bancoTemDados = false;
-    public boolean bBackgroundJobs = false;
+    //public boolean bBackgroundJobs = false;
 
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
@@ -79,21 +80,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SpecialPagerAdapter specialPagerAdapter;
     String DATABASE_NAME;
     String DB_FULL_PATH;
-    String fosPublicador;
-    String fosRelatorio;
-    String fosUpdate;
     //String nameSearch;
     String sdcard;
-    String spCadastro;
-    String spHomepage;
-    String spRelatorio;
-    String spUpdate;
     public ViewPager mViewPager;
 
     public static final String SP_SPNAME = "mySharedPreferences";
     public static final String SP_AUTHENTICATED = "authenticated";
     public static final String DEFAULT = "N/A";
     private static final int LOGIN_INTENT = 572;
+
+    List<String> sGrupoDinamico = new ArrayList<>();
+    int iGrupoDinamicoSize;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /******NEW DrawerLayout *********/
+        /** NEW DrawerLayout **/
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -110,7 +108,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        /******************/
+
+        dbAdapter = new DBAdapter(getApplicationContext());
+        sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
+        DATABASE_NAME = dbAdapter.mydbHelper.getDatabaseName();
+        DB_FULL_PATH = sqLiteDatabase.getPath();
+        sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         secondSectionsPagerAdapter = new SecondSectionsPagerAdapter(getSupportFragmentManager());
@@ -123,30 +126,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.por_grupo);
         getSupportActionBar().setSubtitle(getString(R.string.atividades_da_congregacao));
 
-        dbAdapter = new DBAdapter(getApplicationContext());
-        sqLiteDatabase = dbAdapter.mydbHelper.getWritableDatabase();
-        DATABASE_NAME = dbAdapter.mydbHelper.getDatabaseName();
-        DB_FULL_PATH = sqLiteDatabase.getPath();
-        sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
+
 
         checkPermissions();
         PreferenceManager.setDefaultValues(this, R.xml.app_preferences, false);//set just once
         sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        spUpdate = sp.getString("update", NA);
-        spCadastro = sp.getString("cadastro", NA);
-        spRelatorio = sp.getString("relatorio", NA);
-        spHomepage = sp.getString("homepage", NA);
-        fosPublicador = sdcard + spCadastro;//where to store the textfiles
-        fosRelatorio = sdcard + spRelatorio;
-        fosUpdate = sdcard + spUpdate;
-        bBackgroundJobs = false;
-
         if (tablesExist() && Utilidades.temDadosNoBanco(MainActivity.this)) {
-            if (sp.getString("sourceDataImport", "").contentEquals("Texto")) {
-                final CheckUpdateAvailable checkUpdateAvailable = new CheckUpdateAvailable(MainActivity.this, this);
-                checkUpdateAvailable.execute(spHomepage + spUpdate, fosUpdate);
-            }
             bancoTemDados = true;
         } else {
             atualizarBancoDeDados();
@@ -156,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startService(intent);
         Utilidades.checkPreferencesIntLimitReached(this);
         areWeAuthenticated();
-
 
     }
 
@@ -225,29 +210,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return Utilidades.existeTabela(DBAdapter.DBHelper.TN_RELATORIO, MainActivity.this)
                 && Utilidades.existeTabela(DBAdapter.DBHelper.TN_PUBLICADOR, MainActivity.this)
                 && Utilidades.existeTabela(DBAdapter.DBHelper.TN_VERSAO, MainActivity.this)
+                && Utilidades.existeTabela(DBAdapter.DBHelper.TN_GRUPOS, MainActivity.this)
                 && Utilidades.existeTabela(DBAdapter.DBHelper.TN_ASSISTENCIA, MainActivity.this);
     }
 
     public boolean atualizarBancoDeDados() {
         if (Utilidades.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
             /** em vez de chamar a activity, chamar várias Asynctask que uma chama a outra através do onPostExecute */
-            if (!bBackgroundJobs) {
-                if (sp.getString("sourceDataImport", "").contentEquals("SQL")) {
-                    dbAdapter.mydbHelper.dropTablePublicador(sqLiteDatabase);
-                    dbAdapter.mydbHelper.dropTableRelatorio(sqLiteDatabase);
-                    dbAdapter.mydbHelper.dropTableVersao(sqLiteDatabase);
-                    dbAdapter.mydbHelper.dropTableTTRelatorio(sqLiteDatabase);
-                    dbAdapter.mydbHelper.dropTableAssistencia(sqLiteDatabase);
-                    Utilidades.resetPreferencesCounter(this);
-                    getPHPJsonPublisherData();//onPostExecute chama a outra
-                    getPHPJsonAssistenciaData(); //sem Dialogo
-                } else {
-                    //importacao TEXTO
-                    Utilidades.resetPreferencesCounter(this);
-                    final DownloadTaskUpdate downloadTaskUpdate = new DownloadTaskUpdate(MainActivity.this, this, mSectionsPagerAdapter);
-                    downloadTaskUpdate.execute(spHomepage + spUpdate);
-                }
-            } else L.t(getApplicationContext(), getString(R.string.background_jobs_in_progress));
+            //if (!bBackgroundJobs) {
+            dbAdapter.mydbHelper.dropTablePublicador(sqLiteDatabase);
+            dbAdapter.mydbHelper.dropTableRelatorio(sqLiteDatabase);
+            dbAdapter.mydbHelper.dropTableVersao(sqLiteDatabase);
+            dbAdapter.mydbHelper.dropTableTTRelatorio(sqLiteDatabase);
+            dbAdapter.mydbHelper.dropTableAssistencia(sqLiteDatabase);
+            dbAdapter.mydbHelper.dropTableGrupos(sqLiteDatabase);
+            Utilidades.resetPreferencesCounter(this);
+            getPHPJsonGrupos();//semDialogo
+            getPHPJsonAssistenciaData(); //sem Dialogo
+            getPHPJsonPublisherData();
+
+            // } else L.t(getApplicationContext(), getString(R.string.background_jobs_in_progress));
             return true;
         } else {
             dialogoNoInternet();
@@ -281,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             JSONArray arrayJSON = new JSONArray(response);
             if (sp.getBoolean("fullMySQLImport", false)) {
                 dbAdapter.mydbHelper.dropTablePublicador(sqLiteDatabase);
-                L.m("Full Import, dropping table");
+                L.m("Full Import, dropping table Publisher");
             }
             JsonTaskPublicador jsonTaskPublicador = new JsonTaskPublicador(MainActivity.this, this);
             jsonTaskPublicador.execute(arrayJSON);
@@ -289,7 +271,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
     }
-
 
     public void getPHPJsonRelatorioData() {
         String url = sp.getString("php_report_full", NA);
@@ -344,7 +325,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         requestQueue.add(srAssistencia);
     }
 
-
     public void showPHPJsonAssistenciaData(String response) {
         try {
             JSONArray arrayJSON = new JSONArray(response);
@@ -357,6 +337,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void showPHPJsonAGrupos(String response) {
+        try {
+            JSONArray arrayJSON = new JSONArray(response);
+            dbAdapter.mydbHelper.dropTableGrupos(sqLiteDatabase);
+            L.m("Full Import, dropping table Grupos");
+            JsonTaskGrupos jsonTaskGrupos = new JsonTaskGrupos(MainActivity.this, this);
+            jsonTaskGrupos.execute(arrayJSON);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getPHPJsonGrupos() {
+
+        String url = sp.getString("php_grupos", NA);
+        L.m("getPHPJsonGrupos php grupos" + url);
+        StringRequest srGrupos = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                showPHPJsonAGrupos(response);
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        L.t(MainActivity.this, error.getMessage());
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        srGrupos.setShouldCache(false);
+        requestQueue.add(srGrupos);
+    }
 
     public void checkPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -424,11 +436,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
 
-
         } else if (id == R.id.naorelatou) {
             int i = mViewPager.getCurrentItem();
             // L.m("" + mViewPager.getAdapter().getClass().getCanonicalName() + " " + mViewPager.getCurrentItem());
             //br.com.anagnostou.publisher.MainActivity.SectionsPagerAdapter 2
+            //
+            grupo = sGrupoDinamico.get(i);
+            /*
             switch (i) {
                 case 0:
                     grupo = "Adriano";
@@ -443,6 +457,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     grupo = "Siriemas";
                     break;
             }
+            */
+
             StringBuilder sb = new StringBuilder();
             sb.append("Grupo: ").append(grupo).append("\n");
             for (String n : dbAdapter.naoRelatouPorGrupo("" + anoNumero(), "" + mesNumero(), grupo)) {
@@ -490,7 +506,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-
     private void enviaNaoRelataram() {
         Cursor c = dbAdapter.naoRelatouMesPassado("" + anoNumero(), "" + mesNumero());
         StringBuilder sb = new StringBuilder();
@@ -518,59 +533,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void grupoDinamico() {
+        sGrupoDinamico = dbAdapter.retrieveGrupos();
+        iGrupoDinamicoSize = sGrupoDinamico.size();
+    }
+
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+
         SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            L.m("Entrei no SectionsPagerAdapter, super(fm); ");
+            //chama só na inicialização do Adapter
+            grupoDinamico();
+
         }
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 0 && bancoTemDados) {
-                return criaFragment("Adriano");
-            } else if (position == 1 && bancoTemDados) {
-                return criaFragment("Salão do Reino");
-            } else if (position == 2 && bancoTemDados) {
-                return criaFragment("Vila Nova");
-            } else if (position == 3 && bancoTemDados) {
-                return criaFragment("Siriemas");
-            } else if (position == 4 && bancoTemDados) {
-                return criaFragment("Ancião");
-            } else if (position == 5 && bancoTemDados) {
-                return criaFragment("Servo");
-            } else if (position == 6 && bancoTemDados) {
-                return new PioneirosFragment();
-            }
 
+            if (bancoTemDados) {
+                return criaFragment(sGrupoDinamico.get(position));
+            }
             return new Vazio();
         }
 
         @Override // Show x total pages.
         public int getCount() {
-            return 7;
+            return iGrupoDinamicoSize;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "ADRIANO";
-                case 1:
-                    return "SALÃO DO REINO";
-                case 2:
-                    return "VILA NOVA";
-                case 3:
-                    return "SIRIEMAS";
-
-                /** TABS SCROLLABLE *******/
-                case 4:
-                    return "ANCIÃOS";
-                case 5:
-                    return "SERVOS";
-                case 6:
-                    return "PIONEIROS";
-
-            }
-            return null;
+            return sGrupoDinamico.get(position);
         }
     }
 
@@ -752,6 +746,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void teste_1() {
+
+        dbAdapter.retrieveGrupos();
         //simular mudanca de banco de dados
         //creatre dbadapter cursors
         //insert data

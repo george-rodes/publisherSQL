@@ -1,4 +1,10 @@
-SELECT COUNT(nome),SUM(horas), AVG(horas) FROM `relatorio` 
+GRUPOS DINAMICOS
+Falta
+ Tabela Local
+ Carregar a t
+ _____________________________________
+
+SELECT COUNT(nome),SUM(horas), AVG(horas) FROM `relatorio`
 WHERE modalidade = 'Pioneiro Regular' AND ((Ano = 2015 and mes >= 9) OR (ano = 2016 and mes<=8))
 
 SELECT COUNT(nome), nome,SUM(horas), AVG(horas) FROM `relatorio` 

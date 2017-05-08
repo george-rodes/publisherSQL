@@ -68,11 +68,14 @@ public class JsonTaskRelatorio extends AsyncTask<JSONArray,Integer,Boolean> {
 
     @Override
     protected void onPostExecute(Boolean result) {
-        mainActivity.bBackgroundJobs = true;
+
         if (result) {
             progressDialog.dismiss();
             L.t(context, context.getString(R.string.importacao_relatorios_MySQL_concluida));
+            //THESE ROUTINES should be in the last AsyncTask
+            L.m("mainActivity.mViewPager.setAdapter(mSectionsPagerAdapter)");
             mainActivity.bancoTemDados = true;
+            mainActivity.grupoDinamico();
             mainActivity.mViewPager.setAdapter(mSectionsPagerAdapter);
 
         } else {

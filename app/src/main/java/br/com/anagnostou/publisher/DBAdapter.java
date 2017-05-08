@@ -16,6 +16,7 @@ import java.util.Locale;
 
 import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
+import br.com.anagnostou.publisher.objetos.SeisMeses;
 import br.com.anagnostou.publisher.utils.L;
 
 
@@ -101,11 +102,22 @@ public class DBAdapter {
         return nomes;
     }
 
-
+    //máximo 12 meses
     public Cursor retrieveRelatorios(String nome) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String orderBy = " ano asc, mes asc ";
+        SeisMeses sm = new SeisMeses();
+
+        String[] selectionArgs = {nome,sm.getAnoIni(),sm.getMesIni(),sm.getAnoFim(),sm.getMesFim() };
+        String condicao =  " = ?  AND ((ano = ? AND mes >= ?) OR ( ano = ? AND mes <= ?    ))  ";
+        return db.query(DBHelper.TN_RELATORIO, null, DBHelper.NOME + condicao , selectionArgs, null, null, orderBy  );
+    }
+
+    public Cursor retrieveRelatorioSeisMeses(String nome) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String orderBy = " ano desc, mes desc ";
         String[] selectionArgs = {nome};
+        //Precisa calcular Ano ini e mes
         return db.query(DBHelper.TN_RELATORIO, null, DBHelper.NOME + " = ? ", selectionArgs, null, null, orderBy);
     }
 
@@ -158,17 +170,7 @@ public class DBAdapter {
     }
 
 
-    public String selectVersao() {
-        SQLiteDatabase db = mydbHelper.getWritableDatabase();
-        String[] columns = {DBHelper.ULTIMA_ATUALIZACAO};
-        Cursor cursor = db.query(DBHelper.TN_VERSAO, columns, null, null, null, null, null);
-        StringBuilder sb = new StringBuilder();
-        while (cursor.moveToNext()) {
-            String versao = cursor.getString(cursor.getColumnIndex(DBHelper.ULTIMA_ATUALIZACAO));
-            sb.append(versao);
-        }
-        return sb.toString();
-    }
+
 
     public Cursor cursorPublicadorPorGrupo(String grupo) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
@@ -606,6 +608,26 @@ public class DBAdapter {
         c.close();
         return result;
     }
+    //só para verificar se io grupos existem
+
+    public List<String> retrieveGrupos() {
+        SQLiteDatabase db = mydbHelper.getReadableDatabase();
+        String[] columns = {DBHelper.GRUPO};
+        Cursor c = db.query(DBHelper.TN_GRUPOS, columns, null, null, null, null, DBHelper.GRUPO);
+        List<String> grupos = new ArrayList<>();
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                L.m(c.getString(c.getColumnIndex(DBHelper.GRUPO)));
+                grupos.add(c.getString(c.getColumnIndex(DBHelper.GRUPO)));
+            }
+        } else grupos.add("Sem Grupo");
+        c.close();
+        return grupos;
+
+    }
+
+
+
 
     /*****************************************
      * INSERT
@@ -689,6 +711,17 @@ public class DBAdapter {
         cv.put(DBHelper.REUNIAO, reuniao);
         cv.put(DBHelper.PRESENTES, presentes);
         return db.insert(DBHelper.TN_ASSISTENCIA, null, cv);
+    }
+
+    public long insertDataGrupos(String grupo, int numero,  String dirigente, String auxiliar) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DBHelper.GRUPO, grupo);
+        cv.put(DBHelper.NUMERO, numero);
+        cv.put(DBHelper.DIRIGENTE, dirigente);
+        cv.put(DBHelper.AUXILIAR, auxiliar);
+        return db.insert(DBHelper.TN_GRUPOS, null, cv);
+
     }
 
     public long insertTTAssistencia(String data, String reuniao, String presentes) {
@@ -824,7 +857,7 @@ public class DBAdapter {
 
 
         static final String DB_NAME = "appledore";
-        private static final int DB_VERSION = 5;//4/2/2017
+        private static final int DB_VERSION = 7;//9/4/2017
 
 
         /**
@@ -837,15 +870,18 @@ public class DBAdapter {
         public static final String TN_TESTE1 = "t1";
         public static final String TN_ASSISTENCIA = "assistencia";
         public static final String TN_TT_ASSISTENCIA = "ttassistencia";
+        public static final String TN_GRUPOS = "grupos";
 
 
         static final String ANO = "ano";
-        static final String ABREASPAS = " ( ";
+        static final String ABREPARENTESE = " ( ";
         static final String ANSEPU = "ansepu";
+        static final String AUXILIAR = "auxiliar";
         static final String BAIRRO = "bairro";
         static final String BATISMO = "data_batismo";
         static final String CELULAR = "celular";
         static final String DATA = "data";
+        static final String DIRIGENTE = "dirigente";
         static final String REUNIAO = "reuniao";
         static final String PRESENTES = "presentes";
         static final String DOT = ".";
@@ -853,7 +889,7 @@ public class DBAdapter {
         static final String ENTREGUE = "entregue";
         static final String ESTUDOS = "estudos";
         static final String FAMILIA = "familia";
-        static final String FECHAASPAS = " ) ";
+        static final String FECHAPARENTESE = " ) ";
         static final String FIELD1 = "f1";
         static final String FONE = "fone";
         static final String GRUPO = "grupo";
@@ -862,6 +898,7 @@ public class DBAdapter {
         static final String MODALIDADE = "modalidade";
         static final String NASCIMENTO = "data_nascimento";
         static final String NOME = "nome";
+        static final String NUMERO = "numero";
         static final String PIPU = "pipu";
         static final String PUBLICACOES = "publicacoes";
         static final String REVISITAS = "revisitas";
@@ -880,23 +917,23 @@ public class DBAdapter {
                 " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, " + FIELD1 + " TEXT, " + TIMESTAMP +
                 " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL);";
         private static final String CREATE_TABLE_ASSISTENCIA = "CREATE TABLE "
-                + TN_ASSISTENCIA + ABREASPAS
+                + TN_ASSISTENCIA + ABREPARENTESE
                 + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + DATA + " TEXT, "
                 + REUNIAO + " TEXT, "
                 + PRESENTES + " INTEGER, "
-                + " UNIQUE " + ABREASPAS + DATA + VIRGULA + REUNIAO + FECHAASPAS + FECHAASPAS + ";";
+                + " UNIQUE " + ABREPARENTESE + DATA + VIRGULA + REUNIAO + FECHAPARENTESE + FECHAPARENTESE + ";";
 
         private static final String CREATE_TABLE_TT_ASSISTENCIA = "CREATE TABLE "
-                + TN_TT_ASSISTENCIA + ABREASPAS
+                + TN_TT_ASSISTENCIA + ABREPARENTESE
                 + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + DATA + " TEXT, "
                 + REUNIAO + " TEXT, "
                 + PRESENTES + " INTEGER, "
-                + " UNIQUE " + ABREASPAS + DATA + VIRGULA + REUNIAO + FECHAASPAS + FECHAASPAS + ";";
+                + " UNIQUE " + ABREPARENTESE + DATA + VIRGULA + REUNIAO + FECHAPARENTESE + FECHAPARENTESE + ";";
 
         private static final String CREATE_TABLE_RELATORIO = "CREATE TABLE "
-                + TN_RELATORIO + ABREASPAS
+                + TN_RELATORIO + ABREPARENTESE
                 + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + ANO + " INTEGER, " + MES + " INTEGER, "
                 + NOME + " TEXT , " + MODALIDADE + " TEXT, "
@@ -905,7 +942,7 @@ public class DBAdapter {
                 + VIRGULA + " UNIQUE (" + ANO + VIRGULA + MES + VIRGULA + NOME + "));";
 
         private static final String CREATE_TABLE_TT_RELATORIO = "CREATE TABLE "
-                + TN_TT_RELATORIO + ABREASPAS
+                + TN_TT_RELATORIO + ABREPARENTESE
                 + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, "
                 + NOME + " TEXT, " + ANO + " TEXT, " + MES + " TEXT, "
                 + MODALIDADE + " TEXT, " + PUBLICACOES + " TEXT, "
@@ -913,7 +950,7 @@ public class DBAdapter {
                 + REVISITAS + " TEXT, " + ESTUDOS + " TEXT, entregue TEXT );";
 
         private static final String CREATE_TABLE_PUBLICADOR = "CREATE TABLE "
-                + TN_PUBLICADOR + ABREASPAS
+                + TN_PUBLICADOR + ABREPARENTESE
                 + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + NOME + " TEXT UNIQUE, " + FAMILIA + " TEXT, "
                 + GRUPO + " TEXT, " + BATISMO + " TEXT, "
@@ -923,8 +960,21 @@ public class DBAdapter {
                 + PIPU + " TEXT, " + SEXO + " TEXT );";
 
         private static final String CREATE_TABLE_VERSAO = "CREATE TABLE "
-                + TN_VERSAO + ABREASPAS + ULTIMA_ATUALIZACAO + " TEXT UNIQUE);";
+                + TN_VERSAO + ABREPARENTESE + ULTIMA_ATUALIZACAO + " TEXT UNIQUE);";
+
         static final String CREATE_TABLE_TEST2 = "CREATE TABLE teste2 ( _id INTEGER PRIMARY KEY AUTOINCREMENT, " + FIELD1 + " TEXT);";
+
+        static final String CREATE_TABLE_GRUPOS =  "CREATE TABLE "
+                + TN_GRUPOS + ABREPARENTESE
+                + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + GRUPO + " TEXT UNIQUE, "
+                + NUMERO + " INTEGER, "
+                + DIRIGENTE + " TEXT, "
+                + AUXILIAR + " TEXT "
+                + FECHAPARENTESE + ";";
+
+
+        // grupo TEXT , numero INTEGER, dirigente TEXT, auxiliar TEXT );";
 
         /**
          * DROP TABLE STATEMENTS
@@ -937,6 +987,7 @@ public class DBAdapter {
         static final String DROP_TABLE_VERSAO = "DROP TABLE IF EXISTS " + TN_VERSAO;
         static final String DROP_TABLE_ASSISTENCIA = "DROP TABLE IF EXISTS " + TN_ASSISTENCIA;
         static final String DROP_TABLE_TT_ASSISTENCIA = "DROP TABLE IF EXISTS " + TN_TT_ASSISTENCIA;
+        static final String DROP_TABLE_GRUPOS = "DROP TABLE IF EXISTS " + TN_GRUPOS;
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -951,6 +1002,7 @@ public class DBAdapter {
                 db.execSQL(DROP_TABLE_TEST1);
                 db.execSQL(DROP_TABLE_ASSISTENCIA);
                 db.execSQL(DROP_TABLE_TT_ASSISTENCIA);
+                db.execSQL(DROP_TABLE_GRUPOS);
                 L.m("onUpgrade calls onCreate");
                 onCreate(db);
             } catch (SQLException e) {
@@ -969,6 +1021,7 @@ public class DBAdapter {
                 db.execSQL(CREATE_TABLE_TEST1);
                 db.execSQL(CREATE_TABLE_ASSISTENCIA);
                 db.execSQL(CREATE_TABLE_TT_ASSISTENCIA);
+                db.execSQL(CREATE_TABLE_GRUPOS);
 
             } catch (SQLException e) {
                 L.m(e + "on Create failed");
@@ -1023,6 +1076,14 @@ public class DBAdapter {
             try {
                 db.execSQL(DROP_TABLE_TT_ASSISTENCIA);
                 db.execSQL(CREATE_TABLE_TT_ASSISTENCIA);
+            } catch (SQLException ignored) {
+
+            }
+        }
+        public void dropTableGrupos(SQLiteDatabase db) {
+            try {
+                db.execSQL(DROP_TABLE_GRUPOS);
+                db.execSQL(CREATE_TABLE_GRUPOS);
             } catch (SQLException ignored) {
 
             }

@@ -222,6 +222,17 @@ public class Utilidades extends AppCompatActivity {
         }
         return index;
     }
+    public static int anoDeServico() {
+        int ano;
+        int mes;
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(Calendar.getInstance().getTime());
+        mes = cal.get(Calendar.MONTH) + 1;
+        ano = cal.get(Calendar.YEAR);
+        //comecar a considerar o novo ano de servico depois do segundo relatorio entre em novembro
+        if (mes > 11) return ano + 1;
+        else return ano;
+    }
 
     public static int[] diaMesAno(String data) {
         int[] result = {1, 1, 2016};
@@ -368,5 +379,9 @@ public class Utilidades extends AppCompatActivity {
         return "São Nunca";
     }
 
+    public static int modulo( int m, int n ){
+        int mod =  m % n ;
+        return ( mod < 0 ) ? mod + n : mod;
+    }
 
 }

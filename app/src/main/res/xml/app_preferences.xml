@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/geral">
-        <ListPreference
-            android:defaultValue="SQL"
-            android:entries="@array/sourceDataImport"
-            android:entryValues="@array/sourceDataImportValues"
-            android:key="sourceDataImport"
-            android:summary="Os Registros serão obtidos do %s."
-            android:title="Origem dos Dados" />
-    </PreferenceCategory>
     <PreferenceCategory android:title="Importação MySQL">
         <CheckBoxPreference
             android:defaultValue="false"
@@ -67,34 +58,17 @@
             android:key="assistsend"
             android:summary="Script PHP para enviar a assistência da reunião"
             android:title="Script PHP Envio Assistencia" />
+        <EditTextPreference
+            android:defaultValue="http://www.anagnostou.com.br/phptut/json_grupos.php"
+            android:key="php_grupos"
+            android:summary="Script PHP para carregar a tabela dos grupos"
+            android:title="Script PHP Atualização Grupos" />
+
 
 
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/importacao_de_dados">
-        <EditTextPreference
-            android:defaultValue="http://www.anagnostou.com.br/overseer/"
-            android:key="homepage"
-            android:summary="Servidor do Banco de Dados"
-            android:title="Servidor" />
-
-        <EditTextPreference
-            android:defaultValue="update.txt"
-            android:key="update"
-            android:summary="Data da última atualização"
-            android:title="Update" />
-        <EditTextPreference
-            android:defaultValue="cadastro.txt"
-            android:key="cadastro"
-            android:summary="Arquivo texto de Publicadores"
-            android:title="Publicador" />
-        <EditTextPreference
-            android:defaultValue="relatorio.txt"
-            android:key="relatorio"
-            android:summary="Arquivo texto de Relatórios"
-            android:title="Relatorio" />
-    </PreferenceCategory>
 
 
 </PreferenceScreen>
