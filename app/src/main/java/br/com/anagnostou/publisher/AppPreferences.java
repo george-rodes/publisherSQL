@@ -2,6 +2,7 @@ package br.com.anagnostou.publisher;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +29,8 @@ public class AppPreferences extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceFragment implements
             SharedPreferences.OnSharedPreferenceChangeListener {
-        public static final String SOURCE_DATA_IMPORT = "sourceDataImport";
+        //public static final String SOURCE_DATA_IMPORT = "sourceDataImport";
+        public static final String SOURCE_DATA_IMPORT = "fullMySQLImport";
 
         @Override
         public void onResume() {
@@ -52,9 +54,12 @@ public class AppPreferences extends AppCompatActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
-            ListPreference lp = (ListPreference) findPreference(SOURCE_DATA_IMPORT);
-            lp.setSummary("dummy"); // required or will not update
-            lp.setSummary(getString(R.string.os_registros_serao_obtidos));
+            // 2017.06.13
+            //CheckBoxPreference checkBoxPreference = (CheckBoxPreference) findPreference(SOURCE_DATA_IMPORT);
+            //ListPreference lp = (ListPreference) findPreference(SOURCE_DATA_IMPORT);
+            //lp.setSummary("dummy"); // required or will not update
+            //lp.setSummary(getString(R.string.os_registros_serao_obtidos));
+            //checkBoxPreference.setSummary(getString(R.string.os_registros_serao_obtidos));
         }
     }
 }

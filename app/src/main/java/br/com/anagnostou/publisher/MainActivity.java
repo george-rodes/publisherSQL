@@ -126,8 +126,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.por_grupo);
         getSupportActionBar().setSubtitle(getString(R.string.atividades_da_congregacao));
 
-
-
         checkPermissions();
         PreferenceManager.setDefaultValues(this, R.xml.app_preferences, false);//set just once
         sp = PreferenceManager.getDefaultSharedPreferences(this);

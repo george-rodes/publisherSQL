@@ -29,9 +29,9 @@ public class SeisMeses {
         anoFim = cal.get(Calendar.YEAR); // ano atual
 
         if ((mesFim - 6) < 0) {
-            L.m(mesFim + "");
+            //L.m(mesFim + "");
             mesIni = modulo ((mesFim - 6),  12);
-            L.m(mesIni + "");
+            //L.m(mesIni + "");
 
             anoIni = anoFim - 1;
         } else if (mesFim == 6) {

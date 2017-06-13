@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import br.com.anagnostou.publisher.objetos.DozeMeses;
 import br.com.anagnostou.publisher.objetos.Publicador;
 import br.com.anagnostou.publisher.objetos.Relatorio;
 import br.com.anagnostou.publisher.objetos.SeisMeses;
@@ -106,7 +107,8 @@ public class DBAdapter {
     public Cursor retrieveRelatorios(String nome) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         String orderBy = " ano asc, mes asc ";
-        SeisMeses sm = new SeisMeses();
+        //SeisMeses sm = new SeisMeses();
+        DozeMeses sm = new DozeMeses();
 
         String[] selectionArgs = {nome,sm.getAnoIni(),sm.getMesIni(),sm.getAnoFim(),sm.getMesFim() };
         String condicao =  " = ?  AND ((ano = ? AND mes >= ?) OR ( ano = ? AND mes <= ?    ))  ";
@@ -385,13 +387,15 @@ public class DBAdapter {
                 "AND ((Ano = ? and mes >= 9) OR (ano = ? and mes<=8))  GROUP BY " + DBHelper.TN_RELATORIO + ".nome ", selectionArgs);
     }
 
-
+    // 2017.06.13 colocar só para seis meses
     public String[] somaHorasMeses(String nome) {
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
-        String[] selectionArgs = {nome};
+        SeisMeses sm = new SeisMeses();
+        String[] selectionArgs = {nome,sm.getAnoIni(),sm.getMesIni(),sm.getAnoFim(),sm.getMesFim()};
         Cursor cursor = db.rawQuery("SELECT SUM(HORAS),COUNT(HORAS),AVG(REVISITAS),AVG(ESTUDOS)," +
-                "AVG(videos),AVG(publicacoes) FROM " + DBHelper.TN_RELATORIO + " WHERE NOME = ?", selectionArgs);
+                "AVG(videos),AVG(publicacoes) FROM " + DBHelper.TN_RELATORIO + " WHERE NOME = ? " +
+                "AND ((ano = ? AND mes >= ?) OR (ano = ? AND mes <= ? ))  ", selectionArgs);
         if (cursor.moveToFirst()) {
             resultado[0] = String.valueOf(cursor.getInt(0));
             resultado[1] = String.valueOf(cursor.getInt(1));
