@@ -9,6 +9,14 @@
         android:icon="@drawable/ic_action_relatorio"
         android:title="@string/cartao"
         app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
+        android:id="@+id/action_anodeservico"
+        android:orderInCategory="150"
+        android:icon="@drawable/ic_action_relatorio"
+        android:title="@string/ver_ano_de_servico"
+        app:showAsAction="ifRoom|collapseActionView" />
+
     <item
         android:id="@+id/enviarRelatorio"
         android:orderInCategory="200"

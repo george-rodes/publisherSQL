@@ -88,7 +88,7 @@ public class AtividadesActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            /** Ihave to return where I came From **/
+            /*** Ihave to return where I came From **/
             Intent returnIntent = new Intent();
             //returnIntent.putExtra("busca", nameSearch);
             setResult(RESULT_OK, returnIntent);
@@ -97,8 +97,14 @@ public class AtividadesActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.action_relatorio) {
             Intent intent = new Intent(this, CartaoActivity.class);
             intent.putExtra("nome", nome);
+            intent.putExtra("periodo", "dozemeses");
             startActivity(intent);
-
+            return true;
+        } else if (item.getItemId() == R.id.action_anodeservico) {
+            Intent intent = new Intent(this, CartaoActivity.class);
+            intent.putExtra("nome", nome);
+            intent.putExtra("periodo", "anodeservico");
+            startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.enviarRelatorio) {
             //Modo OFFLINE adicionado

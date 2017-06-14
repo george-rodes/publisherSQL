@@ -213,6 +213,8 @@
     <string name="fora_da_faixa">O número informado está fora da faixa permitida</string>
     <string name="offline_aguardando_online">O Relatório foi gravado no modo OFFLINE. O Relatório será enviado automaticamente assim que o sistema estiver ONLINE.</string>
     <string name="houston">Gravação Local Falhou. Avise o George</string>
+    <string name="ver_ano_de_servico">Ver Ano De Serviço</string>
+    <string name="medias">Médias</string>
 
 
 </resources>

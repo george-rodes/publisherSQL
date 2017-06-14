@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import br.com.anagnostou.publisher.adapters.CartaoAdapter;
 import br.com.anagnostou.publisher.DBAdapter;
@@ -25,9 +26,11 @@ import br.com.anagnostou.publisher.objetos.Relatorio;
 
 public class CartaoActivity extends AppCompatActivity {
     private DBAdapter dbAdapter;
-     private String nome;
+    private String nome;
+    private String periodo;
     private ArrayList<Relatorio> relatorios;
     private TextView mesesTotal, publicacoesTotal, videosTotal, horasTotal, revisitasTotal, estudosTotal;
+    private TextView mesesMedia, publicacoesMedia, videosMedia, horasMedia, revisitasMedia, estudosMedia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +43,16 @@ public class CartaoActivity extends AppCompatActivity {
         horasTotal = (TextView) findViewById(R.id.horasTotal);
         revisitasTotal = (TextView) findViewById(R.id.revisitasTotal);
         estudosTotal = (TextView) findViewById(R.id.estudosTotal);
+        mesesMedia = (TextView) findViewById(R.id.mesesMedia);
+        publicacoesMedia = (TextView) findViewById(R.id.publicacoesMedia);
+        videosMedia = (TextView) findViewById(R.id.videosMedia);
+        horasMedia = (TextView) findViewById(R.id.horasMedia);
+        revisitasMedia = (TextView) findViewById(R.id.revisitasMedia);
+        estudosMedia = (TextView) findViewById(R.id.estudosMedia);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.cartao_toolbar);
         setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null) getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         /** RV START **/
@@ -57,9 +66,16 @@ public class CartaoActivity extends AppCompatActivity {
         dbAdapter = new DBAdapter(getApplicationContext());
 
         nome = getIntent().getExtras().getString("nome", "George");
+        periodo = getIntent().getExtras().getString("periodo", null);
+        //L.m(periodo);
         getSupportActionBar().setTitle(nome);
 
-        carregarCartao(nome);
+        if (periodo.equals("anodeservico")) {
+            carregarCartaoAnoDeServico(nome);
+        } else {
+            carregarCartao(nome);
+        }
+
         RecyclerView.Adapter adapter = new CartaoAdapter(relatorios, this);
         rv.setAdapter(adapter);
     }
@@ -80,6 +96,35 @@ public class CartaoActivity extends AppCompatActivity {
         horasTotal.setText(totais[3]);
         revisitasTotal.setText(totais[4]);
         estudosTotal.setText(totais[5]);
+    }
+
+    public void carregarCartaoAnoDeServico(String nome) {
+        int meses = 0;
+        Cursor c = dbAdapter.retrieveRelatoriosAnoDeServico(nome);
+        //relatorios.clear();
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                relatorios.add(new Relatorio(c.getInt(1), c.getInt(2), c.getString(3), c.getString(4), c.getInt(5), c.getInt(6), c.getInt(7), c.getInt(8), c.getInt(9)));
+                meses++;
+            }
+        }
+        //L.m(""+meses);
+        String[] totais = dbAdapter.retrieveTotaisAnoDeServico(nome);
+        mesesTotal.setText(totais[0]);
+        publicacoesTotal.setText(totais[1]);
+        videosTotal.setText(totais[2]);
+        horasTotal.setText(totais[3]);
+        revisitasTotal.setText(totais[4]);
+        estudosTotal.setText(totais[5]);
+
+        mesesMedia.setText(R.string.medias);
+        publicacoesMedia.setText(totais[6]);
+        videosMedia.setText(totais[7]);
+        horasMedia.setText(totais[8]);
+        revisitasMedia.setText(totais[9]);
+        estudosMedia.setText(totais[10]);
+        
+        
     }
 
     @Override

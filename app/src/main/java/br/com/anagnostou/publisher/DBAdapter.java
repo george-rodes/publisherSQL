@@ -20,6 +20,8 @@ import br.com.anagnostou.publisher.objetos.Relatorio;
 import br.com.anagnostou.publisher.objetos.SeisMeses;
 import br.com.anagnostou.publisher.utils.L;
 
+import static br.com.anagnostou.publisher.utils.Utilidades.anoDeServico;
+
 
 public class DBAdapter {
     public DBHelper mydbHelper;
@@ -109,11 +111,19 @@ public class DBAdapter {
         String orderBy = " ano asc, mes asc ";
         //SeisMeses sm = new SeisMeses();
         DozeMeses sm = new DozeMeses();
-
-        String[] selectionArgs = {nome,sm.getAnoIni(),sm.getMesIni(),sm.getAnoFim(),sm.getMesFim() };
-        String condicao =  " = ?  AND ((ano = ? AND mes >= ?) OR ( ano = ? AND mes <= ?    ))  ";
-        return db.query(DBHelper.TN_RELATORIO, null, DBHelper.NOME + condicao , selectionArgs, null, null, orderBy  );
+        String[] selectionArgs = {nome, sm.getAnoIni(), sm.getMesIni(), sm.getAnoFim(), sm.getMesFim()};
+        String condicao = " = ?  AND ((ano = ? AND mes >= ?) OR ( ano = ? AND mes <= ?    ))  ";
+        return db.query(DBHelper.TN_RELATORIO, null, DBHelper.NOME + condicao, selectionArgs, null, null, orderBy);
     }
+
+    public Cursor retrieveRelatoriosAnoDeServico(String nome) {
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String orderBy = " ano asc, mes asc ";
+        String[] selectionArgs = {nome, "" + (anoDeServico() - 1), "" + anoDeServico()};
+        String condicao = " = ?  AND ((ano = ? AND mes >= 9 ) OR ( ano = ? AND mes <= 8 ))  ";
+        return db.query(DBHelper.TN_RELATORIO, null, DBHelper.NOME + condicao, selectionArgs, null, null, orderBy);
+    }
+
 
     public Cursor retrieveRelatorioSeisMeses(String nome) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
@@ -170,8 +180,6 @@ public class DBAdapter {
         return result;
 
     }
-
-
 
 
     public Cursor cursorPublicadorPorGrupo(String grupo) {
@@ -392,7 +400,7 @@ public class DBAdapter {
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         SeisMeses sm = new SeisMeses();
-        String[] selectionArgs = {nome,sm.getAnoIni(),sm.getMesIni(),sm.getAnoFim(),sm.getMesFim()};
+        String[] selectionArgs = {nome, sm.getAnoIni(), sm.getMesIni(), sm.getAnoFim(), sm.getMesFim()};
         Cursor cursor = db.rawQuery("SELECT SUM(HORAS),COUNT(HORAS),AVG(REVISITAS),AVG(ESTUDOS)," +
                 "AVG(videos),AVG(publicacoes) FROM " + DBHelper.TN_RELATORIO + " WHERE NOME = ? " +
                 "AND ((ano = ? AND mes >= ?) OR (ano = ? AND mes <= ? ))  ", selectionArgs);
@@ -418,12 +426,15 @@ public class DBAdapter {
 
     }
 
+    //12 meses
     public String[] retrieveTotais(String nome) {
         String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
-        String[] selectionArgs = {nome};
+        DozeMeses sm = new DozeMeses();
+        String[] selectionArgs = {nome, sm.getAnoIni(), sm.getMesIni(), sm.getAnoFim(), sm.getMesFim()};
         Cursor cursor = db.rawQuery("SELECT COUNT(" + DBHelper.UID + "),SUM(publicacoes),SUM(videos), SUM(HORAS)," +
-                "SUM(REVISITAS),SUM(estudos) FROM " + DBHelper.TN_RELATORIO + " WHERE NOME = ?", selectionArgs);
+                "SUM(REVISITAS),SUM(estudos) FROM " + DBHelper.TN_RELATORIO + " WHERE NOME = ?  " +
+                " AND ((ano = ? AND mes >= ?) OR (ano = ? AND mes <= ? ))  ", selectionArgs);
         if (cursor.moveToFirst()) {
             resultado[0] = String.valueOf(cursor.getInt(0));
             resultado[1] = String.valueOf(cursor.getInt(1));
@@ -445,6 +456,50 @@ public class DBAdapter {
         }
 
     }
+
+    //ano de servico
+    public String[] retrieveTotaisAnoDeServico(String nome) {
+        String[] resultado = {"n/a", "n/a", "n/a", "n/a", "n/a", "n/a", "n/a", "n/a", "n/a", "n/a", "n/a"};
+        SQLiteDatabase db = mydbHelper.getWritableDatabase();
+        String[] selectionArgs = {nome, "" + (anoDeServico() - 1), "" + anoDeServico()};
+        Cursor cursor = db.rawQuery("SELECT COUNT(" + DBHelper.UID + "),SUM(publicacoes),SUM(videos), SUM(HORAS)," +
+                "SUM(REVISITAS),SUM(estudos) FROM " + DBHelper.TN_RELATORIO + " WHERE NOME = ?  " +
+                " AND ((ano = ? AND mes >= 9) OR (ano = ? AND mes <= 8 ))  ", selectionArgs);
+        if (cursor.moveToFirst()) {
+            resultado[0] = String.valueOf(cursor.getInt(0));
+            resultado[1] = String.valueOf(cursor.getInt(1));
+            resultado[2] = String.valueOf(cursor.getInt(2));
+            resultado[3] = String.valueOf(cursor.getInt(3));
+            resultado[4] = String.valueOf(cursor.getInt(4));
+            resultado[5] = String.valueOf(cursor.getInt(5));
+
+            //String.format(Locale.getDefault(), "%.1f", mediahoras)
+            //resultado[6] = String.valueOf( (float) cursor.getInt(1)/cursor.getInt(0));
+            resultado[6] = String.format(Locale.getDefault(), "%.1f", (float) cursor.getInt(1) / cursor.getInt(0));
+            resultado[7] = String.format(Locale.getDefault(), "%.1f", (float) cursor.getInt(2) / cursor.getInt(0));
+            resultado[8] = String.format(Locale.getDefault(), "%.1f", (float) cursor.getInt(3) / cursor.getInt(0));
+            resultado[9] = String.format(Locale.getDefault(), "%.1f", (float) cursor.getInt(4) / cursor.getInt(0));
+            resultado[10] = String.format(Locale.getDefault(), "%.1f", (float) cursor.getInt(5) / cursor.getInt(0));
+            cursor.close();
+            return resultado;
+        } else {
+            resultado[0] = "0";
+            resultado[1] = "0";
+            resultado[2] = "0";
+            resultado[3] = "0";
+            resultado[4] = "0";
+            resultado[5] = "0";
+            resultado[6] = "0";
+            resultado[7] = "0";
+            resultado[8] = "0";
+            resultado[9] = "0";
+            resultado[10] = "0";
+            cursor.close();
+            return resultado;
+        }
+
+    }
+
 
     public String contaPioneiroAuxiliar(String nome) {
         String resultado;
@@ -553,7 +608,7 @@ public class DBAdapter {
                 " reuniao as reuniao, COUNT(*) as numero, " +
                 " SUM(presentes) as total, " +
                 " AVG(presentes) as media FROM assistencia " +
-                " GROUP BY strftime('%m',data), reuniao " +
+                " GROUP BY strftime('%Y',data), strftime('%m',data), reuniao " +
                 " ORDER BY data DESC", null);
 
     }
@@ -585,15 +640,15 @@ public class DBAdapter {
         return result;
     }
 
-    public String assistenciaDoMes(String reuniao,String data ){
+    public String assistenciaDoMes(String reuniao, String data) {
         SQLiteDatabase db = mydbHelper.getReadableDatabase();
-        String[] selectionArgs = {reuniao,data};
+        String[] selectionArgs = {reuniao, data};
         Cursor c = db.rawQuery("SELECT data, presentes FROM " + DBHelper.TN_ASSISTENCIA +
                 " WHERE " + DBHelper.REUNIAO + " = ? AND  substr(data,1,7) = ? ", selectionArgs);
         StringBuilder sb = new StringBuilder();
 
-        while (c.moveToNext() ){
-            if (c.getString(1).length()==3) {
+        while (c.moveToNext()) {
+            if (c.getString(1).length() == 3) {
                 sb.append(c.getString(0)).append(": ").append(c.getString(1)).append("\n");
             } else sb.append(c.getString(0)).append(":   ").append(c.getString(1)).append("\n");
         }
@@ -602,12 +657,12 @@ public class DBAdapter {
 
     }
 
-    public int mediaReunioes(){
+    public int mediaReunioes() {
         int result;
         SQLiteDatabase db = mydbHelper.getReadableDatabase();
-        Cursor c = db.rawQuery("Select avg(presentes) from " + DBHelper.TN_ASSISTENCIA,null);
-        if (c.moveToNext()){
-            result= c.getInt(0);
+        Cursor c = db.rawQuery("Select avg(presentes) from " + DBHelper.TN_ASSISTENCIA, null);
+        if (c.moveToNext()) {
+            result = c.getInt(0);
         } else result = 1;
         c.close();
         return result;
@@ -621,7 +676,7 @@ public class DBAdapter {
         List<String> grupos = new ArrayList<>();
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
-                L.m(c.getString(c.getColumnIndex(DBHelper.GRUPO)));
+                //L.m(c.getString(c.getColumnIndex(DBHelper.GRUPO)));
                 grupos.add(c.getString(c.getColumnIndex(DBHelper.GRUPO)));
             }
         } else grupos.add("Sem Grupo");
@@ -629,8 +684,6 @@ public class DBAdapter {
         return grupos;
 
     }
-
-
 
 
     /*****************************************
@@ -717,7 +770,7 @@ public class DBAdapter {
         return db.insert(DBHelper.TN_ASSISTENCIA, null, cv);
     }
 
-    public long insertDataGrupos(String grupo, int numero,  String dirigente, String auxiliar) {
+    public long insertDataGrupos(String grupo, int numero, String dirigente, String auxiliar) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(DBHelper.GRUPO, grupo);
@@ -837,8 +890,6 @@ public class DBAdapter {
     }
 
 
-
-
     /*************************************
      * SQLiteOpenHelper
      ************************************/
@@ -861,7 +912,7 @@ public class DBAdapter {
 
 
         static final String DB_NAME = "appledore";
-        private static final int DB_VERSION = 7;//9/4/2017
+        private static final int DB_VERSION = 8;//13/6/2017
 
 
         /**
@@ -968,7 +1019,7 @@ public class DBAdapter {
 
         static final String CREATE_TABLE_TEST2 = "CREATE TABLE teste2 ( _id INTEGER PRIMARY KEY AUTOINCREMENT, " + FIELD1 + " TEXT);";
 
-        static final String CREATE_TABLE_GRUPOS =  "CREATE TABLE "
+        static final String CREATE_TABLE_GRUPOS = "CREATE TABLE "
                 + TN_GRUPOS + ABREPARENTESE
                 + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + GRUPO + " TEXT UNIQUE, "
@@ -996,9 +1047,9 @@ public class DBAdapter {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             try {
-                L.m("onUpgrade called, db.getVersion() " + db.getVersion());
-                L.m("oldVersion: " + oldVersion);
-                L.m("newVersion: " + newVersion);
+                //L.m("onUpgrade called, db.getVersion() " + db.getVersion());
+                //L.m("oldVersion: " + oldVersion);
+                //L.m("newVersion: " + newVersion);
                 db.execSQL(DROP_TABLE_PUBLICADOR);
                 db.execSQL(DROP_TABLE_RELATORIO);
                 db.execSQL(DROP_TABLE_TTRELATORIO);
@@ -1007,17 +1058,17 @@ public class DBAdapter {
                 db.execSQL(DROP_TABLE_ASSISTENCIA);
                 db.execSQL(DROP_TABLE_TT_ASSISTENCIA);
                 db.execSQL(DROP_TABLE_GRUPOS);
-                L.m("onUpgrade calls onCreate");
+                //L.m("onUpgrade calls onCreate");
                 onCreate(db);
             } catch (SQLException e) {
-                L.m(e + "on Upgrade failed");
+                //L.m(e + "on Upgrade failed");
             }
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
             try {
-                L.m("onCreate called");
+                //L.m("onCreate called");
                 db.execSQL(CREATE_TABLE_PUBLICADOR);
                 db.execSQL(CREATE_TABLE_RELATORIO);
                 db.execSQL(CREATE_TABLE_TT_RELATORIO);
@@ -1028,7 +1079,7 @@ public class DBAdapter {
                 db.execSQL(CREATE_TABLE_GRUPOS);
 
             } catch (SQLException e) {
-                L.m(e + "on Create failed");
+                //L.m(e + "on Create failed");
             }
         }
 
@@ -1076,6 +1127,7 @@ public class DBAdapter {
 
             }
         }
+
         public void dropTableTTAssistencia(SQLiteDatabase db) {
             try {
                 db.execSQL(DROP_TABLE_TT_ASSISTENCIA);
@@ -1084,6 +1136,7 @@ public class DBAdapter {
 
             }
         }
+
         public void dropTableGrupos(SQLiteDatabase db) {
             try {
                 db.execSQL(DROP_TABLE_GRUPOS);

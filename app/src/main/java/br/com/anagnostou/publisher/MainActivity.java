@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             JSONArray arrayJSON = new JSONArray(response);
             if (sp.getBoolean("fullMySQLImport", false)) {
                 dbAdapter.mydbHelper.dropTablePublicador(sqLiteDatabase);
-                L.m("Full Import, dropping table Publisher");
+                //L.m(" sp.getBoolean(\"fullMySQLImport\", false) Full Import, dropping table Publisher");
             }
             JsonTaskPublicador jsonTaskPublicador = new JsonTaskPublicador(MainActivity.this, this);
             jsonTaskPublicador.execute(arrayJSON);
@@ -295,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             JSONArray arrayJSON = new JSONArray(response);
             if (sp.getBoolean("fullMySQLImport", false)) {
                 dbAdapter.mydbHelper.dropTableRelatorio(sqLiteDatabase);
-                L.m("Full Import, dropping table");
+                //L.m("Full Import, dropping table");
             }
             JsonTaskRelatorio jsonTaskRelatorio = new JsonTaskRelatorio(MainActivity.this, this, mSectionsPagerAdapter);
             jsonTaskRelatorio.execute(arrayJSON);
@@ -327,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             JSONArray arrayJSON = new JSONArray(response);
             dbAdapter.mydbHelper.dropTableAssistencia(sqLiteDatabase);
-            L.m("Full Import, dropping table");
+            //L.m("Full Import, dropping table");
             JsonTaskAssistencia jsonTaskAssistencia = new JsonTaskAssistencia(this);
             jsonTaskAssistencia.execute(arrayJSON);
         } catch (JSONException e) {
@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             JSONArray arrayJSON = new JSONArray(response);
             dbAdapter.mydbHelper.dropTableGrupos(sqLiteDatabase);
-            L.m("Full Import, dropping table Grupos");
+            //L.m("Full Import, dropping table Grupos");
             JsonTaskGrupos jsonTaskGrupos = new JsonTaskGrupos(MainActivity.this, this);
             jsonTaskGrupos.execute(arrayJSON);
         } catch (JSONException e) {
@@ -350,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void getPHPJsonGrupos() {
 
         String url = sp.getString("php_grupos", NA);
-        L.m("getPHPJsonGrupos php grupos" + url);
+        //L.m("getPHPJsonGrupos php grupos" + url);
         StringRequest srGrupos = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -540,7 +540,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
-            L.m("Entrei no SectionsPagerAdapter, super(fm); ");
+            //L.m("Entrei no SectionsPagerAdapter, super(fm); ");
             //chama só na inicialização do Adapter
             grupoDinamico();
 
@@ -691,7 +691,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         } catch (Exception e) {
-            L.m(e.toString());
+            //L.m(e.toString());
         }
     }
 
@@ -773,7 +773,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Cursor c2 = dbAdapter.fetchAllAssistencia();
         if (c2.getCount() > 0) {
             while (c2.moveToNext()) {
-                L.m("Assistencia: " + c2.getInt(0) + " / " + c2.getString(1) + " / " + c2.getString(2) + " / " + c2.getInt(3));
+                //L.m("Assistencia: " + c2.getInt(0) + " / " + c2.getString(1) + " / " + c2.getString(2) + " / " + c2.getInt(3));
             }
         } else L.t(this, "No Assistencia, but table is there");
 

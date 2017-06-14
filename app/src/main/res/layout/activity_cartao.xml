@@ -101,47 +101,100 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/depressed_color"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/mesesTotal"
-                        style="@style/relatorio_tela_pequena_cabecalho"
-                        android:text="@string/mes"
-                        android:textStyle="bold" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/depressed_color"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/publicacoesTotal"
-                        style="@style/relatorio_tela_pequena_cabecalho"
-                        android:text="@string/public_abrev"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/mesesTotal"
+                            style="@style/relatorio_tela_pequena_cabecalho"
+                            android:text="@string/mes"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/videosTotal"
-                        style="@style/relatorio_tela_pequena_cabecalho"
-                        android:text="@string/videos"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/publicacoesTotal"
+                            style="@style/relatorio_tela_pequena_cabecalho"
+                            android:text="@string/public_abrev"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/horasTotal"
-                        style="@style/relatorio_tela_pequena_cabecalho"
-                        android:text="@string/horas"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/videosTotal"
+                            style="@style/relatorio_tela_pequena_cabecalho"
+                            android:text="@string/videos"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/revisitasTotal"
-                        style="@style/relatorio_tela_pequena_cabecalho"
-                        android:text="@string/revisitas"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/horasTotal"
+                            style="@style/relatorio_tela_pequena_cabecalho"
+                            android:text="@string/horas"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/estudosTotal"
-                        style="@style/relatorio_tela_pequena_cabecalho"
-                        android:text="@string/estudos"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/revisitasTotal"
+                            style="@style/relatorio_tela_pequena_cabecalho"
+                            android:text="@string/revisitas"
+                            android:textStyle="bold" />
 
+                        <TextView
+                            android:id="@+id/estudosTotal"
+                            style="@style/relatorio_tela_pequena_cabecalho"
+                            android:text="@string/estudos"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/depressed_color"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/mesesMedia"
+                            style="@style/relatorio_tela_pequena_cabecalho"
+                            android:text=""
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/publicacoesMedia"
+                            style="@style/relatorio_tela_pequena_cabecalho"
+                            android:text="@string/public_abrev"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/videosMedia"
+                            style="@style/relatorio_tela_pequena_cabecalho"
+                            android:text="@string/videos"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/horasMedia"
+                            style="@style/relatorio_tela_pequena_cabecalho"
+                            android:text="@string/horas"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/revisitasMedia"
+                            style="@style/relatorio_tela_pequena_cabecalho"
+                            android:text="@string/revisitas"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/estudosMedia"
+                            style="@style/relatorio_tela_pequena_cabecalho"
+                            android:text="@string/estudos"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
                 </LinearLayout>
+
+
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </ScrollView>

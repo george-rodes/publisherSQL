@@ -384,4 +384,6 @@ public class Utilidades extends AppCompatActivity {
         return ( mod < 0 ) ? mod + n : mod;
     }
 
+
+
 }
