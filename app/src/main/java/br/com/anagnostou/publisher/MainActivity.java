@@ -371,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void checkPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
-                L.t(this, "shouldShowRequestPermissionRationale");
+                //L.t(this, "shouldShowRequestPermissionRationale");
             } else {
                 int PERM_PHONE = 77;
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, PERM_PHONE);
@@ -382,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 != PackageManager.PERMISSION_GRANTED) {
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                L.t(this, "Show an explanation to the user *asynchronously* -- don't block");
+                //L.t(this, "Show an explanation to the user *asynchronously* -- don't block");
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERM_EXT_STORAGE);
@@ -395,9 +395,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (requestCode == PERM_EXT_STORAGE) {
             // Request for camera permission.
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                L.t(this, "Permission has been granted. Start something");
+                //L.t(this, "Permission has been granted. Start something");
             } else {
-                L.t(this, "Permission request was denied.");
+                //L.t(this, "Permission request was denied.");
             }
         }
     }
@@ -768,14 +768,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             while (c.moveToNext()) {
                 //L.m("A Record: " + c.getString(1) + " / " + c.getString(2));
             }
-        } else L.t(this, "No Records, but table is there");
+        } //else L.t(this, "No Records, but table is there");
 
         Cursor c2 = dbAdapter.fetchAllAssistencia();
         if (c2.getCount() > 0) {
             while (c2.moveToNext()) {
                 //L.m("Assistencia: " + c2.getInt(0) + " / " + c2.getString(1) + " / " + c2.getString(2) + " / " + c2.getInt(3));
             }
-        } else L.t(this, "No Assistencia, but table is there");
+        } //else L.t(this, "No Assistencia, but table is there");
 
     }
 

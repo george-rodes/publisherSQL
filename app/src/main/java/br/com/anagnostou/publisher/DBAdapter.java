@@ -497,9 +497,7 @@ public class DBAdapter {
             cursor.close();
             return resultado;
         }
-
     }
-
 
     public String contaPioneiroAuxiliar(String nome) {
         String resultado;
@@ -557,7 +555,6 @@ public class DBAdapter {
         c.close();
         return nomes;
     }
-
 
     public Cursor naoRelatouMesPassado(String ano, String mes) {
         SQLiteDatabase db = mydbHelper.getWritableDatabase();

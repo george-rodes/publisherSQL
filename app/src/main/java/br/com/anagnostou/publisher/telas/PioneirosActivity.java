@@ -113,13 +113,19 @@ public class PioneirosActivity extends AppCompatActivity {
             setResult(RESULT_OK, returnIntent);
             finish();
             return true;
-        }
-        if (item.getItemId() == R.id.action_relatorio) {
+        } else if (item.getItemId() == R.id.action_relatorio) {
             Intent intent = new Intent(this, CartaoActivity.class);
             intent.putExtra("nome", nome);
+            intent.putExtra("periodo", "dozemeses");
             startActivity(intent);
-
             return true;
+        } else if (item.getItemId() == R.id.action_anodeservico) {
+            Intent intent = new Intent(this, CartaoActivity.class);
+            intent.putExtra("nome", nome);
+            intent.putExtra("periodo", "anodeservico");
+            startActivity(intent);
+            return true;
+
         } else if (item.getItemId() == R.id.enviarRelatorio) {
             if (areWeAuthenticated()) {
                 Intent intent = new Intent(this, RelatorioActivity.class);

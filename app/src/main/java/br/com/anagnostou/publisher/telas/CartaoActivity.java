@@ -73,13 +73,14 @@ public class CartaoActivity extends AppCompatActivity {
         if (periodo.equals("anodeservico")) {
             carregarCartaoAnoDeServico(nome);
         } else {
-            carregarCartao(nome);
+            carregarCartao(nome); //12 meses
         }
 
         RecyclerView.Adapter adapter = new CartaoAdapter(relatorios, this);
         rv.setAdapter(adapter);
     }
 
+    //12 meses
     public void carregarCartao(String nome) {
         Cursor c = dbAdapter.retrieveRelatorios(nome);
         //relatorios.clear();
@@ -89,7 +90,7 @@ public class CartaoActivity extends AppCompatActivity {
             }
         }
 
-        String[] totais = dbAdapter.retrieveTotais(nome);
+        String[] totais = dbAdapter.retrieveTotais(nome); //12 meses
         mesesTotal.setText(totais[0]);
         publicacoesTotal.setText(totais[1]);
         videosTotal.setText(totais[2]);
@@ -99,16 +100,13 @@ public class CartaoActivity extends AppCompatActivity {
     }
 
     public void carregarCartaoAnoDeServico(String nome) {
-        int meses = 0;
         Cursor c = dbAdapter.retrieveRelatoriosAnoDeServico(nome);
         //relatorios.clear();
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
                 relatorios.add(new Relatorio(c.getInt(1), c.getInt(2), c.getString(3), c.getString(4), c.getInt(5), c.getInt(6), c.getInt(7), c.getInt(8), c.getInt(9)));
-                meses++;
             }
         }
-        //L.m(""+meses);
         String[] totais = dbAdapter.retrieveTotaisAnoDeServico(nome);
         mesesTotal.setText(totais[0]);
         publicacoesTotal.setText(totais[1]);
@@ -116,15 +114,12 @@ public class CartaoActivity extends AppCompatActivity {
         horasTotal.setText(totais[3]);
         revisitasTotal.setText(totais[4]);
         estudosTotal.setText(totais[5]);
-
         mesesMedia.setText(R.string.medias);
         publicacoesMedia.setText(totais[6]);
         videosMedia.setText(totais[7]);
         horasMedia.setText(totais[8]);
         revisitasMedia.setText(totais[9]);
         estudosMedia.setText(totais[10]);
-        
-        
     }
 
     @Override

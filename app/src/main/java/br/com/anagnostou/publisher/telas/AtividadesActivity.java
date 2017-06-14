@@ -182,7 +182,7 @@ public class AtividadesActivity extends AppCompatActivity {
 
             }
 
-            String[] resultado = dbAdapter.somaHorasMeses(p.getNome());
+            String[] resultado = dbAdapter.somaHorasMeses(p.getNome()); //seis meses
             mediahoras = (double) Integer.parseInt(resultado[0]) / Integer.parseInt(resultado[1]);
             mediarevisitas = Double.parseDouble(resultado[2]);
             mediaestudos = Double.parseDouble(resultado[3]);
