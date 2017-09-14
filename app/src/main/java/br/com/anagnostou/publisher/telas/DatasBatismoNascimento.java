@@ -14,26 +14,28 @@ import br.com.anagnostou.publisher.DBAdapter;
 import br.com.anagnostou.publisher.R;
 import br.com.anagnostou.publisher.utils.Utilidades;
 
-public class MeetingDetail extends AppCompatDialogFragment implements View.OnClickListener {
+/**
+ * Created by George on 07/09/2017.
+ */
+
+public class DatasBatismoNascimento extends AppCompatDialogFragment implements View.OnClickListener {
+    View view;
     DBAdapter dbAdapter;
     SQLiteDatabase sqLiteDatabase;
-    View view;
     Button button;
-    String reuniao, data;
-    TextView assistencia,assistenciaLabel;
+    String nome;
+    TextView datas;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        data = getArguments().getString("ano") + "-" + Utilidades.mesNomeParaNumero(getArguments().getString("mes"));
-        reuniao = getArguments().getString("reuniao");
+        nome = getArguments().getString("nome");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate( R.layout.dialog_meeting_detail,container,false );
-        assistencia = (TextView) view.findViewById(R.id.assistencia);
-        assistenciaLabel = (TextView) view.findViewById(R.id.assistenciaLabel);
+        view = inflater.inflate(R.layout.dialog_detalhe_batismo, container, false);
+        datas = (TextView) view.findViewById(R.id.datas);
         button = (Button) view.findViewById(R.id.button);
         button.setOnClickListener(this);
         dbAdapter = new DBAdapter(view.getContext());
@@ -42,23 +44,14 @@ public class MeetingDetail extends AppCompatDialogFragment implements View.OnCli
         return view;
     }
 
-
     @Override
     public void onClick(View view) {
         dismiss();
     }
 
-    private String traducaoReuniao(String str) {
-        if (str.contentEquals("Reunião durante a semana")) {
-            return "midweek";
-        } else return "weekend";
-
-    }
-
     private void preencheCampos(){
-        assistenciaLabel.setText(reuniao);
-        assistencia.setText(dbAdapter.assistenciaDoMes(traducaoReuniao(reuniao), data));
-
+        //datas.setText("Batismo de " + nome);
+        datas.setText(dbAdapter.dataBatismoNascimento(nome));
     }
 
 }

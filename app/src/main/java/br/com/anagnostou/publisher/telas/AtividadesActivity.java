@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -73,7 +74,26 @@ public class AtividadesActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(nome);
         //tvNomePublicador.setText(nome);
         achaPublicador(nome);
+
+        tvPub6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = getSupportFragmentManager();
+                DatasBatismoNascimento datasBatismoNascimento = new DatasBatismoNascimento();
+                Bundle args = new Bundle();
+                args.putString("nome",nome);
+                datasBatismoNascimento.setArguments(args);
+                datasBatismoNascimento.show(fm,"Datas Batismo e Nascimento");
+
+            }
+        });
+
     }
+
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

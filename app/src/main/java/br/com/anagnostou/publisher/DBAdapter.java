@@ -654,6 +654,22 @@ public class DBAdapter {
 
     }
 
+    public String dataBatismoNascimento(String nome) {
+        SQLiteDatabase db = mydbHelper.getReadableDatabase();
+        String[] selectionArgs = {nome};
+        StringBuilder sb = new StringBuilder();
+        Cursor c = db.rawQuery("SELECT data_batismo, data_nascimento FROM " + DBHelper.TN_PUBLICADOR +
+                " WHERE " + DBHelper.NOME + " = ? ", selectionArgs);
+
+        while (c.moveToNext()) {
+            sb.append("Batismo: ").append(c.getString(0)).append("\nNascimento: ").append(c.getString(1));
+
+        }
+        c.close();
+        return sb.toString();
+
+    }
+
     public int mediaReunioes() {
         int result;
         SQLiteDatabase db = mydbHelper.getReadableDatabase();
