@@ -119,6 +119,5 @@ public class CartaoAdapter extends RecyclerView.Adapter<CartaoAdapter.ItemViewHo
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-
+//uuu
 }
